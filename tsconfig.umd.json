@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "outDir": "dist/umd",
+    "declaration": false
+  },
+  "files": [
+    "./src/public_api"
+  ]
+}

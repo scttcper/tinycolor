@@ -1,0 +1,9 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "automerge": "minor",
+  "rebaseStalePrs": true,
+  "semanticCommits": true,
+  "pinVersions": false
+}

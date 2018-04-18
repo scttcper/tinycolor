@@ -1,10 +1,10 @@
 import { join } from 'path';
 
 import { copySync } from 'fs-extra';
-import { rollup, InputOptions, OutputOptions } from 'rollup';
+import { rollup, OutputOptions, RollupFileOptions } from 'rollup';
 import * as sourceMaps from 'rollup-plugin-sourcemaps';
 
-const umdInputOptions: InputOptions = {
+const umdInputOptions: RollupFileOptions = {
   input: `dist/umd/public_api.js`,
   external: ['tslib'],
   plugins: [sourceMaps()],
@@ -18,7 +18,7 @@ const umdOutputOptions: OutputOptions = {
   },
   sourcemap: true,
 };
-const moduleInputOptions: InputOptions = {
+const moduleInputOptions: RollupFileOptions = {
   ...umdInputOptions,
   input: `dist/esm5/public_api.js`,
 };

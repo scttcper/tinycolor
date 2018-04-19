@@ -1,22 +1,27 @@
 import names from './css-color-names';
 
-const trimLeft = /^\s+/;
-const trimRight = /\s+$/;
-
-type ColorInput = string | RGB | RGBA | HSL | HSLA | HSV | HSVA | TinyColor;
-
 export class TinyColor {
-  private _originalInput: any;
-  private _r: any;
-  private _g: any;
-  private _b: any;
-  private _a: any;
+  private _originalInput: ColorInput;
+  private _r!: number;
+  private _g!: number;
+  private _b!: number;
+  private _a!: number;
   private _roundA: any;
-  private _format: any;
+  private _format:
+    | 'rgb'
+    | 'prgb'
+    | 'hex'
+    | 'hex3'
+    | 'hex4'
+    | 'hex6'
+    | 'hex8'
+    | 'name'
+    | 'hsl'
+    | 'hsv';
   private _gradientType: any;
   private _ok: any;
 
-  constructor(color?: string | RGB | RGBA | HSL | HSLA | HSV | HSVA | TinyColor, opts: any = {}) {
+  constructor(color?: ColorInput, opts: any = {}) {
     // If input is already a tinycolor, return itself
     if (color instanceof TinyColor) {
       return color;
@@ -59,24 +64,42 @@ export class TinyColor {
   isLight() {
     return !this.isDark();
   }
+  /**
+   * Return an indication whether the color was successfully parsed.
+   */
   isValid() {
     return this._ok;
   }
-  getOriginalInput() {
+  /**
+   * Returns the input passed into the constructer used to create the tinycolor instance.
+   */
+  getOriginalInput(): ColorInput {
     return this._originalInput;
   }
-  getFormat() {
+  /**
+   * Returns the format used to create the tinycolor instance.
+   */
+  getFormat(): string {
     return this._format;
   }
-  getAlpha() {
+  /**
+   * Returns the alpha value of the color
+   */
+  getAlpha(): number {
     return this._a;
   }
-  getBrightness() {
+  /**
+   * Returns the perceived brightness of the color, from 0-255.
+   */
+  getBrightness(): number {
     // http://www.w3.org/TR/AERT#color-contrast
     const rgb = this.toRgb();
     return (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
   }
-  getLuminance() {
+  /**
+   * Returns the perceived luminance of a color, from 0-1.
+   */
+  getLuminance(): number {
     // http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
     const rgb = this.toRgb();
     let R;
@@ -103,16 +126,28 @@ export class TinyColor {
     }
     return 0.2126 * R + 0.7152 * G + 0.0722 * B;
   }
-  setAlpha(value) {
-    this._a = boundAlpha(value);
+  /**
+   * Sets the alpha value on the current color.
+   *
+   * @param alpha - The new alpha value. The accepted range is 0-1.
+   */
+  setAlpha(alpha?: number): TinyColor {
+    this._a = boundAlpha(alpha);
     this._roundA = Math.round(100 * this._a) / 100;
     return this;
   }
+  /**
+   * Returns the object as a HSVA object.
+   */
   toHsv() {
     const hsv = rgbToHsv(this._r, this._g, this._b);
     return { h: hsv.h * 360, s: hsv.s, v: hsv.v, a: this._a };
   }
-  toHsvString() {
+  /**
+   * Returns the hsva values interpolated into a string with the following format:
+   * "hsva(xxx, xxx, xxx, xx)".
+   */
+  toHsvString(): string {
     const hsv = rgbToHsv(this._r, this._g, this._b);
     const h = Math.round(hsv.h * 360);
     const s = Math.round(hsv.s * 100);
@@ -121,11 +156,18 @@ export class TinyColor {
       ? 'hsv(' + h + ', ' + s + '%, ' + v + '%)'
       : 'hsva(' + h + ', ' + s + '%, ' + v + '%, ' + this._roundA + ')';
   }
+  /**
+   * Returns the object as a HSLA object.
+   */
   toHsl() {
     const hsl = rgbToHsl(this._r, this._g, this._b);
     return { h: hsl.h * 360, s: hsl.s, l: hsl.l, a: this._a };
   }
-  toHslString() {
+  /**
+   * Returns the hsla values interpolated into a string with the following format:
+   * "hsla(xxx, xxx, xxx, xx)".
+   */
+  toHslString(): string {
     const hsl = rgbToHsl(this._r, this._g, this._b);
     const h = Math.round(hsl.h * 360);
     const s = Math.round(hsl.s * 100);
@@ -134,21 +176,40 @@ export class TinyColor {
       ? 'hsl(' + h + ', ' + s + '%, ' + l + '%)'
       : 'hsla(' + h + ', ' + s + '%, ' + l + '%, ' + this._roundA + ')';
   }
-  toHex(allow3Char?) {
+  /**
+   * Returns the hex value of the color.
+   */
+  toHex(allow3Char?): string {
     return rgbToHex(this._r, this._g, this._b, allow3Char);
   }
-  toHexString(allow3Char?) {
+  /**
+   * Returns the hex value of the color -with a # appened.
+   */
+  toHexString(allow3Char?): string {
     return '#' + this.toHex(allow3Char);
   }
-  toHex8(allow4Char?) {
+  /**
+   * Returns the hex 8 value of the color.
+   */
+  toHex8(allow4Char?): string {
     return rgbaToHex(this._r, this._g, this._b, this._a, allow4Char);
   }
-  toHex8String(allow4Char?) {
+  /**
+   * Returns the hex 8  value of the color -with a # appened.
+   */
+  toHex8String(allow4Char?): string {
     return '#' + this.toHex8(allow4Char);
   }
+  /**
+   * Returns the object as a RGBA object.
+   */
   toRgb() {
     return { r: Math.round(this._r), g: Math.round(this._g), b: Math.round(this._b), a: this._a };
   }
+  /**
+   * Returns the RGBA values interpolated into a string with the following format:
+   * "RGBA(xxx, xxx, xxx, xx)".
+   */
   toRgbString() {
     return this._a === 1
       ? 'rgb(' + Math.round(this._r) + ', ' + Math.round(this._g) + ', ' + Math.round(this._b) + ')'
@@ -162,6 +223,9 @@ export class TinyColor {
           this._roundA +
           ')';
   }
+  /**
+   * Returns the object as a RGBA object.
+   */
   toPercentageRgb() {
     return {
       r: Math.round(bound01(this._r, 255) * 100) + '%',
@@ -170,6 +234,10 @@ export class TinyColor {
       a: this._a,
     };
   }
+  /**
+   * Returns the RGBA relative values interpolated into a string with the following format:
+   * "RGBA(xxx, xxx, xxx, xx)".
+   */
   toPercentageRgbString() {
     return this._a === 1
       ? 'rgb(' +
@@ -189,6 +257,9 @@ export class TinyColor {
           this._roundA +
           ')';
   }
+  /**
+   * The 'real' name of the color -if there is one.
+   */
   toName(): string | false {
     if (this._a === 0) {
       return 'transparent';
@@ -205,7 +276,10 @@ export class TinyColor {
     }
     return false;
   }
-  toFilter(secondColor) {
+  /**
+   * Returns the color represented as a Microsoft filter for use in old versions of IE.
+   */
+  toFilter(secondColor?: ColorInput) {
     const hex8String = '#' + rgbaToArgbHex(this._r, this._g, this._b, this._a);
     let secondHex8String = hex8String;
     const gradientType = this._gradientType ? 'GradientType = 1, ' : '';
@@ -225,21 +299,21 @@ export class TinyColor {
       ')'
     );
   }
-  toString(format?) {
+  /**
+   * String representation of the color.
+   *
+   * @param format - The format to be used when displaying the string representation.
+   */
+  toString(
+    format?: 'rgb' | 'prgb' | 'hex' | 'hex3' | 'hex4' | 'hex6' | 'hex8' | 'name' | 'hsl' | 'hsv',
+  ) {
     const formatSet = !!format;
     format = format || this._format;
 
     let formattedString: string | false = false;
     const hasAlpha = this._a < 1 && this._a >= 0;
     const needsAlphaFormat =
-      !formatSet &&
-      hasAlpha &&
-      (format === 'hex' ||
-        format === 'hex6' ||
-        format === 'hex3' ||
-        format === 'hex4' ||
-        format === 'hex8' ||
-        format === 'name');
+      !formatSet && hasAlpha && (format.startsWith('hex') || format === 'name');
 
     if (needsAlphaFormat) {
       // Special case for "transparent", all other non-alpha formats
@@ -280,72 +354,58 @@ export class TinyColor {
     return formattedString || this.toHexString();
   }
   clone() {
-    return new TinyColor(this.toString());
+    return new TinyColor(this.toString() as string);
   }
-
-  _applyModification(fn: any, args: any[]) {
-    const color = fn.apply(null, [this].concat([].slice.call(args)));
-    this._r = color._r;
-    this._g = color._g;
-    this._b = color._b;
-    this.setAlpha(color._a);
-    return this;
+  lighten(amount: number) {
+    return lighten(this, amount);
   }
-  lighten(...args) {
-    return this._applyModification(lighten, args);
+  brighten(amount: number) {
+    return brighten(this, amount);
   }
-  brighten(...args) {
-    return this._applyModification(brighten, args);
+  darken(amount: number) {
+    return darken(this, amount);
   }
-  darken(...args) {
-    return this._applyModification(darken, args);
+  desaturate(amount: number) {
+    return desaturate(this, amount);
   }
-  desaturate(...args) {
-    return this._applyModification(desaturate, args);
+  saturate(amount: number) {
+    return saturate(this, amount);
   }
-  saturate(...args) {
-    return this._applyModification(saturate, args);
+  greyscale() {
+    return greyscale(this);
   }
-  greyscale(...args) {
-    return this._applyModification(greyscale, args);
+  spin(amount) {
+    return spin(this, amount);
   }
-  spin(...args) {
-    return this._applyModification(spin, args);
+  analogous() {
+    return analogous(this);
   }
-  _applyCombination(fn, args) {
-    return fn.apply(null, [this].concat([].slice.call(args)));
+  complement() {
+    return complement(this);
   }
-  analogous(...args) {
-    return this._applyCombination(analogous, args);
+  monochromatic() {
+    return monochromatic(this);
   }
-  complement(...args) {
-    return this._applyCombination(complement, args);
+  splitcomplement() {
+    return splitcomplement(this);
   }
-  monochromatic(...args) {
-    return this._applyCombination(monochromatic, args);
+  triad() {
+    return triad(this);
   }
-  splitcomplement(...args) {
-    return this._applyCombination(splitcomplement, args);
-  }
-  triad(...args) {
-    return this._applyCombination(triad, args);
-  }
-  tetrad(...args) {
-    return this._applyCombination(tetrad, args);
+  tetrad() {
+    return tetrad(this);
   }
 
   // If input is an object, force 1 into "1.0" to handle ratios properly
   // String input requires "1.0" as input, so 1 will be treated as 1
-  fromRatio(color, opts?) {
+  fromRatio(color, opts?: any) {
     if (typeof color === 'object') {
       const newColor = {};
-      for (const i in color) {
-        if (color.hasOwnProperty(i)) {
-          if (i === 'a') {
-            newColor[i] = color[i];
-          } else {
-            newColor[i] = convertToPercentage(color[i]);
-          }
+      for (const key of Object.keys(color)) {
+        if (key === 'a') {
+          newColor[key] = color[key];
+        } else {
+          newColor[key] = convertToPercentage(color[key]);
         }
       }
       color = newColor;
@@ -372,7 +432,7 @@ export class TinyColor {
 
   // Utility Functions
   // ---------------------
-  mix(color1, color2, amount) {
+  mix(color1: ColorInput, color2: ColorInput, amount?: number) {
     amount = amount === 0 ? 0 : amount || 50;
 
     const rgb1 = new TinyColor(color1).toRgb();
@@ -405,50 +465,55 @@ export class TinyColor {
     );
   }
 
-  // `isReadable`
-  // Ensure that foreground and background color combinations meet WCAG2 guidelines.
-  // The third argument is an optional Object.
-  //      the 'level' property states 'AA' or 'AAA' - if missing or invalid, it defaults to 'AA';
-  //      the 'size' property states 'large' or 'small' - if missing or invalid, it defaults to 'small'.
-  // If the entire object is absent, isReadable defaults to {level:"AA",size:"small"}.
-
-  // *Example*
-  //    tinycolor.isReadable("#000", "#111") => false
-  //    tinycolor.isReadable("#000", "#111",{level:"AA",size:"large"}) => false
-  isReadable(color1, color2, wcag2) {
+  /**
+   * Ensure that foreground and background color combinations meet WCAG2 guidelines.
+   * The third argument is an optional Object.
+   *      the 'level' property states 'AA' or 'AAA' - if missing or invalid, it defaults to 'AA';
+   *      the 'size' property states 'large' or 'small' - if missing or invalid, it defaults to 'small'.
+   * If the entire object is absent, isReadable defaults to {level:"AA",size:"small"}.
+   *
+   * ### Example
+   * ```ts
+   * new TinyColor().isReadable('#000', '#111') => false
+   * new TinyColor().isReadable('#000', '#111', { level: 'AA', size: 'large' }) => false
+   * ```
+   */
+  isReadable(
+    color1: ColorInput,
+    color2: ColorInput,
+    wcag2: WCAG2Parms = { level: 'AA', size: 'small' },
+  ) {
     const readability = new TinyColor().readability(color1, color2);
-    let wcag2Parms;
-    let out;
-
-    out = false;
-
-    wcag2Parms = validateWCAG2Parms(wcag2);
-    switch (wcag2Parms.level + wcag2Parms.size) {
+    switch ((wcag2.level || 'AA') + (wcag2.size || 'small')) {
       case 'AAsmall':
       case 'AAAlarge':
-        out = readability >= 4.5;
-        break;
+        return readability >= 4.5;
       case 'AAlarge':
-        out = readability >= 3;
-        break;
+        return readability >= 3;
       case 'AAAsmall':
-        out = readability >= 7;
-        break;
+        return readability >= 7;
     }
-    return out;
+    return false;
   }
-
-  // `mostReadable`
-  // Given a base color and a list of possible foreground or background
-  // colors for that base, returns the most readable color.
-  // Optionally returns Black or White if the most readable color is unreadable.
-  // *Example*
-  //    tinycolor.mostReadable(tinycolor.mostReadable("#123", ["#124", "#125"],{includeFallbackColors:false}).toHexString(); // "#112255"
-  //    tinycolor.mostReadable(tinycolor.mostReadable("#123", ["#124", "#125"],{includeFallbackColors:true}).toHexString();  // "#ffffff"
-  //    tinycolor.mostReadable("#a8015a", ["#faf3f3"],{includeFallbackColors:true,level:"AAA",size:"large"}).toHexString(); // "#faf3f3"
-  //    tinycolor.mostReadable("#a8015a", ["#faf3f3"],{includeFallbackColors:true,level:"AAA",size:"small"}).toHexString(); // "#ffffff"
-  mostReadable(baseColor, colorList: any[], args: any = {}) {
-    let bestColor = null;
+  /**
+   * Given a base color and a list of possible foreground or background
+   * colors for that base, returns the most readable color.
+   * Optionally returns Black or White if the most readable color is unreadable.
+   *
+   * @param baseColor - the base color.
+   * @param colorList - array of colors to pick the most readable one from.
+   * @param args - and object with extra arguments
+   *
+   * ### Example
+   * ```ts
+   * new TinyColor().mostReadable('#123', ['#124", "#125'], { includeFallbackColors: false }).toHexString(); // "#112255"
+   * new TinyColor().mostReadable('#123', ['#124", "#125'],{ includeFallbackColors: true }).toHexString();  // "#ffffff"
+   * new TinyColor().mostReadable('#a8015a', ["#faf3f3"], { includeFallbackColors:true, level: 'AAA', size: 'large' }).toHexString(); // "#faf3f3"
+   * new TinyColor().mostReadable('#a8015a', ["#faf3f3"], { includeFallbackColors:true, level: 'AAA', size: 'small' }).toHexString(); // "#ffffff"
+   * ```
+   */
+  mostReadable(baseColor: TinyColor, colorList: string[], args: any = {}) {
+    let bestColor: TinyColor;
     let bestScore = 0;
     let readability;
     const includeFallbackColors = args.includeFallbackColors;
@@ -463,10 +528,7 @@ export class TinyColor {
       }
     }
 
-    if (
-      this.isReadable(baseColor, bestColor, { level: level, size: size }) ||
-      !includeFallbackColors
-    ) {
+    if (this.isReadable(baseColor, bestColor, { level, size }) || !includeFallbackColors) {
       return bestColor;
     } else {
       args.includeFallbackColors = false;
@@ -474,22 +536,22 @@ export class TinyColor {
     }
   }
 }
-
-// Given a string or object, convert that input to RGB
-// Possible string inputs:
-//
-//     "red"
-//     "#f00" or "f00"
-//     "#ff0000" or "ff0000"
-//     "#ff000000" or "ff000000"
-//     "rgb 255 0 0" or "rgb (255, 0, 0)"
-//     "rgb 1.0 0 0" or "rgb (1, 0, 0)"
-//     "rgba (255, 0, 0, 1)" or "rgba 255, 0, 0, 1"
-//     "rgba (1.0, 0, 0, 1)" or "rgba 1.0, 0, 0, 1"
-//     "hsl(0, 100%, 50%)" or "hsl 0 100% 50%"
-//     "hsla(0, 100%, 50%, 1)" or "hsla 0 100% 50%, 1"
-//     "hsv(0, 100%, 100%)" or "hsv 0 100% 100%"
-//
+/**
+ * Given a string or object, convert that input to RGB
+ * Possible string inputs:
+ *
+ *     "red"
+ *     "#f00" or "f00"
+ *     "#ff0000" or "ff0000"
+ *     "#ff000000" or "ff000000"
+ *     "rgb 255 0 0" or "rgb (255, 0, 0)"
+ *     "rgb 1.0 0 0" or "rgb (1, 0, 0)"
+ *     "rgba (255, 0, 0, 1)" or "rgba 255, 0, 0, 1"
+ *     "rgba (1.0, 0, 0, 1)" or "rgba 1.0, 0, 0, 1"
+ *     "hsl(0, 100%, 50%)" or "hsl 0 100% 50%"
+ *     "hsla(0, 100%, 50%, 1)" or "hsla 0 100% 50%, 1"
+ *     "hsv(0, 100%, 100%)" or "hsv 0 100% 100%"
+ */
 function inputToRGB(color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA | any) {
   let rgb = { r: 0, g: 0, b: 0 };
   let a = 1;
@@ -595,11 +657,12 @@ function rgbToHsl(r, g, b) {
 
   return { h, s, l };
 }
-
-// `hslToRgb`
-// Converts an HSL color value to RGB.
-// *Assumes:* h is contained in [0, 1] or [0, 360] and s and l are contained [0, 1] or [0, 100]
-// *Returns:* { r, g, b } in the set [0, 255]
+/**
+ * Converts an HSL color value to RGB.
+ *
+ * *Assumes:* h is contained in [0, 1] or [0, 360] and s and l are contained [0, 1] or [0, 100]
+ * *Returns:* { r, g, b } in the set [0, 255]
+ */
 function hslToRgb(h, s, l) {
   let r;
   let g;
@@ -630,11 +693,12 @@ function hslToRgb(h, s, l) {
 
   return { r: r * 255, g: g * 255, b: b * 255 };
 }
-
-// `rgbToHsv`
-// Converts an RGB color value to HSV
-// *Assumes:* r, g, and b are contained in the set [0, 255] or [0, 1]
-// *Returns:* { h, s, v } in [0,1]
+/**
+ * Converts an RGB color value to HSV
+ *
+ * *Assumes:* r, g, and b are contained in the set [0, 255] or [0, 1]
+ * *Returns:* { h, s, v } in [0,1]
+ */
 function rgbToHsv(r, g, b) {
   r = bound01(r, 255);
   g = bound01(g, 255);
@@ -667,11 +731,12 @@ function rgbToHsv(r, g, b) {
   }
   return { h: h, s: s, v: v };
 }
-
-// `hsvToRgb`
-// Converts an HSV color value to RGB.
-// *Assumes:* h is contained in [0, 1] or [0, 360] and s and v are contained in [0, 1] or [0, 100]
-// *Returns:* { r, g, b } in the set [0, 255]
+/**
+ * Converts an HSV color value to RGB.
+ *
+ * *Assumes:* h is contained in [0, 1] or [0, 360] and s and v are contained in [0, 1] or [0, 100]
+ * *Returns:* { r, g, b } in the set [0, 255]
+ */
 function hsvToRgb(h, s, v) {
   h = bound01(h, 360) * 6;
   s = bound01(s, 100);
@@ -689,11 +754,12 @@ function hsvToRgb(h, s, v) {
 
   return { r: r * 255, g: g * 255, b: b * 255 };
 }
-
-// `rgbToHex`
-// Converts an RGB color to hex
-// Assumes r, g, and b are contained in the set [0, 255]
-// Returns a 3 or 6 character hex
+/**
+ * Converts an RGB color to hex
+ *
+ * Assumes r, g, and b are contained in the set [0, 255]
+ * Returns a 3 or 6 character hex
+ */
 function rgbToHex(r: number, g: number, b: number, allow3Char: boolean) {
   const hex = [
     pad2(Math.round(r).toString(16)),
@@ -714,11 +780,13 @@ function rgbToHex(r: number, g: number, b: number, allow3Char: boolean) {
   return hex.join('');
 }
 
-// `rgbaToHex`
-// Converts an RGBA color plus alpha transparency to hex
-// Assumes r, g, b are contained in the set [0, 255] and
-// a in [0, 1]. Returns a 4 or 8 character rgba hex
-function rgbaToHex(r, g, b, a, allow4Char) {
+/**
+ * Converts an RGBA color plus alpha transparency to hex
+ *
+ * Assumes r, g, b are contained in the set [0, 255] and
+ * a in [0, 1]. Returns a 4 or 8 character rgba hex
+ */
+function rgbaToHex(r: number, g: number, b: number, a: number, allow4Char: boolean) {
   const hex = [
     pad2(Math.round(r).toString(16)),
     pad2(Math.round(g).toString(16)),
@@ -758,37 +826,38 @@ function rgbaToArgbHex(r, g, b, a) {
 // ----------------------
 // Thanks to less.js for some of the basics here
 // <https://github.com/cloudhead/less.js/blob/master/lib/less/functions.js>
-
-function desaturate(color, amount) {
-  amount = amount === 0 ? 0 : amount || 10;
+function desaturate(color: ColorInput, amount = 10) {
   const hsl = new TinyColor(color).toHsl();
   hsl.s -= amount / 100;
   hsl.s = clamp01(hsl.s);
   return new TinyColor(hsl);
 }
 
-function saturate(color, amount) {
-  amount = amount === 0 ? 0 : amount || 10;
+function saturate(color: ColorInput, amount = 10) {
   const hsl = new TinyColor(color).toHsl();
   hsl.s += amount / 100;
   hsl.s = clamp01(hsl.s);
   return new TinyColor(hsl);
 }
 
-function greyscale(color) {
+function greyscale(color: ColorInput) {
   return new TinyColor(color).desaturate(100);
 }
 
-function lighten(color, amount) {
-  amount = amount === 0 ? 0 : amount || 10;
+/**
+ * Lighten the color a given amount. Providing 100 will always return white.
+ *
+ * @param amount - The amount to lighten by. The valid range is 0 to 100.
+ *  Default value: 10.
+ */
+function lighten(color: ColorInput, amount = 10) {
   const hsl = new TinyColor(color).toHsl();
   hsl.l += amount / 100;
   hsl.l = clamp01(hsl.l);
   return new TinyColor(hsl);
 }
 
-function brighten(color, amount) {
-  amount = amount === 0 ? 0 : amount || 10;
+function brighten(color: ColorInput, amount = 10) {
   const rgb = new TinyColor(color).toRgb();
   rgb.r = Math.max(0, Math.min(255, rgb.r - Math.round(255 * -(amount / 100))));
   rgb.g = Math.max(0, Math.min(255, rgb.g - Math.round(255 * -(amount / 100))));
@@ -796,17 +865,18 @@ function brighten(color, amount) {
   return new TinyColor(rgb);
 }
 
-function darken(color, amount) {
-  amount = amount === 0 ? 0 : amount || 10;
+function darken(color: ColorInput, amount = 10) {
   const hsl = new TinyColor(color).toHsl();
   hsl.l -= amount / 100;
   hsl.l = clamp01(hsl.l);
   return new TinyColor(hsl);
 }
 
-// Spin takes a positive or negative amount within [-360, 360] indicating the change of hue.
-// Values outside of this range will be wrapped into this range.
-function spin(color, amount) {
+/**
+ * Spin takes a positive or negative amount within [-360, 360] indicating the change of hue.
+ * Values outside of this range will be wrapped into this range.
+ */
+function spin(color: ColorInput, amount: number) {
   const hsl = new TinyColor(color).toHsl();
   const hue = (hsl.h + amount) % 360;
   hsl.h = hue < 0 ? 360 + hue : hue;
@@ -817,14 +887,13 @@ function spin(color, amount) {
 // ---------------------
 // Thanks to jQuery xColor for some of the ideas behind these
 // <https://github.com/infusion/jQuery-xcolor/blob/master/jquery.xcolor.js>
-
-function complement(color) {
+function complement(color: ColorInput) {
   const hsl = new TinyColor(color).toHsl();
   hsl.h = (hsl.h + 180) % 360;
   return new TinyColor(hsl);
 }
 
-function triad(color) {
+function triad(color: ColorInput) {
   const hsl = new TinyColor(color).toHsl();
   const h = hsl.h;
   return [
@@ -834,7 +903,7 @@ function triad(color) {
   ];
 }
 
-function tetrad(color) {
+function tetrad(color: ColorInput) {
   const hsl = new TinyColor(color).toHsl();
   const h = hsl.h;
   return [
@@ -845,7 +914,7 @@ function tetrad(color) {
   ];
 }
 
-function splitcomplement(color) {
+function splitcomplement(color: ColorInput) {
   const hsl = new TinyColor(color).toHsl();
   const h = hsl.h;
   return [
@@ -855,10 +924,7 @@ function splitcomplement(color) {
   ];
 }
 
-function analogous(color, results, slices) {
-  results = results || 6;
-  slices = slices || 30;
-
+function analogous(color: ColorInput, results = 6, slices = 30) {
   const hsl = new TinyColor(color).toHsl();
   const part = 360 / slices;
   const ret = [new TinyColor(color)];
@@ -870,8 +936,7 @@ function analogous(color, results, slices) {
   return ret;
 }
 
-function monochromatic(color, results) {
-  results = results || 6;
+function monochromatic(color: ColorInput, results = 6) {
   const hsv = new TinyColor(color).toHsv();
   const h = hsv.h;
   const s = hsv.s;
@@ -887,9 +952,11 @@ function monochromatic(color, results) {
   return ret;
 }
 
-// Return a valid alpha value [0,1] with all invalid values being set to 1
-function boundAlpha(a) {
-  a = parseFloat(a);
+/**
+ * Return a valid alpha value [0,1] with all invalid values being set to 1
+ */
+function boundAlpha(a: number | string) {
+  a = parseFloat(a as string);
 
   if (isNaN(a) || a < 0 || a > 1) {
     a = 1;
@@ -898,7 +965,9 @@ function boundAlpha(a) {
   return a;
 }
 
-// Take input from [0, n] and return it as [0, 1]
+/**
+ * Take input from [0, n] and return it as [0, 1]
+ */
 function bound01(n: any, max: number) {
   if (isOnePointZero(n)) {
     n = '100%';
@@ -921,33 +990,35 @@ function bound01(n: any, max: number) {
   return (n % max) / parseFloat(String(max));
 }
 
-// Force a number between 0 and 1
+/** Force a number between 0 and 1 */
 function clamp01(val) {
   return Math.min(1, Math.max(0, val));
 }
 
-// Parse a base-16 hex value into a base-10 integer
+/** Parse a base-16 hex value into a base-10 integer */
 function parseIntFromHex(val) {
   return parseInt(val, 16);
 }
 
-// Need to handle 1.0 as 100%, since once it is a number, there is no difference between it and 1
-// <http://stackoverflow.com/questions/7422072/javascript-how-to-detect-number-as-a-decimal-including-1-0>
+/**
+ * Need to handle 1.0 as 100%, since once it is a number, there is no difference between it and 1
+ * <http://stackoverflow.com/questions/7422072/javascript-how-to-detect-number-as-a-decimal-including-1-0>
+ */
 function isOnePointZero(n: string) {
   return typeof n === 'string' && n.indexOf('.') !== -1 && parseFloat(n) === 1;
 }
 
-// Check to see if string passed in is a percentage
+/** Check to see if string passed in is a percentage */
 function isPercentage(n: string) {
   return typeof n === 'string' && n.indexOf('%') !== -1;
 }
 
-// Force a hex value to have 2 characters
+/** Force a hex value to have 2 characters */
 function pad2(c) {
   return c.length === 1 ? '0' + c : '' + c;
 }
 
-// Replace a decimal with it's percentage value
+/** Replace a decimal with it's percentage value */
 function convertToPercentage(n) {
   if (n <= 1) {
     n = n * 100 + '%';
@@ -956,11 +1027,11 @@ function convertToPercentage(n) {
   return n;
 }
 
-// Converts a decimal to a hex value
+/** Converts a decimal to a hex value */
 function convertDecimalToHex(d) {
   return Math.round(parseFloat(d) * 255).toString(16);
 }
-// Converts a hex value to a decimal
+/** Converts a hex value to a decimal */
 function convertHexToDecimal(h) {
   return parseIntFromHex(h) / 255;
 }
@@ -1013,14 +1084,12 @@ function isValidCSSUnit(color) {
   return !!matchers.CSS_UNIT.exec(color);
 }
 
-// `stringInputToObject`
-// Permissive string parsing.  Take in a number of formats, and output an object
-// based on detected format.  Returns `{ r, g, b }` or `{ h, s, l }` or `{ h, s, v}`
-function stringInputToObject(color: string) {
-  color = color
-    .replace(trimLeft, '')
-    .replace(trimRight, '')
-    .toLowerCase();
+/**
+ * Permissive string parsing.  Take in a number of formats, and output an object
+ * based on detected format.  Returns `{ r, g, b }` or `{ h, s, l }` or `{ h, s, v}`
+ */
+function stringInputToObject(color: string): any {
+  color = color.trim().toLowerCase();
   let named = false;
   if (names[color]) {
     color = names[color];
@@ -1099,46 +1168,39 @@ function stringInputToObject(color: string) {
   return false;
 }
 
-function validateWCAG2Parms(parms = { level: 'AA', size: 'small' }) {
-  // return valid WCAG2 parms for isReadable.
-  // If input parms are invalid, return {"level":"AA", "size":"small"}
-  let level = (parms.level || 'AA').toUpperCase();
-  let size = (parms.size || 'small').toLowerCase();
-  if (level !== 'AA' && level !== 'AAA') {
-    level = 'AA';
-  }
-  if (size !== 'small' && size !== 'large') {
-    size = 'small';
-  }
-  return { level, size };
-}
-
-interface RGB {
+export interface RGB {
   r: number | string;
   g: number | string;
   b: number | string;
 }
 
-interface RGBA extends RGB {
+export interface RGBA extends RGB {
   a: number;
 }
 
-interface HSL {
-  h: number;
-  s: number;
-  l: number;
+export interface HSL {
+  h: number | string;
+  s: number | string;
+  l: number | string;
 }
 
-interface HSLA extends HSL {
+export interface HSLA extends HSL {
   a: number;
 }
 
-interface HSV {
-  h: number;
-  s: number;
-  v: number;
+export interface HSV {
+  h: number | string;
+  s: number | string;
+  v: number | string;
 }
 
-interface HSVA extends HSV {
+export interface HSVA extends HSV {
   a: number;
+}
+
+export type ColorInput = string | RGB | RGBA | HSL | HSLA | HSV | HSVA | TinyColor;
+
+export interface WCAG2Parms {
+  level?: 'AA' | 'AAA';
+  size?: 'large' | 'small';
 }

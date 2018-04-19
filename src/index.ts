@@ -1,13 +1,13 @@
 import names from './css-color-names';
 
 export class TinyColor {
-  private _originalInput: ColorInput;
+  private _originalInput!: ColorInput;
   private _r!: number;
   private _g!: number;
   private _b!: number;
   private _a!: number;
   private _roundA: any;
-  private _format:
+  private _format!:
     | 'rgb'
     | 'prgb'
     | 'hex'
@@ -131,7 +131,7 @@ export class TinyColor {
    *
    * @param alpha - The new alpha value. The accepted range is 0-1.
    */
-  setAlpha(alpha?: number): TinyColor {
+  setAlpha(alpha?: string | number): TinyColor {
     this._a = boundAlpha(alpha);
     this._roundA = Math.round(100 * this._a) / 100;
     return this;
@@ -512,8 +512,8 @@ export class TinyColor {
    * new TinyColor().mostReadable('#a8015a', ["#faf3f3"], { includeFallbackColors:true, level: 'AAA', size: 'small' }).toHexString(); // "#ffffff"
    * ```
    */
-  mostReadable(baseColor: TinyColor, colorList: string[], args: any = {}) {
-    let bestColor: TinyColor;
+  mostReadable(baseColor: ColorInput, colorList: string[], args: any = {}) {
+    let bestColor: TinyColor | null = null;
     let bestScore = 0;
     let readability;
     const includeFallbackColors = args.includeFallbackColors;
@@ -528,7 +528,10 @@ export class TinyColor {
       }
     }
 
-    if (this.isReadable(baseColor, bestColor, { level, size }) || !includeFallbackColors) {
+    if (
+      this.isReadable(baseColor, bestColor as TinyColor, { level, size }) ||
+      !includeFallbackColors
+    ) {
       return bestColor;
     } else {
       args.includeFallbackColors = false;
@@ -941,7 +944,7 @@ function monochromatic(color: ColorInput, results = 6) {
   const h = hsv.h;
   const s = hsv.s;
   let v = hsv.v;
-  const ret = [];
+  const ret: TinyColor[] = [];
   const modification = 1 / results;
 
   while (results--) {
@@ -955,7 +958,7 @@ function monochromatic(color: ColorInput, results = 6) {
 /**
  * Return a valid alpha value [0,1] with all invalid values being set to 1
  */
-function boundAlpha(a: number | string) {
+function boundAlpha(a?: number | string) {
   a = parseFloat(a as string);
 
   if (isNaN(a) || a < 0 || a > 1) {

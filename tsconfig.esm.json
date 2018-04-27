@@ -4,7 +4,8 @@
     "module": "ESNext",
     "target": "ES2015",
     "outDir": "dist/esm5",
-    "declaration": false
+    "declaration": false,
+    "skipLibCheck": true
   },
   "files": [
     "./src/public_api"

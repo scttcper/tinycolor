@@ -4,34 +4,23 @@ import { copySync } from 'fs-extra';
 import { rollup, OutputOptions, RollupFileOptions } from 'rollup';
 import * as sourceMaps from 'rollup-plugin-sourcemaps';
 
-const umdInputOptions: RollupFileOptions = {
-  input: `dist/umd/public_api.js`,
+const moduleInputOptions: RollupFileOptions = {
+  input: `dist/esm5/public_api.js`,
   external: ['tslib'],
   plugins: [sourceMaps()],
 };
-const umdOutputOptions: OutputOptions = {
-  file: './dist/package-dist/bundles/tinycolor-3.umd.js',
+const moduleOutputOptions: OutputOptions = {
+  file: './dist/package-dist/bundles/tinycolor-3.es2015.js',
+  format: 'es',
   name: 'tinycolor3',
-  format: 'umd',
   globals: {
     tslib: 'tslib',
   },
   sourcemap: true,
 };
-const moduleInputOptions: RollupFileOptions = {
-  ...umdInputOptions,
-  input: `dist/esm5/public_api.js`,
-};
-const moduleOutputOptions: OutputOptions = {
-  ...umdOutputOptions,
-  file: './dist/package-dist/bundles/tinycolor-3.es2015.js',
-  format: 'es',
-};
 
 async function build() {
   // create bundles
-  const umd = await rollup(umdInputOptions);
-  await umd.write(umdOutputOptions);
   const mod = await rollup(moduleInputOptions);
   await mod.write(moduleOutputOptions);
 

@@ -16,7 +16,7 @@
     "hsa",
     "rgb"
   ],
-  "main": "./bundles/tinycolor-3.umd.js",
+  "main": "./public_api.js",
   "module": "./bundles/tinycolor-3.es2015.js",
   "typings": "./public_api.d.ts",
   "scripts": {

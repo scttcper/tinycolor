@@ -28,20 +28,19 @@ export class TinyColor {
   g!: number;
   b!: number;
   a!: number;
-  originalInput!: ColorInput;
   format!: ColorFormats;
   private roundA!: number;
   private gradientType?: string;
   private ok!: boolean;
 
-  constructor(color: ColorInput = '', opts: Partial<TinyColorOptions> = {}) {
+  constructor(private originalInput: ColorInput = '', opts: Partial<TinyColorOptions> = {}) {
     // If input is already a tinycolor, return itself
-    if (color instanceof TinyColor) {
-      return color;
+    if (originalInput instanceof TinyColor) {
+      return originalInput;
     }
-    this.originalInput = color;
-    const rgb = inputToRGB(color);
-    if (!color) {
+    this.originalInput = originalInput;
+    const rgb = inputToRGB(originalInput);
+    if (!originalInput) {
       return;
     }
     this.r = rgb.r;
@@ -364,44 +363,116 @@ export class TinyColor {
   clone() {
     return new TinyColor(this.toString() as string);
   }
-  lighten(amount: number) {
-    return lighten(this, amount);
+  /**
+   * Lighten the color a given amount. Providing 100 will always return white.
+   *
+   * @param amount - The amount to lighten by. The valid range is 0 to 100.
+   */
+  lighten(amount = 10) {
+    const hsl = this.toHsl();
+    hsl.l += amount / 100;
+    hsl.l = clamp01(hsl.l);
+    return new TinyColor(hsl);
   }
-  brighten(amount: number) {
-    return brighten(this, amount);
+  brighten(amount = 10) {
+    const rgb = this.toRgb();
+    rgb.r = Math.max(0, Math.min(255, rgb.r - Math.round(255 * -(amount / 100))));
+    rgb.g = Math.max(0, Math.min(255, rgb.g - Math.round(255 * -(amount / 100))));
+    rgb.b = Math.max(0, Math.min(255, rgb.b - Math.round(255 * -(amount / 100))));
+    return new TinyColor(rgb);
   }
-  darken(amount: number) {
-    return darken(this, amount);
+  darken(amount = 10) {
+    const hsl = this.toHsl();
+    hsl.l -= amount / 100;
+    hsl.l = clamp01(hsl.l);
+    return new TinyColor(hsl);
   }
-  desaturate(amount: number) {
-    return desaturate(this, amount);
+  desaturate(amount = 10) {
+    const hsl = this.toHsl();
+    hsl.s -= amount / 100;
+    hsl.s = clamp01(hsl.s);
+    return new TinyColor(hsl);
   }
-  saturate(amount: number) {
-    return saturate(this, amount);
+  saturate(amount = 10) {
+    const hsl = this.toHsl();
+    hsl.s += amount / 100;
+    hsl.s = clamp01(hsl.s);
+    return new TinyColor(hsl);
   }
   greyscale() {
-    return greyscale(this);
+    return this.desaturate(100);
   }
+  /**
+   * Spin takes a positive or negative amount within [-360, 360] indicating the change of hue.
+   * Values outside of this range will be wrapped into this range.
+   */
   spin(amount: number) {
-    return spin(this, amount);
+    const hsl = this.toHsl();
+    const hue = (hsl.h + amount) % 360;
+    hsl.h = hue < 0 ? 360 + hue : hue;
+    return new TinyColor(hsl);
   }
-  analogous() {
-    return analogous(this);
+  analogous(results = 6, slices = 30) {
+    const hsl = this.toHsl();
+    const part = 360 / slices;
+    const ret: TinyColor[] = [this];
+
+    for (hsl.h = (hsl.h - ((part * results) >> 1) + 720) % 360; --results; ) {
+      hsl.h = (hsl.h + part) % 360;
+      ret.push(new TinyColor(hsl));
+    }
+    return ret;
   }
+  /**
+   * taken from https://github.com/infusion/jQuery-xcolor/blob/master/jquery.xcolor.js
+   */
   complement() {
-    return complement(this);
+    const hsl = this.toHsl();
+    hsl.h = (hsl.h + 180) % 360;
+    return new TinyColor(hsl);
   }
-  monochromatic() {
-    return monochromatic(this);
+  monochromatic(results = 6) {
+    const hsv = this.toHsv();
+    const h = hsv.h;
+    const s = hsv.s;
+    let v = hsv.v;
+    const res: TinyColor[] = [];
+    const modification = 1 / results;
+
+    while (results--) {
+      res.push(new TinyColor({ h, s, v }));
+      v = (v + modification) % 1;
+    }
+
+    return res;
   }
   splitcomplement() {
-    return splitcomplement(this);
+    const hsl = this.toHsl();
+    const h = hsl.h;
+    return [
+      this,
+      new TinyColor({ h: (h + 72) % 360, s: hsl.s, l: hsl.l }),
+      new TinyColor({ h: (h + 216) % 360, s: hsl.s, l: hsl.l }),
+    ];
   }
   triad() {
-    return triad(this);
+    const hsl = this.toHsl();
+    const h = hsl.h;
+    return [
+      this,
+      new TinyColor({ h: (h + 120) % 360, s: hsl.s, l: hsl.l }),
+      new TinyColor({ h: (h + 240) % 360, s: hsl.s, l: hsl.l }),
+    ];
   }
   tetrad() {
-    return tetrad(this);
+    const hsl = this.toHsl();
+    const h = hsl.h;
+    return [
+      this,
+      new TinyColor({ h: (h + 90) % 360, s: hsl.s, l: hsl.l }),
+      new TinyColor({ h: (h + 180) % 360, s: hsl.s, l: hsl.l }),
+      new TinyColor({ h: (h + 270) % 360, s: hsl.s, l: hsl.l }),
+    ];
   }
   /**
    * If input is an object, force 1 into "1.0" to handle ratios properly
@@ -547,133 +618,4 @@ export class TinyColor {
       return this.mostReadable(baseColor, ['#fff', '#000'], args);
     }
   }
-}
-
-// Modification Functions
-// ----------------------
-// Thanks to less.js for some of the basics here
-// <https://github.com/cloudhead/less.js/blob/master/lib/less/functions.js>
-function desaturate(color: ColorInput, amount = 10) {
-  const hsl = new TinyColor(color).toHsl();
-  hsl.s -= amount / 100;
-  hsl.s = clamp01(hsl.s);
-  return new TinyColor(hsl);
-}
-
-function saturate(color: ColorInput, amount = 10) {
-  const hsl = new TinyColor(color).toHsl();
-  hsl.s += amount / 100;
-  hsl.s = clamp01(hsl.s);
-  return new TinyColor(hsl);
-}
-
-function greyscale(color: ColorInput) {
-  return new TinyColor(color).desaturate(100);
-}
-
-/**
- * Lighten the color a given amount. Providing 100 will always return white.
- *
- * @param amount - The amount to lighten by. The valid range is 0 to 100.
- */
-function lighten(color: ColorInput, amount = 10) {
-  const hsl = new TinyColor(color).toHsl();
-  hsl.l += amount / 100;
-  hsl.l = clamp01(hsl.l);
-  return new TinyColor(hsl);
-}
-
-function brighten(color: ColorInput, amount = 10) {
-  const rgb = new TinyColor(color).toRgb();
-  rgb.r = Math.max(0, Math.min(255, rgb.r - Math.round(255 * -(amount / 100))));
-  rgb.g = Math.max(0, Math.min(255, rgb.g - Math.round(255 * -(amount / 100))));
-  rgb.b = Math.max(0, Math.min(255, rgb.b - Math.round(255 * -(amount / 100))));
-  return new TinyColor(rgb);
-}
-
-function darken(color: ColorInput, amount = 10) {
-  const hsl = new TinyColor(color).toHsl();
-  hsl.l -= amount / 100;
-  hsl.l = clamp01(hsl.l);
-  return new TinyColor(hsl);
-}
-
-/**
- * Spin takes a positive or negative amount within [-360, 360] indicating the change of hue.
- * Values outside of this range will be wrapped into this range.
- */
-function spin(color: ColorInput, amount: number) {
-  const hsl = new TinyColor(color).toHsl();
-  const hue = (hsl.h + amount) % 360;
-  hsl.h = hue < 0 ? 360 + hue : hue;
-  return new TinyColor(hsl);
-}
-
-// Combination Functions
-// ---------------------
-// Thanks to jQuery xColor for some of the ideas behind these
-// <https://github.com/infusion/jQuery-xcolor/blob/master/jquery.xcolor.js>
-function complement(color: ColorInput) {
-  const hsl = new TinyColor(color).toHsl();
-  hsl.h = (hsl.h + 180) % 360;
-  return new TinyColor(hsl);
-}
-
-function triad(color: ColorInput) {
-  const hsl = new TinyColor(color).toHsl();
-  const h = hsl.h;
-  return [
-    new TinyColor(color),
-    new TinyColor({ h: (h + 120) % 360, s: hsl.s, l: hsl.l }),
-    new TinyColor({ h: (h + 240) % 360, s: hsl.s, l: hsl.l }),
-  ];
-}
-
-function tetrad(color: ColorInput) {
-  const hsl = new TinyColor(color).toHsl();
-  const h = hsl.h;
-  return [
-    new TinyColor(color),
-    new TinyColor({ h: (h + 90) % 360, s: hsl.s, l: hsl.l }),
-    new TinyColor({ h: (h + 180) % 360, s: hsl.s, l: hsl.l }),
-    new TinyColor({ h: (h + 270) % 360, s: hsl.s, l: hsl.l }),
-  ];
-}
-
-function splitcomplement(color: ColorInput) {
-  const hsl = new TinyColor(color).toHsl();
-  const h = hsl.h;
-  return [
-    new TinyColor(color),
-    new TinyColor({ h: (h + 72) % 360, s: hsl.s, l: hsl.l }),
-    new TinyColor({ h: (h + 216) % 360, s: hsl.s, l: hsl.l }),
-  ];
-}
-
-function analogous(color: ColorInput, results = 6, slices = 30) {
-  const hsl = new TinyColor(color).toHsl();
-  const part = 360 / slices;
-  const ret = [new TinyColor(color)];
-
-  for (hsl.h = (hsl.h - ((part * results) >> 1) + 720) % 360; --results; ) {
-    hsl.h = (hsl.h + part) % 360;
-    ret.push(new TinyColor(hsl));
-  }
-  return ret;
-}
-
-function monochromatic(color: ColorInput, results = 6) {
-  const hsv = new TinyColor(color).toHsv();
-  const h = hsv.h;
-  const s = hsv.s;
-  let v = hsv.v;
-  const ret: TinyColor[] = [];
-  const modification = 1 / results;
-
-  while (results--) {
-    ret.push(new TinyColor({ h: h, s: s, v: v }));
-    v = (v + modification) % 1;
-  }
-
-  return ret;
 }

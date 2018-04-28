@@ -6,16 +6,12 @@ const sourceMaps = require('rollup-plugin-sourcemaps');
 
 const moduleInputOptions: RollupFileOptions = {
   input: `dist/esm5/public_api.js`,
-  external: ['tslib'],
   plugins: [sourceMaps()],
 };
 const moduleOutputOptions: OutputOptions = {
   file: './dist/package-dist/bundles/tinycolor-3.es2015.js',
   format: 'es',
   name: 'tinycolor3',
-  globals: {
-    tslib: 'tslib',
-  },
   sourcemap: true,
 };
 

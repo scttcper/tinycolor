@@ -33,8 +33,8 @@ describe('TinyColor', () => {
     expect(new TinyColor(inputObj).getOriginalInput()).toBe(inputObj);
     //  when given an empty string, an empty string is returned
     expect(new TinyColor('').getOriginalInput()).toBe('');
-    //  when given a null value, an empty string is returned
-    expect(new TinyColor(null).getOriginalInput()).toBe('');
+    //  when given an undefined value, an empty string is returned
+    expect(new TinyColor().getOriginalInput()).toBe('');
   });
   it('should have color equality', () => {
     expect(conversions.length).toBe(16);

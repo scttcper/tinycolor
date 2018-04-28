@@ -24,7 +24,7 @@ export function bound01(n: any, max: number) {
 }
 
 /** Force a number between 0 and 1 */
-export function clamp01(val) {
+export function clamp01(val: number) {
   return Math.min(1, Math.max(0, val));
 }
 
@@ -32,12 +32,12 @@ export function clamp01(val) {
  * Need to handle 1.0 as 100%, since once it is a number, there is no difference between it and 1
  * <http://stackoverflow.com/questions/7422072/javascript-how-to-detect-number-as-a-decimal-including-1-0>
  */
-export function isOnePointZero(n: string) {
+export function isOnePointZero(n: string | number) {
   return typeof n === 'string' && n.indexOf('.') !== -1 && parseFloat(n) === 1;
 }
 
 /** Check to see if string passed in is a percentage */
-export function isPercentage(n: string) {
+export function isPercentage(n: string | number) {
   return typeof n === 'string' && n.indexOf('%') !== -1;
 }
 
@@ -55,15 +55,14 @@ export function boundAlpha(a?: number | string) {
 }
 
 /** Replace a decimal with it's percentage value */
-export function convertToPercentage(n) {
+export function convertToPercentage(n: number) {
   if (n <= 1) {
-    n = n * 100 + '%';
+    return n * 100 + '%';
   }
-
   return n;
 }
 
 /** Force a hex value to have 2 characters */
-export function pad2(c) {
+export function pad2(c: string) {
   return c.length === 1 ? '0' + c : '' + c;
 }

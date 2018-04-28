@@ -5,6 +5,14 @@
   ],
   "rules": {
     "semicolon": [true, "always"],
-    "prefer-const": true
+    "prefer-const": true,
+    "no-unused-variable": true,
+    "ordered-imports": [
+      true,
+      {
+        "import-sources-order": "lowercase-last",
+        "named-imports-order": "lowercase-first"
+      }
+    ]
   }
 }

@@ -24,7 +24,7 @@
     "lint:fix": "tslint -p tsconfig.json -t stylish --fix 'src/**/*.ts' 'test/**/*.ts'",
     "lint-staged": "lint-staged",
     "prebuild": "rimraf dist",
-    "build": "tsc -p tsconfig.json && tsc -p tsconfig.esm.json && tsc -p tsconfig.umd.json && ts-node ./build.ts",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.esm.json && ts-node ./build.ts",
     "build:docs": "typedoc --out docs --target es6 --theme minimal --mode file src && touch docs/.nojekyll",
     "test": "jest",
     "test:watch": "jest --watch",

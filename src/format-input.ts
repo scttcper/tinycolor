@@ -1,7 +1,7 @@
+import { convertHexToDecimal, hslToRgb, hsvToRgb, rgbToRgb } from './conversion';
 import names from './css-color-names';
-import { RGB, RGBA, HSL, HSLA, HSV, HSVA } from './interfaces';
+import { HSL, HSLA, HSV, HSVA, RGB, RGBA } from './interfaces';
 import { boundAlpha, convertToPercentage } from './util';
-import { convertHexToDecimal, rgbToRgb, hsvToRgb, hslToRgb } from './conversion';
 
 /**
  * Given a string or object, convert that input to RGB
@@ -42,13 +42,13 @@ export function inputToRGB(color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA 
     } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
       s = convertToPercentage(color.s);
       v = convertToPercentage(color.v);
-      rgb = hsvToRgb(color.h, s, v);
+      rgb = hsvToRgb(color.h, s as number, v as number);
       ok = true;
       format = 'hsv';
     } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.l)) {
       s = convertToPercentage(color.s);
       l = convertToPercentage(color.l);
-      rgb = hslToRgb(color.h, s, l);
+      rgb = hslToRgb(color.h, s as number, l as number);
       ok = true;
       format = 'hsl';
     }
@@ -69,6 +69,35 @@ export function inputToRGB(color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA 
     a,
   };
 }
+
+// <http://www.w3.org/TR/css3-values/#integers>
+const CSS_INTEGER = '[-\\+]?\\d+%?';
+
+// <http://www.w3.org/TR/css3-values/#number-value>
+const CSS_NUMBER = '[-\\+]?\\d*\\.\\d+%?';
+
+// Allow positive/negative integer/number.  Don't capture the either/or, just the entire outcome.
+const CSS_UNIT = `(?:${CSS_NUMBER})|(?:${CSS_INTEGER})`;
+
+// Actual matching.
+// Parentheses and commas are optional, but not required.
+// Whitespace can take the place of commas or opening paren
+const PERMISSIVE_MATCH3 = `[\\s|\\(]+(${CSS_UNIT})[,|\\s]+(${CSS_UNIT})[,|\\s]+(${CSS_UNIT})\\s*\\)?`;
+const PERMISSIVE_MATCH4 = `[\\s|\\(]+(${CSS_UNIT})[,|\\s]+(${CSS_UNIT})[,|\\s]+(${CSS_UNIT})[,|\\s]+(${CSS_UNIT})\\s*\\)?`;
+
+const matchers = {
+  CSS_UNIT: new RegExp(CSS_UNIT),
+  rgb: new RegExp('rgb' + PERMISSIVE_MATCH3),
+  rgba: new RegExp('rgba' + PERMISSIVE_MATCH4),
+  hsl: new RegExp('hsl' + PERMISSIVE_MATCH3),
+  hsla: new RegExp('hsla' + PERMISSIVE_MATCH4),
+  hsv: new RegExp('hsv' + PERMISSIVE_MATCH3),
+  hsva: new RegExp('hsva' + PERMISSIVE_MATCH4),
+  hex3: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
+  hex6: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
+  hex4: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
+  hex8: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
+};
 
 /**
  * Permissive string parsing.  Take in a number of formats, and output an object
@@ -160,38 +189,9 @@ export function parseIntFromHex(val: string) {
 }
 
 /**
- * Take in a single string / number and check to see if it looks like a CSS unit
+ * Check to see if it looks like a CSS unit
  * (see `matchers` above for definition).
  */
-export function isValidCSSUnit(color) {
-  return !!matchers.CSS_UNIT.exec(color);
+export function isValidCSSUnit(color: string | number) {
+  return !!matchers.CSS_UNIT.exec(String(color));
 }
-
-// <http://www.w3.org/TR/css3-values/#integers>
-const CSS_INTEGER = '[-\\+]?\\d+%?';
-
-// <http://www.w3.org/TR/css3-values/#number-value>
-const CSS_NUMBER = '[-\\+]?\\d*\\.\\d+%?';
-
-// Allow positive/negative integer/number.  Don't capture the either/or, just the entire outcome.
-const CSS_UNIT = `(?:${CSS_NUMBER})|(?:${CSS_INTEGER})`;
-
-// Actual matching.
-// Parentheses and commas are optional, but not required.
-// Whitespace can take the place of commas or opening paren
-const PERMISSIVE_MATCH3 = `[\\s|\\(]+(${CSS_UNIT})[,|\\s]+(${CSS_UNIT})[,|\\s]+(${CSS_UNIT})\\s*\\)?`;
-const PERMISSIVE_MATCH4 = `[\\s|\\(]+(${CSS_UNIT})[,|\\s]+(${CSS_UNIT})[,|\\s]+(${CSS_UNIT})[,|\\s]+(${CSS_UNIT})\\s*\\)?`;
-
-const matchers = {
-  CSS_UNIT: new RegExp(CSS_UNIT),
-  rgb: new RegExp('rgb' + PERMISSIVE_MATCH3),
-  rgba: new RegExp('rgba' + PERMISSIVE_MATCH4),
-  hsl: new RegExp('hsl' + PERMISSIVE_MATCH3),
-  hsla: new RegExp('hsla' + PERMISSIVE_MATCH4),
-  hsv: new RegExp('hsv' + PERMISSIVE_MATCH3),
-  hsva: new RegExp('hsva' + PERMISSIVE_MATCH4),
-  hex3: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
-  hex6: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
-  hex4: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
-  hex8: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
-};

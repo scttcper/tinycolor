@@ -1,5 +1,5 @@
-import { bound01, pad2 } from './util';
 import { parseIntFromHex } from './format-input';
+import { bound01, pad2 } from './util';
 
 // `rgbToHsl`, `rgbToHsv`, `hslToRgb`, `hsvToRgb` modified from:
 // <http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript>
@@ -10,7 +10,7 @@ import { parseIntFromHex } from './format-input';
  * *Assumes:* r, g, b in [0, 255] or [0, 1]
  * *Returns:* { r, g, b } in [0, 255]
  */
-export function rgbToRgb(r, g, b) {
+export function rgbToRgb(r: number, g: number, b: number) {
   return {
     r: bound01(r, 255) * 255,
     g: bound01(g, 255) * 255,
@@ -23,15 +23,15 @@ export function rgbToRgb(r, g, b) {
  * *Assumes:* r, g, and b are contained in [0, 255] or [0, 1]
  * *Returns:* { h, s, l } in [0,1]
  */
-export function rgbToHsl(r, g, b) {
+export function rgbToHsl(r: number, g: number, b: number) {
   r = bound01(r, 255);
   g = bound01(g, 255);
   b = bound01(b, 255);
 
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
-  let h;
-  let s;
+  let h = 0;
+  let s = 0;
   const l = (max + min) / 2;
 
   if (max === min) {
@@ -63,7 +63,7 @@ export function rgbToHsl(r, g, b) {
  * *Assumes:* h is contained in [0, 1] or [0, 360] and s and l are contained [0, 1] or [0, 100]
  * *Returns:* { r, g, b } in the set [0, 255]
  */
-export function hslToRgb(h, s, l) {
+export function hslToRgb(h: number, s: number, l: number) {
   let r;
   let g;
   let b;
@@ -72,12 +72,18 @@ export function hslToRgb(h, s, l) {
   s = bound01(s, 100);
   l = bound01(l, 100);
 
-  function hue2rgb(p, q, t) {
+  function hue2rgb(p: number, q: number, t: number) {
     if (t < 0) t += 1;
     if (t > 1) t -= 1;
-    if (t < 1 / 6) return p + (q - p) * 6 * t;
-    if (t < 1 / 2) return q;
-    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    if (t < 1 / 6) {
+      return p + (q - p) * 6 * t;
+    }
+    if (t < 1 / 2) {
+      return q;
+    }
+    if (t < 2 / 3) {
+      return p + (q - p) * (2 / 3 - t) * 6;
+    }
     return p;
   }
 
@@ -100,19 +106,17 @@ export function hslToRgb(h, s, l) {
  * *Assumes:* r, g, and b are contained in the set [0, 255] or [0, 1]
  * *Returns:* { h, s, v } in [0,1]
  */
-export function rgbToHsv(r, g, b) {
+export function rgbToHsv(r: number, g: number, b: number) {
   r = bound01(r, 255);
   g = bound01(g, 255);
   b = bound01(b, 255);
 
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
-  let h;
-  let s;
+  let h = 0;
   const v = max;
-
   const d = max - min;
-  s = max === 0 ? 0 : d / max;
+  const s = max === 0 ? 0 : d / max;
 
   if (max === min) {
     h = 0; // achromatic
@@ -139,7 +143,7 @@ export function rgbToHsv(r, g, b) {
  * *Assumes:* h is contained in [0, 1] or [0, 360] and s and v are contained in [0, 1] or [0, 100]
  * *Returns:* { r, g, b } in the set [0, 255]
  */
-export function hsvToRgb(h, s, v) {
+export function hsvToRgb(h: number, s: number, v: number) {
   h = bound01(h, 360) * 6;
   s = bound01(s, 100);
   v = bound01(v, 100);
@@ -210,10 +214,11 @@ export function rgbaToHex(r: number, g: number, b: number, a: number, allow4Char
   return hex.join('');
 }
 
-// `rgbaToArgbHex`
-// Converts an RGBA color to an ARGB Hex8 string
-// Rarely used, but required for "toFilter()"
-export function rgbaToArgbHex(r, g, b, a) {
+/**
+ * Converts an RGBA color to an ARGB Hex8 string
+ * Rarely used, but required for "toFilter()"
+ */
+export function rgbaToArgbHex(r: number, g: number, b: number, a: number) {
   const hex = [
     pad2(convertDecimalToHex(a)),
     pad2(Math.round(r).toString(16)),
@@ -225,10 +230,10 @@ export function rgbaToArgbHex(r, g, b, a) {
 }
 
 /** Converts a decimal to a hex value */
-export function convertDecimalToHex(d) {
-  return Math.round(parseFloat(d) * 255).toString(16);
+export function convertDecimalToHex(d: string | number) {
+  return Math.round(parseFloat(d as string) * 255).toString(16);
 }
 /** Converts a hex value to a decimal */
-export function convertHexToDecimal(h) {
+export function convertHexToDecimal(h: string) {
   return parseIntFromHex(h) / 255;
 }

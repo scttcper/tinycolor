@@ -1,15 +1,8 @@
+import { rgbaToArgbHex, rgbaToHex, rgbToHex, rgbToHsl, rgbToHsv } from './conversion';
 import names from './css-color-names';
-import { RGB, RGBA, HSL, HSLA, HSV, HSVA, WCAG2Parms } from './interfaces';
 import { inputToRGB } from './format-input';
-import { convertToPercentage, bound01, clamp01, boundAlpha } from './util';
-import {
-  rgbToHsv,
-  rgbToHsl,
-  rgbaToHex,
-  rgbToHex,
-  rgbaToArgbHex,
-  convertDecimalToHex,
-} from './conversion';
+import { HSL, HSLA, HSV, HSVA, RGB, RGBA, WCAG2Parms } from './interfaces';
+import { bound01, boundAlpha, clamp01, convertToPercentage } from './util';
 
 export interface TinyColorOptions {
   format: string;
@@ -18,7 +11,7 @@ export interface TinyColorOptions {
 
 export type ColorInput = string | RGB | RGBA | HSL | HSLA | HSV | HSVA | TinyColor;
 
-type ColorFormats =
+export type ColorFormats =
   | 'rgb'
   | 'prgb'
   | 'hex'
@@ -37,19 +30,16 @@ export class TinyColor {
   a!: number;
   originalInput!: ColorInput;
   format!: ColorFormats;
-  private roundA: number;
-  private gradientType: string;
-  private ok: boolean;
+  private roundA!: number;
+  private gradientType?: string;
+  private ok!: boolean;
 
   constructor(color: ColorInput = '', opts: Partial<TinyColorOptions> = {}) {
-    this.originalInput = color;
     // If input is already a tinycolor, return itself
     if (color instanceof TinyColor) {
       return color;
     }
-    if (!color) {
-      color = '';
-    }
+    this.originalInput = color;
     const rgb = inputToRGB(color);
     if (!color) {
       return;
@@ -199,25 +189,25 @@ export class TinyColor {
   /**
    * Returns the hex value of the color.
    */
-  toHex(allow3Char?): string {
+  toHex(allow3Char = false): string {
     return rgbToHex(this.r, this.g, this.b, allow3Char);
   }
   /**
    * Returns the hex value of the color -with a # appened.
    */
-  toHexString(allow3Char?): string {
+  toHexString(allow3Char = false): string {
     return '#' + this.toHex(allow3Char);
   }
   /**
    * Returns the hex 8 value of the color.
    */
-  toHex8(allow4Char?): string {
+  toHex8(allow4Char = false): string {
     return rgbaToHex(this.r, this.g, this.b, this.a, allow4Char);
   }
   /**
-   * Returns the hex 8  value of the color -with a # appened.
+   * Returns the hex 8 value of the color -with a # appened.
    */
-  toHex8String(allow4Char?): string {
+  toHex8String(allow4Char = false): string {
     return '#' + this.toHex8(allow4Char);
   }
   /**
@@ -324,9 +314,7 @@ export class TinyColor {
    *
    * @param format - The format to be used when displaying the string representation.
    */
-  toString(
-    format?: 'rgb' | 'prgb' | 'hex' | 'hex3' | 'hex4' | 'hex6' | 'hex8' | 'name' | 'hsl' | 'hsv',
-  ) {
+  toString(format?: ColorFormats) {
     const formatSet = !!format;
     format = format || this.format;
 
@@ -394,7 +382,7 @@ export class TinyColor {
   greyscale() {
     return greyscale(this);
   }
-  spin(amount) {
+  spin(amount: number) {
     return spin(this, amount);
   }
   analogous() {
@@ -415,12 +403,13 @@ export class TinyColor {
   tetrad() {
     return tetrad(this);
   }
-
-  // If input is an object, force 1 into "1.0" to handle ratios properly
-  // String input requires "1.0" as input, so 1 will be treated as 1
-  fromRatio(color, opts?: any) {
+  /**
+   * If input is an object, force 1 into "1.0" to handle ratios properly
+   * String input requires "1.0" as input, so 1 will be treated as 1
+   */
+  fromRatio(color: any, opts?: any) {
     if (typeof color === 'object') {
-      const newColor = {};
+      const newColor: { [key: string]: string | number } = {};
       for (const key of Object.keys(color)) {
         if (key === 'a') {
           newColor[key] = color[key];
@@ -476,7 +465,7 @@ export class TinyColor {
 
   // `contrast`
   // Analyze the 2 colors and returns the color contrast defined by (WCAG Version 2)
-  readability(color1, color2) {
+  readability(color1: ColorInput, color2: ColorInput) {
     const c1 = new TinyColor(color1);
     const c2 = new TinyColor(color2);
     return (
@@ -532,7 +521,7 @@ export class TinyColor {
    * new TinyColor().mostReadable('#a8015a', ["#faf3f3"], { includeFallbackColors:true, level: 'AAA', size: 'small' }).toHexString(); // "#ffffff"
    * ```
    */
-  mostReadable(baseColor: ColorInput, colorList: string[], args: any = {}) {
+  mostReadable(baseColor: ColorInput, colorList: string[], args: any = {}): TinyColor | null {
     let bestColor: TinyColor | null = null;
     let bestScore = 0;
     let readability;

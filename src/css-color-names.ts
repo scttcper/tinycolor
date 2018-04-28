@@ -1,6 +1,6 @@
 // https://github.com/bahamas10/css-color-names/blob/master/css-color-names.json
 
-export default {
+const names: { [name: string]: string } = {
   aliceblue: '#f0f8ff',
   antiquewhite: '#faebd7',
   aqua: '#00ffff',
@@ -150,3 +150,4 @@ export default {
   yellow: '#ffff00',
   yellowgreen: '#9acd32',
 };
+export default names;

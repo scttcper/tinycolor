@@ -1,4 +1,4 @@
-import { rgbaToArgbHex, rgbaToHex, rgbToHex, rgbToHsl, rgbToHsv } from './conversion';
+import { rgbaToHex, rgbToHex, rgbToHsl, rgbToHsv } from './conversion';
 import names from './css-color-names';
 import { inputToRGB } from './format-input';
 import { HSL, HSLA, HSV, HSVA, RGB, RGBA } from './interfaces';
@@ -38,8 +38,8 @@ export class TinyColor {
   originalInput!: ColorInput;
   /** the color was successfully parsed */
   isValid!: boolean;
-  private roundA!: number;
-  private gradientType?: string;
+  gradientType?: string;
+  roundA!: number;
 
   constructor(color: ColorInput = '', opts: Partial<TinyColorOptions> = {}) {
     // If input is already a tinycolor, return itself
@@ -254,21 +254,6 @@ export class TinyColor {
       }
     }
     return false;
-  }
-  /**
-   * Returns the color represented as a Microsoft filter for use in old versions of IE.
-   */
-  toFilter(secondColor?: ColorInput) {
-    const hex8String = '#' + rgbaToArgbHex(this.r, this.g, this.b, this.a);
-    let secondHex8String = hex8String;
-    const gradientType: string = this.gradientType ? 'GradientType = 1, ' : '';
-
-    if (secondColor) {
-      const s = new TinyColor(secondColor);
-      secondHex8String = '#' + rgbaToArgbHex(s.r, s.g, s.b, s.a);
-    }
-
-    return `progid:DXImageTransform.Microsoft.gradient(${gradientType}startColorstr=${hex8String},endColorstr=${secondHex8String})`;
   }
   /**
    * String representation of the color.

@@ -1,4 +1,12 @@
-import { isReadable, mix, mostReadable, names, readability, TinyColor } from '../src/public_api';
+import {
+  isReadable,
+  mix,
+  mostReadable,
+  names,
+  readability,
+  toMsFilter,
+  TinyColor,
+} from '../src/public_api';
 import conversions from './conversions';
 import { BRIGHTENS, DARKENS, DESATURATIONS, LIGHTENS, SATURATIONS } from './saturations';
 
@@ -39,7 +47,7 @@ describe('TinyColor', () => {
     expect(conversions.length).toBe(16);
     for (const c of conversions) {
       const tiny = new TinyColor(c.hex);
-      expect(tiny.isValid()).toBe(true);
+      expect(tiny.isValid).toBe(true);
       expect(new TinyColor(c.rgb).equals(c.hex)).toBe(true);
       expect(new TinyColor(c.rgb).equals(c.hex8)).toBe(true);
       expect(new TinyColor(c.rgb).equals(c.hsl)).toBe(true);
@@ -180,35 +188,35 @@ describe('TinyColor', () => {
   it('Invalid Parsing', () => {
     let invalidColor = new TinyColor('this is not a color');
     expect(invalidColor.toHexString()).toBe('#000000');
-    expect(invalidColor.isValid()).toBe(false);
+    expect(invalidColor.isValid).toBe(false);
 
     invalidColor = new TinyColor('#red');
     expect(invalidColor.toHexString()).toBe('#000000');
-    expect(invalidColor.isValid()).toBe(false);
+    expect(invalidColor.isValid).toBe(false);
 
     invalidColor = new TinyColor('  #red');
     expect(invalidColor.toHexString()).toBe('#000000');
-    expect(invalidColor.isValid()).toBe(false);
+    expect(invalidColor.isValid).toBe(false);
 
     invalidColor = new TinyColor('##123456');
     expect(invalidColor.toHexString()).toBe('#000000');
-    expect(invalidColor.isValid()).toBe(false);
+    expect(invalidColor.isValid).toBe(false);
 
     invalidColor = new TinyColor('  ##123456');
     expect(invalidColor.toHexString()).toBe('#000000');
-    expect(invalidColor.isValid()).toBe(false);
+    expect(invalidColor.isValid).toBe(false);
 
     invalidColor = new TinyColor({ r: 'invalid', g: 'invalid', b: 'invalid' });
     expect(invalidColor.toHexString()).toBe('#000000');
-    expect(invalidColor.isValid()).toBe(false);
+    expect(invalidColor.isValid).toBe(false);
 
     invalidColor = new TinyColor({ h: 'invalid', s: 'invalid', l: 'invalid' } as any);
     expect(invalidColor.toHexString()).toBe('#000000');
-    expect(invalidColor.isValid()).toBe(false);
+    expect(invalidColor.isValid).toBe(false);
 
     invalidColor = new TinyColor({ h: 'invalid', s: 'invalid', v: 'invalid' } as any);
     expect(invalidColor.toHexString()).toBe('#000000');
-    expect(invalidColor.isValid()).toBe(false);
+    expect(invalidColor.isValid).toBe(false);
   });
   it('Named colors', () => {
     expect(new TinyColor('aliceblue').toHex()).toBe('f0f8ff');
@@ -638,6 +646,7 @@ describe('TinyColor', () => {
     expect(isReadable('#db91b8', '#2e0c3a', { level: 'AA', size: 'large' })).toBe(true);
     expect(isReadable('#db91b8', '#2e0c3a', { level: 'AAA', size: 'small' })).toBe(true);
     expect(isReadable('#db91b8', '#2e0c3a', { level: 'AAA', size: 'large' })).toBe(true);
+    expect(isReadable('#db91b8', '#2e0c3a', { level: 'ZZZ', size: 'large' } as any)).toBe(false);
   });
   it('readability', function() {
     // check return values from readability function. See isReadable above for standards tests.
@@ -705,25 +714,25 @@ describe('TinyColor', () => {
     ).toBe('#ffffff');
   });
 
-  it('Filters', function() {
-    expect(new TinyColor('red').toFilter()).toBe(
+  it('should create microsoft filter', function() {
+    expect(toMsFilter('red')).toBe(
       'progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffff0000,endColorstr=#ffff0000)',
     );
-    expect(new TinyColor('red').toFilter('blue')).toBe(
+    expect(toMsFilter('red', 'blue')).toBe(
       'progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffff0000,endColorstr=#ff0000ff)',
     );
 
-    expect(new TinyColor('transparent').toFilter()).toBe(
+    expect(toMsFilter('transparent')).toBe(
       'progid:DXImageTransform.Microsoft.gradient(startColorstr=#00000000,endColorstr=#00000000)',
     );
-    expect(new TinyColor('transparent').toFilter('red')).toBe(
+    expect(toMsFilter('transparent', 'red')).toBe(
       'progid:DXImageTransform.Microsoft.gradient(startColorstr=#00000000,endColorstr=#ffff0000)',
     );
 
-    expect(new TinyColor('#f0f0f0dd').toFilter()).toBe(
+    expect(toMsFilter('#f0f0f0dd')).toBe(
       'progid:DXImageTransform.Microsoft.gradient(startColorstr=#ddf0f0f0,endColorstr=#ddf0f0f0)',
     );
-    expect(new TinyColor('rgba(0, 0, 255, .5').toFilter()).toBe(
+    expect(toMsFilter('rgba(0, 0, 255, .5')).toBe(
       'progid:DXImageTransform.Microsoft.gradient(startColorstr=#800000ff,endColorstr=#800000ff)',
     );
   });

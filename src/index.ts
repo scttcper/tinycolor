@@ -167,9 +167,7 @@ export class TinyColor {
     const h = Math.round(hsv.h * 360);
     const s = Math.round(hsv.s * 100);
     const v = Math.round(hsv.v * 100);
-    return this.a === 1
-      ? 'hsv(' + h + ', ' + s + '%, ' + v + '%)'
-      : 'hsva(' + h + ', ' + s + '%, ' + v + '%, ' + this.roundA + ')';
+    return this.a === 1 ? `hsv(${h}, ${s}%, ${v}%)` : `hsva(${h}, ${s}%, ${v}%, ${this.roundA})`;
   }
   /**
    * Returns the object as a HSLA object.
@@ -187,9 +185,7 @@ export class TinyColor {
     const h = Math.round(hsl.h * 360);
     const s = Math.round(hsl.s * 100);
     const l = Math.round(hsl.l * 100);
-    return this.a === 1
-      ? 'hsl(' + h + ', ' + s + '%, ' + l + '%)'
-      : 'hsla(' + h + ', ' + s + '%, ' + l + '%, ' + this.roundA + ')';
+    return this.a === 1 ? `hsl(${h}, ${s}%, ${l}%)` : `hsla(${h}, ${s}%, ${l}%, ${this.roundA})`;
   }
   /**
    * Returns the hex value of the color.
@@ -244,35 +240,22 @@ export class TinyColor {
    * Returns the object as a RGBA object.
    */
   toPercentageRgb() {
+    const fmt = (x: number) => Math.round(bound01(x, 255) * 100) + '%';
     return {
-      r: Math.round(bound01(this.r, 255) * 100) + '%',
-      g: Math.round(bound01(this.g, 255) * 100) + '%',
-      b: Math.round(bound01(this.b, 255) * 100) + '%',
+      r: fmt(this.r),
+      g: fmt(this.g),
+      b: fmt(this.b),
       a: this.a,
     };
   }
   /**
-   * Returns the RGBA relative values interpolated into a string with the following format:
-   * "RGBA(xxx, xxx, xxx, xx)".
+   * Returns the RGBA relative values interpolated into a string
    */
   toPercentageRgbString() {
+    const rnd = (x: number) => Math.round(bound01(x, 255) * 100);
     return this.a === 1
-      ? 'rgb(' +
-          Math.round(bound01(this.r, 255) * 100) +
-          '%, ' +
-          Math.round(bound01(this.g, 255) * 100) +
-          '%, ' +
-          Math.round(bound01(this.b, 255) * 100) +
-          '%)'
-      : 'rgba(' +
-          Math.round(bound01(this.r, 255) * 100) +
-          '%, ' +
-          Math.round(bound01(this.g, 255) * 100) +
-          '%, ' +
-          Math.round(bound01(this.b, 255) * 100) +
-          '%, ' +
-          this.roundA +
-          ')';
+      ? `rgb(${rnd(this.r)}%, ${rnd(this.g)}%, ${rnd(this.b)}%)`
+      : `rgba(${rnd(this.r)}%, ${rnd(this.g)}%, ${rnd(this.b)}%, ${this.roundA})`;
   }
   /**
    * The 'real' name of the color -if there is one.
@@ -306,15 +289,7 @@ export class TinyColor {
       secondHex8String = '#' + rgbaToArgbHex(s.r, s.g, s.b, s.a);
     }
 
-    return (
-      'progid:DXImageTransform.Microsoft.gradient(' +
-      gradientType +
-      'startColorstr=' +
-      hex8String +
-      ',endColorstr=' +
-      secondHex8String +
-      ')'
-    );
+    return `progid:DXImageTransform.Microsoft.gradient(${gradientType}startColorstr=${hex8String},endColorstr=${secondHex8String})`;
   }
   /**
    * String representation of the color.
@@ -501,13 +476,11 @@ export class TinyColor {
 
     return new TinyColor(color, opts);
   }
-  // `equals`
-  // Can be called with any tinycolor input
-  equals(color1?: ColorInput, color2?: ColorInput): boolean {
-    if (!color1 || !color2) {
-      return false;
-    }
-    return new TinyColor(color1).toRgbString() === new TinyColor(color2).toRgbString();
+  /**
+   * compare color vs current color
+   */
+  equals(color?: ColorInput): boolean {
+    return this.toRgbString() === new TinyColor(color).toRgbString();
   }
 
   random() {

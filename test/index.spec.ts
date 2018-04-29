@@ -40,16 +40,16 @@ describe('TinyColor', () => {
     for (const c of conversions) {
       const tiny = new TinyColor(c.hex);
       expect(tiny.isValid()).toBe(true);
-      expect(new TinyColor().equals(c.rgb, c.hex)).toBe(true);
-      expect(new TinyColor().equals(c.rgb, c.hex8)).toBe(true);
-      expect(new TinyColor().equals(c.rgb, c.hsl)).toBe(true);
-      expect(new TinyColor().equals(c.rgb, c.hsv)).toBe(true);
-      expect(new TinyColor().equals(c.rgb, c.rgb)).toBe(true);
-      expect(new TinyColor().equals(c.hex, c.hex)).toBe(true);
-      expect(new TinyColor().equals(c.hex, c.hex8)).toBe(true);
-      expect(new TinyColor().equals(c.hex, c.hsl)).toBe(true);
-      expect(new TinyColor().equals(c.hex, c.hsv)).toBe(true);
-      expect(new TinyColor().equals(c.hsl, c.hsv)).toBe(true);
+      expect(new TinyColor(c.rgb).equals(c.hex)).toBe(true);
+      expect(new TinyColor(c.rgb).equals(c.hex8)).toBe(true);
+      expect(new TinyColor(c.rgb).equals(c.hsl)).toBe(true);
+      expect(new TinyColor(c.rgb).equals(c.hsv)).toBe(true);
+      expect(new TinyColor(c.rgb).equals(c.rgb)).toBe(true);
+      expect(new TinyColor(c.hex).equals(c.hex)).toBe(true);
+      expect(new TinyColor(c.hex).equals(c.hex8)).toBe(true);
+      expect(new TinyColor(c.hex).equals(c.hsl)).toBe(true);
+      expect(new TinyColor(c.hex).equals(c.hsv)).toBe(true);
+      expect(new TinyColor(c.hsl).equals(c.hsv)).toBe(true);
     }
   });
   it('should parse ratio', () => {
@@ -90,17 +90,11 @@ describe('TinyColor', () => {
     // object input and compare
     expect(new TinyColor({ r: 255, g: 0, b: 0 }).toRgb()).toEqual({ r: 255, g: 0, b: 0, a: 1 });
 
-    expect(new TinyColor().equals({ r: 200, g: 100, b: 0 }, 'rgb(200, 100, 0)')).toBe(true);
-    expect(new TinyColor().equals({ r: 200, g: 100, b: 0 }, 'rgb 200 100 0')).toBe(true);
-    expect(new TinyColor().equals({ r: 200, g: 100, b: 0 }, 'rgb 200 100 0')).toBe(true);
-    expect(new TinyColor().equals({ r: 200, g: 100, b: 0, a: 0.4 }, 'rgba 200 100 0 .4')).toBe(
-      true,
-    );
-    expect(new TinyColor().equals({ r: 199, g: 100, b: 0 })).toBe(false);
-
-    expect(new TinyColor().equals({ r: 199, g: 100, b: 0 })).toBe(false);
-    expect(new TinyColor().equals({ r: 199, g: 100, b: 0 })).toBe(false);
-    expect(new TinyColor().equals({ r: 199, g: 100, b: 0 })).toBe(false);
+    expect(new TinyColor({ r: 200, g: 100, b: 0 }).equals('rgb(200, 100, 0)')).toBe(true);
+    expect(new TinyColor({ r: 200, g: 100, b: 0 }).equals('rgb 200 100 0')).toBe(true);
+    expect(new TinyColor({ r: 200, g: 100, b: 0 }).equals('rgb 200 100 0')).toBe(true);
+    expect(new TinyColor({ r: 200, g: 100, b: 0, a: 0.4 }).equals('rgba 200 100 0 .4')).toBe(true);
+    expect(new TinyColor({ r: 199, g: 100, b: 0 }).equals()).toBe(false);
 
     expect(new TinyColor().equals(new TinyColor({ r: 200, g: 100, b: 0 }))).toBe(false);
     expect(new TinyColor().equals(new TinyColor({ r: 200, g: 100, b: 0 }))).toBe(false);
@@ -123,22 +117,27 @@ describe('TinyColor', () => {
       a: 1,
     });
 
-    const ty = new TinyColor();
-    expect(ty.equals({ r: '90%', g: '45%', b: '0%' }, 'rgb(90%, 45%, 0%)')).toBe(true);
-    expect(ty.equals({ r: '90%', g: '45%', b: '0%' }, 'rgb 90% 45% 0%')).toBe(true);
-    expect(ty.equals({ r: '90%', g: '45%', b: '0%' }, 'rgb 90% 45% 0%')).toBe(true);
-    expect(ty.equals({ r: '90%', g: '45%', b: '0%', a: 0.4 }, 'rgba 90% 45% 0% .4')).toBe(true);
-    expect(ty.equals({ r: '89%', g: '45%', b: '0%' }, 'rgba 90% 45% 0% 1')).toBe(false);
+    expect(new TinyColor({ r: '90%', g: '45%', b: '0%' }).equals('rgb(90%, 45%, 0%)')).toBe(true);
+    expect(new TinyColor({ r: '90%', g: '45%', b: '0%' }).equals('rgb 90% 45% 0%')).toBe(true);
+    expect(new TinyColor({ r: '90%', g: '45%', b: '0%' }).equals('rgb 90% 45% 0%')).toBe(true);
+    expect(
+      new TinyColor({ r: '90%', g: '45%', b: '0%', a: 0.4 }).equals('rgba 90% 45% 0% .4'),
+    ).toBe(true);
+    expect(new TinyColor({ r: '89%', g: '45%', b: '0%' }).equals('rgba 90% 45% 0% 1')).toBe(false);
 
-    expect(ty.equals({ r: '89%', g: '45%', b: '0%' }, 'rgb(90%, 45%, 0%)')).toBe(false);
-    expect(ty.equals({ r: '89%', g: '45%', b: '0%' }, 'rgb 90% 45% 0%')).toBe(false);
-    expect(ty.equals({ r: '89%', g: '45%', b: '0%' }, 'rgb 90% 45% 0%')).toBe(false);
+    expect(new TinyColor({ r: '89%', g: '45%', b: '0%' }).equals('rgb(90%, 45%, 0%)')).toBe(false);
+    expect(new TinyColor({ r: '89%', g: '45%', b: '0%' }).equals('rgb 90% 45% 0%')).toBe(false);
+    expect(new TinyColor({ r: '89%', g: '45%', b: '0%' }).equals('rgb 90% 45% 0%')).toBe(false);
 
-    expect(ty.equals(new TinyColor({ r: '90%', g: '45%', b: '0%' }), 'rgb 90% 45% 0%')).toBe(true);
-    expect(ty.equals(new TinyColor({ r: '90%', g: '45%', b: '0%' }), 'rgb 90% 45% 0%')).toBe(true);
-    expect(ty.equals(new TinyColor({ r: '90%', g: '45%', b: '0%' }), 'rgb(90%, 45%, 0%)')).toBe(
-      true,
-    );
+    expect(
+      new TinyColor({ r: '90%', g: '45%', b: '0%' }).equals(new TinyColor('rgb 90% 45% 0%')),
+    ).toBe(true);
+    expect(
+      new TinyColor({ r: '90%', g: '45%', b: '0%' }).equals(new TinyColor('rgb 90% 45% 0%')),
+    ).toBe(true);
+    expect(
+      new TinyColor({ r: '90%', g: '45%', b: '0%' }).equals(new TinyColor('rgb(90%, 45%, 0%)')),
+    ).toBe(true);
   });
   it('should parse HSL', () => {
     // to hex
@@ -147,6 +146,9 @@ describe('TinyColor', () => {
     expect(new TinyColor({ h: 251, s: 100, l: 0.38 }).toRgbString()).toBe('rgb(36, 0, 194)');
     // to hsl
     expect(new TinyColor({ h: 251, s: 100, l: 0.38 }).toHslString()).toBe('hsl(251, 100%, 38%)');
+    expect(new TinyColor({ h: 251, s: 100, l: 0.38, a: 0.38 }).toHslString()).toBe(
+      'hsla(251, 100%, 38%, 0.38)',
+    );
     // to hex
     expect(new TinyColor('hsl(251, 100, 38)').toHexString()).toBe('#2400c2');
     // to rgb
@@ -155,6 +157,7 @@ describe('TinyColor', () => {
     expect(new TinyColor('hsl(251, 100%, 38%)').toHslString()).toBe('hsl(251, 100%, 38%)');
     // problematic hsl
     expect(new TinyColor('hsl 100 20 10').toHslString()).toBe('hsl(100, 20%, 10%)');
+    expect(new TinyColor('hsla 100 20 10 0.38').toHslString()).toBe('hsla(100, 20%, 10%, 0.38)');
   });
   it('should parse Hex', () => {
     expect(new TinyColor('rgb 255 0 0').toHexString()).toBe('#ff0000');
@@ -417,6 +420,8 @@ describe('TinyColor', () => {
     redHex.setAlpha(0);
     // Hex should default to rgba if alpha is = 0
     expect(redHex.toString()).toBe('rgba(255, 0, 0, 0)');
+    redHex.setAlpha(0.38);
+    expect(redHex.toString()).toBe('rgba(255, 0, 0, 0.38)');
   });
   it('setting alpha', () => {
     const hexSetter = new TinyColor('rgba(255, 0, 0, 1)');
@@ -590,20 +595,19 @@ describe('TinyColor', () => {
     }
   });
   it('Color equality', () => {
-    const tinycolor = new TinyColor();
-    expect(tinycolor.equals('#ff0000', '#ff0000')).toBe(true);
-    expect(tinycolor.equals('#ff0000', 'rgb(255, 0, 0)')).toBe(true);
-    expect(tinycolor.equals('#ff0000', 'rgba(255, 0, 0, .1)')).toBe(false);
-    expect(tinycolor.equals('#ff000066', 'rgba(255, 0, 0, .4)')).toBe(true);
-    expect(tinycolor.equals('#f009', 'rgba(255, 0, 0, .6)')).toBe(true);
-    expect(tinycolor.equals('#336699CC', '369C')).toBe(true);
-    expect(tinycolor.equals('ff0000', '#ff0000')).toBe(true);
-    expect(tinycolor.equals('#f00', '#ff0000')).toBe(true);
-    expect(tinycolor.equals('#f00', '#ff0000')).toBe(true);
-    expect(tinycolor.equals('f00', '#ff0000')).toBe(true);
+    expect(new TinyColor('#ff0000').equals('#ff0000')).toBe(true);
+    expect(new TinyColor('#ff0000').equals('rgb(255, 0, 0)')).toBe(true);
+    expect(new TinyColor('#ff0000').equals('rgba(255, 0, 0, .1)')).toBe(false);
+    expect(new TinyColor('#ff000066').equals('rgba(255, 0, 0, .4)')).toBe(true);
+    expect(new TinyColor('#f009').equals('rgba(255, 0, 0, .6)')).toBe(true);
+    expect(new TinyColor('#336699CC').equals('369C')).toBe(true);
+    expect(new TinyColor('ff0000').equals('#ff0000')).toBe(true);
+    expect(new TinyColor('#f00').equals('#ff0000')).toBe(true);
+    expect(new TinyColor('#f00').equals('#ff0000')).toBe(true);
+    expect(new TinyColor('f00').equals('#ff0000')).toBe(true);
     expect(new TinyColor('010101').toHexString()).toBe('#010101');
-    expect(tinycolor.equals('#ff0000', '#00ff00')).toBe(false);
-    expect(tinycolor.equals('#ff8000', 'rgb(100%, 50%, 0%)')).toBe(true);
+    expect(new TinyColor('#ff0000').equals('#00ff00')).toBe(false);
+    expect(new TinyColor('#ff8000').equals('rgb(100%, 50%, 0%)')).toBe(true);
   });
   it('isReadable', () => {
     // "#ff0088", "#8822aa" (values used in old WCAG1 tests)

@@ -1,7 +1,6 @@
-import { TinyColor } from '../src/index';
-import * as names from '../src/css-color-names';
+import { isReadable, mix, mostReadable, names, readability, TinyColor } from '../src/public_api';
 import conversions from './conversions';
-import { DESATURATIONS, SATURATIONS, LIGHTENS, BRIGHTENS, DARKENS } from './saturations';
+import { BRIGHTENS, DARKENS, DESATURATIONS, LIGHTENS, SATURATIONS } from './saturations';
 
 describe('TinyColor', () => {
   it('should init', () => {
@@ -607,125 +606,98 @@ describe('TinyColor', () => {
     expect(tinycolor.equals('#ff8000', 'rgb(100%, 50%, 0%)')).toBe(true);
   });
   it('isReadable', () => {
-    const tinycolor = new TinyColor();
     // "#ff0088", "#8822aa" (values used in old WCAG1 tests)
-    expect(tinycolor.isReadable('#000000', '#ffffff', { level: 'AA', size: 'small' })).toBe(true);
-    expect(tinycolor.isReadable('#ff0088', '#5c1a72', {})).toBe(false);
-    expect(tinycolor.isReadable('#ff0088', '#8822aa', { level: 'AA', size: 'small' })).toBe(false);
-    expect(tinycolor.isReadable('#ff0088', '#8822aa', { level: 'AA', size: 'large' })).toBe(false);
-    expect(tinycolor.isReadable('#ff0088', '#8822aa', { level: 'AAA', size: 'small' })).toBe(false);
-    expect(tinycolor.isReadable('#ff0088', '#8822aa', { level: 'AAA', size: 'large' })).toBe(false);
+    expect(isReadable('#000000', '#ffffff', { level: 'AA', size: 'small' })).toBe(true);
+    expect(isReadable('#ff0088', '#5c1a72', {})).toBe(false);
+    expect(isReadable('#ff0088', '#8822aa', { level: 'AA', size: 'small' })).toBe(false);
+    expect(isReadable('#ff0088', '#8822aa', { level: 'AA', size: 'large' })).toBe(false);
+    expect(isReadable('#ff0088', '#8822aa', { level: 'AAA', size: 'small' })).toBe(false);
+    expect(isReadable('#ff0088', '#8822aa', { level: 'AAA', size: 'large' })).toBe(false);
 
     // values derived from and validated using the calculators at http://www.dasplankton.de/ContrastA/
     // and http://webaim.org/resources/contrastchecker/
 
     // "#ff0088", "#5c1a72": contrast ratio 3.04
-    expect(tinycolor.isReadable('#ff0088', '#5c1a72', { level: 'AA', size: 'small' })).toBe(false);
-    expect(tinycolor.isReadable('#ff0088', '#5c1a72', { level: 'AA', size: 'large' })).toBe(true);
-    expect(tinycolor.isReadable('#ff0088', '#5c1a72', { level: 'AAA', size: 'small' })).toBe(false);
-    expect(tinycolor.isReadable('#ff0088', '#5c1a72', { level: 'AAA', size: 'large' })).toBe(false);
+    expect(isReadable('#ff0088', '#5c1a72', { level: 'AA', size: 'small' })).toBe(false);
+    expect(isReadable('#ff0088', '#5c1a72', { level: 'AA', size: 'large' })).toBe(true);
+    expect(isReadable('#ff0088', '#5c1a72', { level: 'AAA', size: 'small' })).toBe(false);
+    expect(isReadable('#ff0088', '#5c1a72', { level: 'AAA', size: 'large' })).toBe(false);
 
     // "#ff0088", "#2e0c3a": contrast ratio 4.56
-    expect(tinycolor.isReadable('#ff0088', '#2e0c3a', { level: 'AA', size: 'small' })).toBe(true);
-    expect(tinycolor.isReadable('#ff0088', '#2e0c3a', { level: 'AA', size: 'large' })).toBe(true);
-    expect(tinycolor.isReadable('#ff0088', '#2e0c3a', { level: 'AAA', size: 'small' })).toBe(false);
-    expect(tinycolor.isReadable('#ff0088', '#2e0c3a', { level: 'AAA', size: 'large' })).toBe(true);
+    expect(isReadable('#ff0088', '#2e0c3a', { level: 'AA', size: 'small' })).toBe(true);
+    expect(isReadable('#ff0088', '#2e0c3a', { level: 'AA', size: 'large' })).toBe(true);
+    expect(isReadable('#ff0088', '#2e0c3a', { level: 'AAA', size: 'small' })).toBe(false);
+    expect(isReadable('#ff0088', '#2e0c3a', { level: 'AAA', size: 'large' })).toBe(true);
 
     // "#db91b8", "#2e0c3a":  contrast ratio 7.12
-    expect(tinycolor.isReadable('#db91b8', '#2e0c3a', { level: 'AA', size: 'small' })).toBe(true);
-    expect(tinycolor.isReadable('#db91b8', '#2e0c3a', { level: 'AA', size: 'large' })).toBe(true);
-    expect(tinycolor.isReadable('#db91b8', '#2e0c3a', { level: 'AAA', size: 'small' })).toBe(true);
-    expect(tinycolor.isReadable('#db91b8', '#2e0c3a', { level: 'AAA', size: 'large' })).toBe(true);
+    expect(isReadable('#db91b8', '#2e0c3a', { level: 'AA', size: 'small' })).toBe(true);
+    expect(isReadable('#db91b8', '#2e0c3a', { level: 'AA', size: 'large' })).toBe(true);
+    expect(isReadable('#db91b8', '#2e0c3a', { level: 'AAA', size: 'small' })).toBe(true);
+    expect(isReadable('#db91b8', '#2e0c3a', { level: 'AAA', size: 'large' })).toBe(true);
   });
   it('readability', function() {
     // check return values from readability function. See isReadable above for standards tests.
     const tinycolor = new TinyColor();
-    expect(tinycolor.readability('#000', '#000')).toBe(1);
-    expect(tinycolor.readability('#000', '#111')).toBe(1.1121078324840545);
-    expect(tinycolor.readability('#000', '#fff')).toBe(21);
+    expect(readability('#000', '#000')).toBe(1);
+    expect(readability('#000', '#111')).toBe(1.1121078324840545);
+    expect(readability('#000', '#fff')).toBe(21);
   });
 
   it('mostReadable', function() {
     const tinycolor = new TinyColor();
-    expect(tinycolor.mostReadable('#000', ['#111', '#222'], { wcag2: {} }).toHexString()).toBe(
-      '#222222',
-    );
-    expect(tinycolor.mostReadable('#f00', ['#d00', '#0d0'], { wcag2: {} }).toHexString()).toBe(
-      '#00dd00',
-    );
-    expect(tinycolor.mostReadable('#fff', ['#fff', '#fff'], { wcag2: {} }).toHexString()).toBe(
-      '#ffffff',
-    );
+    expect(mostReadable('#000', ['#111', '#222']).toHexString()).toBe('#222222');
+    expect(mostReadable('#f00', ['#d00', '#0d0']).toHexString()).toBe('#00dd00');
+    expect(mostReadable('#fff', ['#fff', '#fff']).toHexString()).toBe('#ffffff');
     // includeFallbackColors
     expect(
-      tinycolor
-        .mostReadable('#fff', ['#fff', '#fff'], { includeFallbackColors: true })
-        .toHexString(),
+      mostReadable('#fff', ['#fff', '#fff'], { includeFallbackColors: true }).toHexString(),
     ).toBe('#000000');
     // no readable color in list
     expect(
-      tinycolor
-        .mostReadable('#123', ['#124', '#125'], { includeFallbackColors: false })
-        .toHexString(),
+      mostReadable('#123', ['#124', '#125'], { includeFallbackColors: false }).toHexString(),
     ).toBe('#112255');
     expect(
-      tinycolor
-        .mostReadable('#123', ['#000', '#fff'], { includeFallbackColors: false })
-        .toHexString(),
+      mostReadable('#123', ['#000', '#fff'], { includeFallbackColors: false }).toHexString(),
     ).toBe('#ffffff');
     // no readable color in list
     expect(
-      tinycolor
-        .mostReadable('#123', ['#124', '#125'], { includeFallbackColors: true })
-        .toHexString(),
+      mostReadable('#123', ['#124', '#125'], { includeFallbackColors: true }).toHexString(),
     ).toBe('#ffffff');
 
     expect(
-      tinycolor
-        .mostReadable('#ff0088', ['#000', '#fff'], { includeFallbackColors: false })
-        .toHexString(),
+      mostReadable('#ff0088', ['#000', '#fff'], { includeFallbackColors: false }).toHexString(),
     ).toBe('#000000');
     expect(
-      tinycolor
-        .mostReadable('#ff0088', ['#2e0c3a'], {
-          includeFallbackColors: true,
-          level: 'AAA',
-          size: 'large',
-        })
-        .toHexString(),
+      mostReadable('#ff0088', ['#2e0c3a'], {
+        includeFallbackColors: true,
+        level: 'AAA',
+        size: 'large',
+      }).toHexString(),
     ).toBe('#2e0c3a');
     expect(
-      tinycolor
-        .mostReadable('#ff0088', ['#2e0c3a'], {
-          includeFallbackColors: true,
-          level: 'AAA',
-          size: 'small',
-        })
-        .toHexString(),
+      mostReadable('#ff0088', ['#2e0c3a'], {
+        includeFallbackColors: true,
+        level: 'AAA',
+        size: 'small',
+      }).toHexString(),
     ).toBe('#000000');
 
     expect(
-      tinycolor
-        .mostReadable('#371b2c', ['#000', '#fff'], { includeFallbackColors: false })
-        .toHexString(),
+      mostReadable('#371b2c', ['#000', '#fff'], { includeFallbackColors: false }).toHexString(),
     ).toBe('#ffffff');
     expect(
-      tinycolor
-        .mostReadable('#371b2c', ['#a9acb6'], {
-          includeFallbackColors: true,
-          level: 'AAA',
-          size: 'large',
-        })
-        .toHexString(),
+      mostReadable('#371b2c', ['#a9acb6'], {
+        includeFallbackColors: true,
+        level: 'AAA',
+        size: 'large',
+      }).toHexString(),
     ).toBe('#a9acb6');
     expect(
-      tinycolor
-        .mostReadable('#371b2c', ['#a9acb6'], {
-          includeFallbackColors: true,
-          level: 'AAA',
-          size: 'small',
-        })
-        .toHexString(),
+      mostReadable('#371b2c', ['#a9acb6'], {
+        includeFallbackColors: true,
+        level: 'AAA',
+        size: 'small',
+      }).toHexString(),
     ).toBe('#ffffff');
   });
 
@@ -785,16 +757,15 @@ describe('TinyColor', () => {
     });
   });
   it('Mix', function() {
-    const tinycolor = new TinyColor();
     // amount 0 or none
-    expect(tinycolor.mix('#000', '#fff').toHsl().l).toBe(0.5);
-    expect(tinycolor.mix('#f00', '#000', 0).toHex()).toBe('ff0000');
+    expect(mix('#000', '#fff').toHsl().l).toBe(0.5);
+    expect(mix('#f00', '#000', 0).toHex()).toBe('ff0000');
     // This case checks the the problem with floating point numbers (eg 255/90)
-    expect(tinycolor.mix('#fff', '#000', 90).toHex()).toBe('1a1a1a');
+    expect(mix('#fff', '#000', 90).toHex()).toBe('1a1a1a');
 
     // black and white
     for (let i = 0; i < 100; i++) {
-      expect(Math.round(tinycolor.mix('#000', '#fff', i).toHsl().l * 100) / 100).toBe(i / 100);
+      expect(Math.round(mix('#000', '#fff', i).toHsl().l * 100) / 100).toBe(i / 100);
     }
 
     // with colors
@@ -805,10 +776,10 @@ describe('TinyColor', () => {
         newHex = '0' + newHex;
       }
 
-      expect(tinycolor.mix('#f00', '#000', i).toHex()).toBe(newHex + '0000');
-      expect(tinycolor.mix('#0f0', '#000', i).toHex()).toBe('00' + newHex + '00');
-      expect(tinycolor.mix('#00f', '#000', i).toHex()).toBe('0000' + newHex);
-      expect(tinycolor.mix(new TinyColor('transparent'), '#000', i).toRgb().a).toBe(i / 100);
+      expect(mix('#f00', '#000', i).toHex()).toBe(newHex + '0000');
+      expect(mix('#0f0', '#000', i).toHex()).toBe('00' + newHex + '00');
+      expect(mix('#00f', '#000', i).toHex()).toBe('0000' + newHex);
+      expect(mix(new TinyColor('transparent'), '#000', i).toRgb().a).toBe(i / 100);
     }
   });
   it('complement', function() {

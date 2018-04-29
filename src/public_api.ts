@@ -1,2 +1,4 @@
 export * from './index';
-export * from './css-color-names';
+export { default as names } from './css-color-names';
+export * from './mix';
+export * from './readability';

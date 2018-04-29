@@ -32,11 +32,14 @@ export class TinyColor {
   b!: number;
   /** alpha */
   a!: number;
+  /** the format used to create the tinycolor instance */
   format!: ColorFormats;
+  /** input passed into the constructer used to create the tinycolor instance */
+  originalInput!: ColorInput;
+  /** the color was successfully parsed */
+  isValid!: boolean;
   private roundA!: number;
   private gradientType?: string;
-  private ok!: boolean;
-  private originalInput!: ColorInput;
 
   constructor(color: ColorInput = '', opts: Partial<TinyColorOptions> = {}) {
     // If input is already a tinycolor, return itself
@@ -71,37 +74,13 @@ export class TinyColor {
       this.b = Math.round(this.b);
     }
 
-    this.ok = rgb.ok;
+    this.isValid = rgb.ok;
   }
   isDark() {
     return this.getBrightness() < 128;
   }
   isLight() {
     return !this.isDark();
-  }
-  /**
-   * Return an indication whether the color was successfully parsed.
-   */
-  isValid() {
-    return this.ok;
-  }
-  /**
-   * Returns the input passed into the constructer used to create the tinycolor instance.
-   */
-  getOriginalInput(): ColorInput {
-    return this.originalInput;
-  }
-  /**
-   * Returns the format used to create the tinycolor instance.
-   */
-  getFormat(): string {
-    return this.format;
-  }
-  /**
-   * Returns the alpha value of the color
-   */
-  getAlpha(): number {
-    return this.a;
   }
   /**
    * Returns the perceived brightness of the color, from 0-255.

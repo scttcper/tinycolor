@@ -21,19 +21,19 @@ describe('TinyColor', () => {
     const inputObj = { r: 100, g: 100, b: 100 };
     const r = new TinyColor('red');
     // original lowercase input is returned
-    expect(new TinyColor(colorRgbLow).getOriginalInput()).toBe(colorRgbLow);
+    expect(new TinyColor(colorRgbLow).originalInput).toBe(colorRgbLow);
     //  original uppercase input is returned
-    expect(new TinyColor(colorRgbUp).getOriginalInput()).toBe(colorRgbUp);
+    expect(new TinyColor(colorRgbUp).originalInput).toBe(colorRgbUp);
     // original mixed input is returned
-    expect(new TinyColor(colorRgbMix).getOriginalInput()).toBe(colorRgbMix);
+    expect(new TinyColor(colorRgbMix).originalInput).toBe(colorRgbMix);
     // when given a tinycolor instance, the color string is returned
-    expect(new TinyColor(tinycolorObj).getOriginalInput()).toBe(colorRgbMix);
+    expect(new TinyColor(tinycolorObj).originalInput).toBe(colorRgbMix);
     // when given an object, the object is returned
-    expect(new TinyColor(inputObj).getOriginalInput()).toBe(inputObj);
+    expect(new TinyColor(inputObj).originalInput).toBe(inputObj);
     //  when given an empty string, an empty string is returned
-    expect(new TinyColor('').getOriginalInput()).toBe('');
+    expect(new TinyColor('').originalInput).toBe('');
     //  when given an undefined value, an empty string is returned
-    expect(new TinyColor().getOriginalInput()).toBe('');
+    expect(new TinyColor().originalInput).toBe('');
   });
   it('should have color equality', () => {
     expect(conversions.length).toBe(16);
@@ -390,8 +390,8 @@ describe('TinyColor', () => {
     );
     const redHex = new TinyColor().fromRatio({ r: 255, g: 0, b: 0, a: 0.4 }, { format: 'hex' });
 
-    expect(redNamed.getFormat()).toBe('name');
-    expect(redHex.getFormat()).toBe('hex');
+    expect(redNamed.format).toBe('name');
+    expect(redHex.format).toBe('hex');
 
     // Names should default to rgba if alpha is < 1
     expect(redNamed.toString()).toBe('rgba(255, 0, 0, 0.6)');
@@ -426,33 +426,33 @@ describe('TinyColor', () => {
   it('setting alpha', () => {
     const hexSetter = new TinyColor('rgba(255, 0, 0, 1)');
     // Alpha should start as 1
-    expect(hexSetter.getAlpha()).toBe(1);
+    expect(hexSetter.a).toBe(1);
     const returnedFromSetAlpha = hexSetter.setAlpha(0.9);
     // setAlpha return value should be the color
     expect(returnedFromSetAlpha).toBe(hexSetter);
     // setAlpha should change alpha value
-    expect(hexSetter.getAlpha()).toBe(0.9);
+    expect(hexSetter.a).toBe(0.9);
     hexSetter.setAlpha(0.5);
     // setAlpha should change alpha value
-    expect(hexSetter.getAlpha()).toBe(0.5);
+    expect(hexSetter.a).toBe(0.5);
     hexSetter.setAlpha(0);
     // setAlpha should change alpha value
-    expect(hexSetter.getAlpha()).toBe(0);
+    expect(hexSetter.a).toBe(0);
     hexSetter.setAlpha(-1);
     // setAlpha with value < 0 should be bound to 1
-    expect(hexSetter.getAlpha()).toBe(1);
+    expect(hexSetter.a).toBe(1);
     hexSetter.setAlpha(2);
     // setAlpha with value > 1 should be bound to 1
-    expect(hexSetter.getAlpha()).toBe(1);
+    expect(hexSetter.a).toBe(1);
     hexSetter.setAlpha();
     // setAlpha with invalid value should be bound to 1
-    expect(hexSetter.getAlpha()).toBe(1);
+    expect(hexSetter.a).toBe(1);
     hexSetter.setAlpha(null);
     // setAlpha with invalid value should be bound to 1
-    expect(hexSetter.getAlpha()).toBe(1);
+    expect(hexSetter.a).toBe(1);
     hexSetter.setAlpha('test');
     // setAlpha with invalid value should be bound to 1
-    expect(hexSetter.getAlpha()).toBe(1);
+    expect(hexSetter.a).toBe(1);
   });
   it('Alpha = 0 should act differently on toName()', () => {
     expect(new TinyColor({ r: 255, g: 20, b: 10, a: 0 }).toName()).toBe('transparent');

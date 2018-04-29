@@ -4,8 +4,11 @@ import { ColorInput, TinyColor } from './index';
 // ---------------------
 // <http://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef (WCAG Version 2)
 
-// `contrast`
-/** Analyze the 2 colors and returns the color contrast defined by (WCAG Version 2) */
+/**
+ * AKA `contrast`
+ *
+ * Analyze the 2 colors and returns the color contrast defined by (WCAG Version 2)
+ */
 export function readability(color1: ColorInput, color2: ColorInput) {
   const c1 = new TinyColor(color1);
   const c2 = new TinyColor(color2);

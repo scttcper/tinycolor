@@ -163,19 +163,19 @@ export function stringInputToObject(color: string): any {
   match = matchers.hex4.exec(color);
   if (match) {
     return {
-      r: parseIntFromHex(match[1] + '' + match[1]),
-      g: parseIntFromHex(match[2] + '' + match[2]),
-      b: parseIntFromHex(match[3] + '' + match[3]),
-      a: convertHexToDecimal(match[4] + '' + match[4]),
+      r: parseIntFromHex(match[1] + match[1]),
+      g: parseIntFromHex(match[2] + match[2]),
+      b: parseIntFromHex(match[3] + match[3]),
+      a: convertHexToDecimal(match[4] + match[4]),
       format: named ? 'name' : 'hex8',
     };
   }
   match = matchers.hex3.exec(color);
   if (match) {
     return {
-      r: parseIntFromHex(match[1] + '' + match[1]),
-      g: parseIntFromHex(match[2] + '' + match[2]),
-      b: parseIntFromHex(match[3] + '' + match[3]),
+      r: parseIntFromHex(match[1] + match[1]),
+      g: parseIntFromHex(match[2] + match[2]),
+      b: parseIntFromHex(match[3] + match[3]),
       format: named ? 'name' : 'hex',
     };
   }

@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "description": "Fast, small color manipulation and conversion for JavaScript",
   "author": "Scott Cooper <scttcper@gmail.com>",
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",

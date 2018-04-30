@@ -1,12 +1,12 @@
 {
-  "name": "tinycolor3",
+  "name": "@ctrl/tinycolor",
   "version": "0.0.0",
   "description": "Fast, small color manipulation and conversion for JavaScript",
   "author": "Scott Cooper <scttcper@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/scttcper/tinycolor3.git"
+    "url": "https://github.com/typectrl/tinycolor.git"
   },
   "keywords": [
     "typescript",

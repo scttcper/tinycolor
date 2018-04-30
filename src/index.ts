@@ -359,6 +359,20 @@ export class TinyColor {
     hsl.h = hue < 0 ? 360 + hue : hue;
     return new TinyColor(hsl);
   }
+  mix(color: ColorInput, amount = 50) {
+    const rgb1 = this.toRgb();
+    const rgb2 = new TinyColor(color).toRgb();
+
+    const p = amount / 100;
+    const rgba = {
+      r: (rgb2.r - rgb1.r) * p + rgb1.r,
+      g: (rgb2.g - rgb1.g) * p + rgb1.g,
+      b: (rgb2.b - rgb1.b) * p + rgb1.b,
+      a: (rgb2.a - rgb1.a) * p + rgb1.a,
+    };
+
+    return new TinyColor(rgba);
+  }
   analogous(results = 6, slices = 30) {
     const hsl = this.toHsl();
     const part = 360 / slices;
@@ -422,36 +436,9 @@ export class TinyColor {
     ];
   }
   /**
-   * If input is an object, force 1 into "1.0" to handle ratios properly
-   * String input requires "1.0" as input, so 1 will be treated as 1
-   */
-  fromRatio(color: any, opts?: any) {
-    if (typeof color === 'object') {
-      const newColor: { [key: string]: string | number } = {};
-      for (const key of Object.keys(color)) {
-        if (key === 'a') {
-          newColor[key] = color[key];
-        } else {
-          newColor[key] = convertToPercentage(color[key]);
-        }
-      }
-      color = newColor;
-    }
-
-    return new TinyColor(color, opts);
-  }
-  /**
    * compare color vs current color
    */
   equals(color?: ColorInput): boolean {
     return this.toRgbString() === new TinyColor(color).toRgbString();
-  }
-
-  random() {
-    return this.fromRatio({
-      r: Math.random(),
-      g: Math.random(),
-      b: Math.random(),
-    });
   }
 }

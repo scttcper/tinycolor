@@ -1,6 +1,7 @@
 import {
+  fromRandom,
+  fromRatio,
   isReadable,
-  mix,
   mostReadable,
   names,
   readability,
@@ -17,9 +18,7 @@ describe('TinyColor', () => {
   });
   it('should parse options', () => {
     expect(new TinyColor('red', { format: 'hex' }).toString()).toEqual('#ff0000');
-    expect(new TinyColor().fromRatio({ r: 1, g: 0, b: 0 }, { format: 'hex' }).toString()).toEqual(
-      '#ff0000',
-    );
+    expect(fromRatio({ r: 1, g: 0, b: 0 }, { format: 'hex' }).toString()).toEqual('#ff0000');
   });
   it('should get original input', () => {
     const colorRgbUp = 'RGB(39, 39, 39)';
@@ -63,28 +62,23 @@ describe('TinyColor', () => {
   it('should parse ratio', () => {
     // with ratio
     // white
-    expect(new TinyColor().fromRatio({ r: 1, g: 1, b: 1 }).toHexString()).toBe('#ffffff');
+    expect(fromRatio({ r: 1, g: 1, b: 1 }).toHexString()).toBe('#ffffff');
     // alpha works when ratio is parsed
-    expect(new TinyColor().fromRatio({ r: 1, g: 0, b: 0, a: 0.5 }).toRgbString()).toBe(
-      'rgba(255, 0, 0, 0.5)',
-    );
+    expect(fromRatio({ r: 1, g: 0, b: 0, a: 0.5 }).toRgbString()).toBe('rgba(255, 0, 0, 0.5)');
     // alpha = 1 works when ratio is parsed
-    expect(new TinyColor().fromRatio({ r: 1, g: 0, b: 0, a: 1 }).toRgbString()).toBe(
-      'rgb(255, 0, 0)',
-    );
+    expect(fromRatio({ r: 1, g: 0, b: 0, a: 1 }).toRgbString()).toBe('rgb(255, 0, 0)');
     // alpha > 1 works when ratio is parsed
-    expect(new TinyColor().fromRatio({ r: 1, g: 0, b: 0, a: 10 }).toRgbString()).toBe(
-      'rgb(255, 0, 0)',
-    );
+    expect(fromRatio({ r: 1, g: 0, b: 0, a: 10 }).toRgbString()).toBe('rgb(255, 0, 0)');
     // alpha < 1 works when ratio is parsed
-    expect(new TinyColor().fromRatio({ r: 1, g: 0, b: 0, a: -1 }).toRgbString()).toBe(
-      'rgb(255, 0, 0)',
-    );
+    expect(fromRatio({ r: 1, g: 0, b: 0, a: -1 }).toRgbString()).toBe('rgb(255, 0, 0)');
 
     // without ratio
     expect(new TinyColor({ r: 1, g: 1, b: 1 }).toHexString()).toBe('#010101');
     expect(new TinyColor({ r: 0.1, g: 0.1, b: 0.1 }).toHexString()).toBe('#000000');
     expect(new TinyColor('rgb .1 .1 .1').toHexString()).toBe('#000000');
+  });
+  it('should return random color', () => {
+    expect(fromRandom().isValid).toBeTruthy();
   });
   it('should parse rgb text', () => {
     // spaced input
@@ -390,13 +384,9 @@ describe('TinyColor', () => {
     // Greater than 1 in string parsing
     expect(new TinyColor('rgba 255 0 0 100').toRgbString()).toBe('rgb(255, 0, 0)');
   });
-  it('toString() with alpha set', () => {
-    const redNamed = new TinyColor().fromRatio({ r: 255, g: 0, b: 0, a: 0.6 }, { format: 'name' });
-    const transparentNamed = new TinyColor().fromRatio(
-      { r: 255, g: 0, b: 0, a: 0 },
-      { format: 'name' },
-    );
-    const redHex = new TinyColor().fromRatio({ r: 255, g: 0, b: 0, a: 0.4 }, { format: 'hex' });
+  it('should translate toString with alpha set', () => {
+    const redNamed = fromRatio({ r: 255, g: 0, b: 0, a: 0.6 }, { format: 'name' });
+    const redHex = fromRatio({ r: 255, g: 0, b: 0, a: 0.4 }, { format: 'hex' });
 
     expect(redNamed.format).toBe('name');
     expect(redHex.format).toBe('hex');
@@ -423,6 +413,7 @@ describe('TinyColor', () => {
     // Hex should default to rgba if alpha is < 1
     expect(redHex.toString()).toBe('rgba(255, 0, 0, 0.4)');
     // Named color should equal transparent if alpha == 0
+    const transparentNamed = fromRatio({ r: 255, g: 0, b: 0, a: 0 }, { format: 'name' });
     expect(transparentNamed.toString()).toBe('transparent');
 
     redHex.setAlpha(0);
@@ -771,14 +762,14 @@ describe('TinyColor', () => {
   });
   it('Mix', function() {
     // amount 0 or none
-    expect(mix('#000', '#fff').toHsl().l).toBe(0.5);
-    expect(mix('#f00', '#000', 0).toHex()).toBe('ff0000');
+    expect(new TinyColor('#000').mix('#fff').toHsl().l).toBe(0.5);
+    expect(new TinyColor('#f00').mix('#000', 0).toHex()).toBe('ff0000');
     // This case checks the the problem with floating point numbers (eg 255/90)
-    expect(mix('#fff', '#000', 90).toHex()).toBe('1a1a1a');
+    expect(new TinyColor('#fff').mix('#000', 90).toHex()).toBe('1a1a1a');
 
     // black and white
     for (let i = 0; i < 100; i++) {
-      expect(Math.round(mix('#000', '#fff', i).toHsl().l * 100) / 100).toBe(i / 100);
+      expect(Math.round(new TinyColor('#000').mix('#fff', i).toHsl().l * 100) / 100).toBe(i / 100);
     }
 
     // with colors
@@ -789,10 +780,10 @@ describe('TinyColor', () => {
         newHex = '0' + newHex;
       }
 
-      expect(mix('#f00', '#000', i).toHex()).toBe(newHex + '0000');
-      expect(mix('#0f0', '#000', i).toHex()).toBe('00' + newHex + '00');
-      expect(mix('#00f', '#000', i).toHex()).toBe('0000' + newHex);
-      expect(mix(new TinyColor('transparent'), '#000', i).toRgb().a).toBe(i / 100);
+      expect(new TinyColor('#f00').mix('#000', i).toHex()).toBe(newHex + '0000');
+      expect(new TinyColor('#0f0').mix('#000', i).toHex()).toBe(`00${newHex}00`);
+      expect(new TinyColor('#00f').mix('#000', i).toHex()).toBe('0000' + newHex);
+      expect(new TinyColor('transparent').mix('#000', i).toRgb().a).toBe(i / 100);
     }
   });
   it('complement', function() {

@@ -55,9 +55,9 @@ export function boundAlpha(a?: number | string) {
 }
 
 /** Replace a decimal with it's percentage value */
-export function convertToPercentage(n: number) {
+export function convertToPercentage(n: number | string) {
   if (n <= 1) {
-    return n * 100 + '%';
+    return +n * 100 + '%';
   }
   return n;
 }

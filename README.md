@@ -6,7 +6,8 @@ A fork of [tinycolor2](https://github.com/bgrins/TinyColor) by [Brian Grinstead]
 ### Changes from tinycolor2
 - written in TypeScript / es2015 and requires node >= 8
 - several functions moved out of the tinycolor class and are no longer `tinycolor.<function>`
-  - readability, fromRatio, fromRandom moved out
+  - readability, fromRatio moved out
+  - random renamed to fromRandom
   - toFilter has been moved out and renamed to `toMsFilter`
 - `mix`, `equals` use the current TinyColor object as the first parameter
   - `new TinyColor('#000').equals('#000') // true`

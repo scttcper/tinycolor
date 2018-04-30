@@ -9,9 +9,9 @@ const moduleInputOptions: RollupFileOptions = {
   plugins: [sourceMaps()],
 };
 const moduleOutputOptions: OutputOptions = {
-  file: './dist/package-dist/bundles/tinycolor-3.es2015.js',
+  file: './dist/package-dist/bundles/tinycolor.es2015.js',
   format: 'es',
-  name: 'tinycolor3',
+  name: 'tinycolor',
   sourcemap: true,
 };
 

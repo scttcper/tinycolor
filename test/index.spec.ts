@@ -156,6 +156,9 @@ describe('TinyColor', () => {
     // problematic hsl
     expect(new TinyColor('hsl 100 20 10').toHslString()).toBe('hsl(100, 20%, 10%)');
     expect(new TinyColor('hsla 100 20 10 0.38').toHslString()).toBe('hsla(100, 20%, 10%, 0.38)');
+    // wrap out of bounds hue
+    expect(new TinyColor('hsl -700 20 10').toHslString()).toBe('hsl(20, 20%, 10%)');
+    expect(new TinyColor('hsl -490 100% 50%').toHslString()).toBe('hsl(230, 100%, 50%)');
   });
   it('should parse Hex', () => {
     expect(new TinyColor('rgb 255 0 0').toHexString()).toBe('#ff0000');

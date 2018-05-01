@@ -7,7 +7,7 @@ export function bound01(n: any, max: number) {
   }
 
   const processPercent = isPercentage(n);
-  n = Math.min(max, Math.max(0, parseFloat(n)));
+  n = max === 360 ? n : Math.min(max, Math.max(0, parseFloat(n)));
 
   // Automatically convert percentage into number
   if (processPercent) {
@@ -20,7 +20,17 @@ export function bound01(n: any, max: number) {
   }
 
   // Convert into [0, 1] range if it isn't already
-  return (n % max) / parseFloat(String(max));
+  if (max === 360) {
+    // If n is a hue given in degrees,
+    // wrap around out-of-range values into [0, 360] range
+    // then convert into [0, 1].
+    n = (n < 0 ? n % max + max : n % max) / parseFloat(String(max));
+  } else {
+    // If n not a hue given in degrees
+    // Convert into [0, 1] range if it isn't already.
+    n = (n % max) / parseFloat(String(max));
+  }
+  return n;
 }
 
 /** Force a number between 0 and 1 */

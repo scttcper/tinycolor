@@ -195,8 +195,8 @@ describe('TinyColor', () => {
       'hsva(251, 89%, 92%, 0.5)',
     );
   });
-  it('Invalid Parsing', () => {
-    let invalidColor = new TinyColor('this is not a color');
+  it('should parse invalid input', () => {
+    let invalidColor = new TinyColor('not a color');
     expect(invalidColor.toHexString()).toBe('#000000');
     expect(invalidColor.isValid).toBe(false);
 

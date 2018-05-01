@@ -15,9 +15,9 @@ A fork of [tinycolor2](https://github.com/bgrins/TinyColor) by [Brian Grinstead]
   * `toFilter` has been moved out and renamed to `toMsFilter`
 * `mix`, `equals` use the current TinyColor object as the first parameter
   * `new TinyColor('#000').equals('#000') // true`
-* added polyad colors [126](https://github.com/bgrins/TinyColor/pull/126)
-* color wheel values (360) are allowed to over or under-spin and still return valid colors [108](https://github.com/bgrins/TinyColor/pull/108)
-* added `tint()` and `shade()` [159](https://github.com/bgrins/TinyColor/pull/159)
+* added polyad colors tinycolor PR [126](https://github.com/bgrins/TinyColor/pull/126)
+* color wheel values (360) are allowed to over or under-spin and still return valid colors tinycolor PR [108](https://github.com/bgrins/TinyColor/pull/108)
+* added `tint()` and `shade()` tinycolor PR [159](https://github.com/bgrins/TinyColor/pull/159)
 * `isValid` is now a property instead of a function
 
 ## Install

@@ -1,5 +1,6 @@
 /**
  * Take input from [0, n] and return it as [0, 1]
+ * @hidden
  */
 export function bound01(n: any, max: number) {
   if (isOnePointZero(n)) {
@@ -41,18 +42,23 @@ export function clamp01(val: number) {
 /**
  * Need to handle 1.0 as 100%, since once it is a number, there is no difference between it and 1
  * <http://stackoverflow.com/questions/7422072/javascript-how-to-detect-number-as-a-decimal-including-1-0>
+ * @hidden
  */
 export function isOnePointZero(n: string | number) {
   return typeof n === 'string' && n.indexOf('.') !== -1 && parseFloat(n) === 1;
 }
 
-/** Check to see if string passed in is a percentage */
+/**
+ * Check to see if string passed in is a percentage
+ * @hidden
+ */
 export function isPercentage(n: string | number) {
   return typeof n === 'string' && n.indexOf('%') !== -1;
 }
 
 /**
  * Return a valid alpha value [0,1] with all invalid values being set to 1
+ * @hidden
  */
 export function boundAlpha(a?: number | string) {
   a = parseFloat(a as string);
@@ -64,7 +70,10 @@ export function boundAlpha(a?: number | string) {
   return a;
 }
 
-/** Replace a decimal with it's percentage value */
+/**
+ * Replace a decimal with it's percentage value
+ * @hidden
+ */
 export function convertToPercentage(n: number | string) {
   if (n <= 1) {
     return +n * 100 + '%';
@@ -72,7 +81,10 @@ export function convertToPercentage(n: number | string) {
   return n;
 }
 
-/** Force a hex value to have 2 characters */
+/**
+ * Force a hex value to have 2 characters
+ * @hidden
+ */
 export function pad2(c: string) {
   return c.length === 1 ? '0' + c : '' + c;
 }

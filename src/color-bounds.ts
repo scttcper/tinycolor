@@ -1,9 +1,15 @@
+/**
+ * @hidden
+ */
 export interface ColorBound {
   name: string;
   hueRange: [number, number] | null;
   lowerBounds: [number, number][];
 }
 
+/**
+ * @hidden
+ */
 export const bounds: ColorBound[] = [
   {
     name: 'monochrome',

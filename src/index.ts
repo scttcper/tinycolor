@@ -39,6 +39,7 @@ export class TinyColor {
   /** the color was successfully parsed */
   isValid!: boolean;
   gradientType?: string;
+  /** rounded alpha */
   roundA!: number;
 
   constructor(color: ColorInput = '', opts: Partial<TinyColorOptions> = {}) {

@@ -34,7 +34,10 @@ export function bound01(n: any, max: number) {
   return n;
 }
 
-/** Force a number between 0 and 1 */
+/**
+ * Force a number between 0 and 1
+ * @hidden
+ */
 export function clamp01(val: number) {
   return Math.min(1, Math.max(0, val));
 }

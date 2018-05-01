@@ -1,4 +1,3 @@
-import { parseIntFromHex } from './format-input';
 import { bound01, pad2 } from './util';
 
 // `rgbToHsl`, `rgbToHsv`, `hslToRgb`, `hsvToRgb` modified from:
@@ -236,4 +235,9 @@ export function convertDecimalToHex(d: string | number) {
 /** Converts a hex value to a decimal */
 export function convertHexToDecimal(h: string) {
   return parseIntFromHex(h) / 255;
+}
+
+/** Parse a base-16 hex value into a base-10 integer */
+export function parseIntFromHex(val: string) {
+  return parseInt(val, 16);
 }

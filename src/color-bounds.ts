@@ -1,6 +1,6 @@
 export interface ColorBound {
   name: string;
-  hueRange?: [number, number];
+  hueRange: [number, number] | null;
   lowerBounds: [number, number][];
 }
 

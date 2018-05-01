@@ -2,9 +2,8 @@
 // https://github.com/davidmerfield/randomColor/
 
 import { bounds, ColorBound } from './color-bounds';
-import { hsvToRgb } from './conversion';
 import { TinyColor } from './index';
-import { HSV, HSVA } from './interfaces';
+import { HSVA } from './interfaces';
 
 export interface RandomOptions {
   seed?: number;
@@ -26,7 +25,7 @@ export interface RandomOptions {
 
 export function fromRandom(options: RandomOptions = {}): TinyColor[] {
   // Check if we need to generate multiple colors
-  if (options.count !== null && options.count !== undefined) {
+  if (options.count !== undefined) {
     const totalColors = options.count;
     const colors: TinyColor[] = [];
 
@@ -191,7 +190,7 @@ function getColorInfo(hue: number) {
 }
 
 function randomWithin(range: [number, number], seed?: number) {
-  if (seed === null || seed === undefined) {
+  if (seed === undefined) {
     return Math.floor(range[0] + Math.random() * (range[1] + 1 - range[0]));
   } else {
     // Seeded random algorithm from http://indiegamr.com/generate-repeatable-random-numbers-in-js/

@@ -2,7 +2,7 @@ import { rgbaToHex, rgbToHex, rgbToHsl, rgbToHsv } from './conversion';
 import names from './css-color-names';
 import { inputToRGB } from './format-input';
 import { HSL, HSLA, HSV, HSVA, RGB, RGBA } from './interfaces';
-import { bound01, boundAlpha, clamp01, convertToPercentage } from './util';
+import { bound01, boundAlpha, clamp01 } from './util';
 
 export interface TinyColorOptions {
   format: string;

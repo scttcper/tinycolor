@@ -25,9 +25,12 @@ describe('TinyColor', () => {
     expect(r).toBeTruthy();
   });
   it('should clone', () => {
-    const r = new TinyColor('red').clone();
-    expect(r.isValid).toBeTruthy();
-    expect(r.toName()).toBe('red');
+    const color1 = new TinyColor('red');
+    const color2 = new TinyColor('red').clone();
+    color2.setAlpha(0.5);
+    expect(color2.isValid).toBeTruthy();
+    expect(color2.toString()).toBe('rgba(255, 0, 0, 0.5)');
+    expect(color1.toString()).toBe('red');
   });
   it('should parse options', () => {
     expect(new TinyColor('red', { format: 'hex' }).toString()).toEqual('#ff0000');

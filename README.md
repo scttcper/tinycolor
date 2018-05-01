@@ -5,9 +5,10 @@ A fork of [tinycolor2](https://github.com/bgrins/TinyColor) by [Brian Grinstead]
 
 ### Changes from tinycolor2
 - written in TypeScript / es2015 and requires node >= 8
+- new `fromRandom` which is an implementation of [randomColor](https://github.com/davidmerfield/randomColor/) by David Merfield that returns a TinyColor object
 - several functions moved out of the tinycolor class and are no longer `tinycolor.<function>`
-  - readability, fromRatio moved out
-  - random renamed to fromRandom
-  - toFilter has been moved out and renamed to `toMsFilter`
+  - `readability`, `fromRatio` moved out
+  - `random` moved out and renamed to `fromLegacyRandom`
+  - `toFilter` has been moved out and renamed to `toMsFilter`
 - `mix`, `equals` use the current TinyColor object as the first parameter
   - `new TinyColor('#000').equals('#000') // true`

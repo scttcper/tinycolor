@@ -220,7 +220,7 @@ export function fromRatio(ratio: RatioInput, opts?: any) {
   return new TinyColor(newColor as RGBA, opts);
 }
 
-export function fromRandom() {
+export function fromLegacyRandom() {
   return new TinyColor({
     r: Math.random(),
     g: Math.random(),

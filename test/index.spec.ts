@@ -1,5 +1,4 @@
 import {
-  fromRandom,
   fromRatio,
   isReadable,
   mostReadable,
@@ -76,9 +75,6 @@ describe('TinyColor', () => {
     expect(new TinyColor({ r: 1, g: 1, b: 1 }).toHexString()).toBe('#010101');
     expect(new TinyColor({ r: 0.1, g: 0.1, b: 0.1 }).toHexString()).toBe('#000000');
     expect(new TinyColor('rgb .1 .1 .1').toHexString()).toBe('#000000');
-  });
-  it('should return random color', () => {
-    expect(fromRandom().isValid).toBeTruthy();
   });
   it('should parse rgb text', () => {
     // spaced input

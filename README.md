@@ -12,3 +12,4 @@ A fork of [tinycolor2](https://github.com/bgrins/TinyColor) by [Brian Grinstead]
   - `toFilter` has been moved out and renamed to `toMsFilter`
 - `mix`, `equals` use the current TinyColor object as the first parameter
   - `new TinyColor('#000').equals('#000') // true`
+- added polyad colors [126](https://github.com/bgrins/TinyColor/pull/126)

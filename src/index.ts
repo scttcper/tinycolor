@@ -417,23 +417,25 @@ export class TinyColor {
     ];
   }
   triad() {
-    const hsl = this.toHsl();
-    const h = hsl.h;
-    return [
-      this,
-      new TinyColor({ h: (h + 120) % 360, s: hsl.s, l: hsl.l }),
-      new TinyColor({ h: (h + 240) % 360, s: hsl.s, l: hsl.l }),
-    ];
+    return this.polyad(3);
   }
   tetrad() {
+    return this.polyad(4);
+  }
+  /**
+   * Get polyad colors, like (for 1, 2, 3, 4, 5, 6, 7, 8, etc...)
+   * monad, dyad, triad, tetrad, pentad, hexad, heptad, octad, etc...
+   */
+  polyad(n: number) {
     const hsl = this.toHsl();
     const h = hsl.h;
-    return [
-      this,
-      new TinyColor({ h: (h + 90) % 360, s: hsl.s, l: hsl.l }),
-      new TinyColor({ h: (h + 180) % 360, s: hsl.s, l: hsl.l }),
-      new TinyColor({ h: (h + 270) % 360, s: hsl.s, l: hsl.l }),
-    ];
+
+    const result: TinyColor[] = [this];
+    const increment = 360 / n;
+    for (let i = 1; i < n; i++) {
+      result.push(new TinyColor({ h: (h + i * increment) % 360, s: hsl.s, l: hsl.l }));
+    }
+    return result;
   }
   /**
    * compare color vs current color

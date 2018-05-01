@@ -21,6 +21,7 @@
   ],
   "main": "./public_api.js",
   "module": "./bundles/tinycolor.es2015.js",
+  "sideEffects": false,
   "typings": "./public_api.d.ts",
   "scripts": {
     "lint": "tslint -p tsconfig.json -t stylish 'src/**/*.ts' 'test/**/*.ts'",

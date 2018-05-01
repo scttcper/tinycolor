@@ -8,7 +8,7 @@ A fork of [tinycolor2](https://github.com/bgrins/TinyColor) by [Brian Grinstead]
 
 * reformatted into TypeScript / es2015 and requires node >= 8
   * tree shakeable "module" export and no package `sideEffects`
-* `tinycolor` is now a class called `TinyColor`
+* `tinycolor` is now exported as a class called `TinyColor`
 * new `fromRandom`, an implementation of [randomColor](https://github.com/davidmerfield/fromRandom/) by David Merfield that returns a TinyColor object
 * several functions moved out of the tinycolor class and are no longer `TinyColor.<function>`
   * `readability`, `fromRatio` moved out

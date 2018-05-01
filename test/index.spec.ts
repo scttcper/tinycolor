@@ -8,7 +8,15 @@ import {
   TinyColor,
 } from '../src/public_api';
 import conversions from './conversions';
-import { BRIGHTENS, DARKENS, DESATURATIONS, LIGHTENS, SATURATIONS } from './saturations';
+import {
+  BRIGHTENS,
+  DARKENS,
+  DESATURATIONS,
+  LIGHTENS,
+  SATURATIONS,
+  SHADES,
+  TINTS,
+} from './modifications';
 
 describe('TinyColor', () => {
   it('should init', () => {
@@ -741,6 +749,12 @@ describe('TinyColor', () => {
     }
     for (let i = 0; i <= 100; i++) {
       expect(new TinyColor('red').darken(i).toHex()).toBe(DARKENS[i]);
+    }
+    for (let i = 0; i <= 100; i++) {
+      expect(new TinyColor('red').tint(i).toHex()).toBe(TINTS[i]);
+    }
+    for (let i = 0; i <= 100; i++) {
+      expect(new TinyColor('red').shade(i).toHex()).toBe(SHADES[i]);
     }
     expect(new TinyColor('red').greyscale().toHex()).toBe('808080');
   });

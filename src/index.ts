@@ -334,6 +334,27 @@ export class TinyColor {
     hsl.l = clamp01(hsl.l);
     return new TinyColor(hsl);
   }
+  /**
+   * Mix the color with pure white, from 0 to 100.
+   * Providing 0 will do nothing, providing 100 will always return white.
+   * @param amount - valid between 1-100
+   */
+  tint(amount = 10) {
+    return this.mix('white', amount);
+  }
+  /**
+   * Mix the color with pure black, from 0 to 100.
+   * Providing 0 will do nothing, providing 100 will always return black.
+   * @param amount - valid between 1-100
+   */
+  shade(amount = 10) {
+    return this.mix('black', amount);
+  }
+  /**
+   * Desaturate the color a given amount, from 0 to 100.
+   * Providing 100 will is the same as calling greyscale
+   * @param amount - valid between 1-100
+   */
   desaturate(amount = 10) {
     const hsl = this.toHsl();
     hsl.s -= amount / 100;

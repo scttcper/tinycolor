@@ -14,4 +14,4 @@ A fork of [tinycolor2](https://github.com/bgrins/TinyColor) by [Brian Grinstead]
   - `new TinyColor('#000').equals('#000') // true`
 - added polyad colors [126](https://github.com/bgrins/TinyColor/pull/126)
 - color wheel values (360) are allowed to over or under-spin and still return valid colors [108](https://github.com/bgrins/TinyColor/pull/108)
-- 
+- add `tint()` and `shade()` [159](https://github.com/bgrins/TinyColor/pull/159)

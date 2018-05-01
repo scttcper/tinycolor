@@ -312,8 +312,7 @@ export class TinyColor {
   }
   /**
    * Lighten the color a given amount. Providing 100 will always return white.
-   *
-   * @param amount - The amount to lighten by. The valid range is 0 to 100.
+   * @param amount - valid between 1-100
    */
   lighten(amount = 10) {
     const hsl = this.toHsl();
@@ -321,6 +320,10 @@ export class TinyColor {
     hsl.l = clamp01(hsl.l);
     return new TinyColor(hsl);
   }
+  /**
+   * Brighten the color a given amount, from 0 to 100.
+   * @param amount - valid between 1-100
+   */
   brighten(amount = 10) {
     const rgb = this.toRgb();
     rgb.r = Math.max(0, Math.min(255, rgb.r - Math.round(255 * -(amount / 100))));
@@ -328,6 +331,11 @@ export class TinyColor {
     rgb.b = Math.max(0, Math.min(255, rgb.b - Math.round(255 * -(amount / 100))));
     return new TinyColor(rgb);
   }
+  /**
+   * Darken the color a given amount, from 0 to 100.
+   * Providing 100 will always return black.
+   * @param amount - valid between 1-100
+   */
   darken(amount = 10) {
     const hsl = this.toHsl();
     hsl.l -= amount / 100;
@@ -361,12 +369,20 @@ export class TinyColor {
     hsl.s = clamp01(hsl.s);
     return new TinyColor(hsl);
   }
+  /**
+   * Saturate the color a given amount, from 0 to 100.
+   * @param amount - valid between 1-100
+   */
   saturate(amount = 10) {
     const hsl = this.toHsl();
     hsl.s += amount / 100;
     hsl.s = clamp01(hsl.s);
     return new TinyColor(hsl);
   }
+  /**
+   * Completely desaturates a color into greyscale.
+   * Same as calling `desaturate(100)`
+   */
   greyscale() {
     return this.desaturate(100);
   }

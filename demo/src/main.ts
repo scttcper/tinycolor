@@ -14,7 +14,6 @@ const filtersEl = document.querySelector<HTMLElement>('#filter-output');
 const mostReadableEl = document.querySelector<HTMLElement>('#mostReadable');
 
 function colorChange(color) {
-  console.log(color);
   const tiny = new TinyColor(color);
 
   const output = [

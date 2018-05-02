@@ -20,7 +20,7 @@
   },
   "files": ["./src/public_api"],
   "typedocOptions": {
-    "out": "docs/api",
+    "out": "docs/docs",
     "mode": "file",
     "target": "ES6",
     "module": "commonjs",

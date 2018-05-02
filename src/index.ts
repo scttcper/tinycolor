@@ -49,9 +49,6 @@ export class TinyColor {
     }
     this.originalInput = color;
     const rgb = inputToRGB(color);
-    if (!color) {
-      return;
-    }
     this.originalInput = color;
     this.r = rgb.r;
     this.g = rgb.g;

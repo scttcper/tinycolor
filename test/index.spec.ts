@@ -227,6 +227,10 @@ describe('TinyColor', () => {
     invalidColor = new TinyColor({ h: 'invalid', s: 'invalid', v: 'invalid' } as any);
     expect(invalidColor.toHexString()).toBe('#000000');
     expect(invalidColor.isValid).toBe(false);
+
+    invalidColor = new TinyColor();
+    expect(invalidColor.toHexString()).toBe('#000000');
+    expect(invalidColor.isValid).toBe(false);
   });
   it('Named colors', () => {
     expect(new TinyColor('aliceblue').toHex()).toBe('f0f8ff');

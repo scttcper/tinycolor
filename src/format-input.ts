@@ -105,6 +105,9 @@ const matchers = {
  */
 export function stringInputToObject(color: string): any {
   color = color.trim().toLowerCase();
+  if (color.length === 0) {
+    return false;
+  }
   let named = false;
   if (names[color]) {
     color = names[color];

@@ -18,7 +18,7 @@ A fork of [tinycolor2](https://github.com/bgrins/TinyColor) by [Brian Grinstead]
 * added polyad colors tinycolor PR [126](https://github.com/bgrins/TinyColor/pull/126)
 * color wheel values (360) are allowed to over or under-spin and still return valid colors tinycolor PR [108](https://github.com/bgrins/TinyColor/pull/108)
 * added `tint()` and `shade()` tinycolor PR [159](https://github.com/bgrins/TinyColor/pull/159)
-* `isValid` is now a property instead of a function
+* `isValid`, `format` are now propertys instead of a function
 
 ## Install
 
@@ -118,28 +118,17 @@ If you are calling this from code, you may want to use object input. Here are so
 { h: 0, s: 100, v: 100 }
 ```
 
-## Methods
+## Properties
 
-### getFormat
+### format
 
 Returns the format used to create the tinycolor instance
 
 ```ts
 const color = new TinyColor('red');
-color.getFormat(); // "name"
+color.format; // "name"
 color = new TinyColor({ r: 255, g: 255, b: 255 });
-color.getFormat(); // "rgb"
-```
-
-### getOriginalInput
-
-Returns the input passed into the constructer used to create the tinycolor instance
-
-```ts
-const color = new TinyColor('red');
-color.getOriginalInput(); // "red"
-color = new TinyColor({ r: 255, g: 255, b: 255 });
-color.getOriginalInput(); // "{r: 255, g: 255, b: 255}"
+color.format; // "rgb"
 ```
 
 ### isValid
@@ -154,6 +143,19 @@ color1.toHexString(); // "#ff0000"
 const color2 = new TinyColor('not a color');
 color2.isValid; // false
 color2.toString(); // "#000000"
+```
+
+## Methods
+
+### getOriginalInput
+
+Returns the input passed into the constructer used to create the tinycolor instance
+
+```ts
+const color = new TinyColor('red');
+color.getOriginalInput(); // "red"
+color = new TinyColor({ r: 255, g: 255, b: 255 });
+color.getOriginalInput(); // "{r: 255, g: 255, b: 255}"
 ```
 
 ### getBrightness

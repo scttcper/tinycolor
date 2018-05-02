@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": "./",
     "declaration": true,
     "lib": ["es2017"],
     "module": "commonjs",
@@ -12,11 +13,14 @@
     "experimentalDecorators": true,
     "target": "es2015",
     "typeRoots": ["node_modules/@types"],
-    "outDir": "dist/package-dist"
+    "outDir": "dist/package-dist",
+    "paths": {
+      "@ctrl/tinycolor": ["./src/public_api"]
+    }
   },
   "files": ["./src/public_api"],
   "typedocOptions": {
-    "out": "docs",
+    "out": "docs/api",
     "mode": "file",
     "target": "ES6",
     "module": "commonjs",

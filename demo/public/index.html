@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>TinyColor - Fast, small color manipulation in JavaScript</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" />
+	<style>
+		body {
+			background-color: #FCFFFD;
+		}
+
+		table {
+			width: 100%;
+		}
+
+		table th {
+			text-align: right;
+		}
+
+		#code-output {
+			border: solid 1em #333;
+			border-top-width: 3em;
+		}
+
+		#inputter a {
+			padding: 3px;
+		}
+
+		.invisible {
+			visibility: hidden;
+		}
+
+		a {
+			text-decoration: underline;
+		}
+
+		pre {
+			background: #000;
+			color: #fff;
+			padding: 1em;
+		}
+
+		.sample {
+			display: inline-block;
+			width: 2em;
+			height: 2em;
+			margin: .25em;
+		}
+		@media (min-width: 550px) {
+			.sample {
+				display: inline-block;
+				width: 3em;
+				height: 3em;
+				margin: .5em;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="twelve columns">
+				<h1>TinyColor</h1>
+				<h5>Fast, small color manipulation and conversion for JavaScript</h5>
+
+				<p>
+					<a href="https://github.com/bgrins/TinyColor">TinyColor</a> is a library for parsing color input and outputting colors as different formats. Input is meant to be
+					as permissive as possible.
+				</p>
+
+				<h5>Usage Documentation</h5>
+				<p>Read all the documentation on the
+					<a href="https://github.com/bgrins/TinyColor">TinyColor project page</a> on github.
+				</p>
+
+				<h5>Code</h5>
+				<p>
+					<a href="https://github.com/bgrins/TinyColor/blob/master/tinycolor.js">see the full source on github</a>.
+				</p>
+
+				<h5>Demo</h5>
+				<label for="color">Enter a color:</label>
+				<input type="text" style="width: 250px" placeholder="any color." id="color" />
+				<p>
+					<label>Or try these:</label>
+					<a onclick="handleChange('red')">red</a> -
+					<a onclick="handleChange('0f0')">0f0</a> -
+					<a onclick="handleChange('rgb 255 128 128')">rgb 255 128 128</a> -
+					<a onclick="handleChange('hsl(0, 100%, 50%)')">hsl(0, 100%, 50%)</a> -
+					<a onclick="handleChange('hsv 0, 100%, 50%')">hsv 0, 100%, 50%</a>
+				</p>
+				<label>And I'll tell you what I know about it:</label>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="twelve columns">
+				<pre id="code-output"></pre>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div class="twelve columns">
+				<div id="filter-output">
+					<table>
+						<tr>
+							<th>Lighten</th>
+							<td>
+								<div class="lighten sample"></div>
+							</td>
+						</tr>
+						<tr>
+							<th>Darken</th>
+							<td>
+								<div class="darken sample"></div>
+							</td>
+						</tr>
+						<tr>
+							<th>Saturate</th>
+							<td>
+								<div class="saturate sample"></div>
+							</td>
+						</tr>
+						<tr>
+							<th>Desaturate</th>
+							<td>
+								<div class="desaturate sample"></div>
+							</td>
+						</tr>
+						<tr>
+							<th>Greyscale</th>
+							<td>
+								<div class="greyscale sample"></div>
+							</td>
+						</tr>
+						<tr>
+							<th>Brighten</th>
+							<td>
+								<div class="brighten sample"></div>
+							</td>
+						</tr>
+						<tr>
+							<th>Most Readable</th>
+							<td>
+								<div id="mostReadable" class="sample"></div>
+							</td>
+						</tr>
+						<tr>
+							<th>Triad</th>
+							<td>
+								<div class="triad"></div>
+							</td>
+						</tr>
+						<tr>
+							<th>Tetrad</th>
+							<td>
+								<div class="tetrad"></div>
+							</td>
+						</tr>
+						<tr>
+							<th>Monochromatic</th>
+							<td>
+								<div class="mono"></div>
+							</td>
+						</tr>
+						<tr>
+							<th>Analogous</th>
+							<td>
+								<div class="analogous"></div>
+							</td>
+						</tr>
+						<tr>
+							<th>Split Complements</th>
+							<td>
+								<div class="sc"></div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="twelve columns">
+				<h5>Credit</h5>
+				<p>
+					Developed by
+					<a href="http://briangrinstead.com">Brian Grinstead</a>. Big thanks to the following places:
+				</p>
+				<ul>
+					<li>
+						<a href="https://github.com/cloudhead/less.js/blob/master/lib/less/functions.js">less.js</a> for some of the modification functions
+					</li>
+					<li>
+						<a href="https://github.com/infusion/jQuery-xcolor/blob/master/jquery.xcolor.js">jQuery xColor</a> for some of the combination functions
+					</li>
+					<li>
+						<a href="http://www.w3.org/TR/css3-color/#svg-color">w3.org</a> for the color list and parsing rules</li>
+					<li>
+						<a href="http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript">mjijackson.com</a> for the first stab at RGB / HSL / HSV converters
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<script src="bundle.js"></script>
+</body>
+
+</html>

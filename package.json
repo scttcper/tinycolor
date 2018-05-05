@@ -37,21 +37,17 @@
     "test:watch": "jest --watch",
     "test:prod": "npm run test -- --coverage --no-cache",
     "commit": "git-cz",
-    "commitlint": "commitlint -e $GIT_PARAMS",
     "travis-deploy-once": "travis-deploy-once",
     "semantic-release": "cd dist/package-dist && semantic-release"
   },
   "dependencies": {},
   "devDependencies": {
-    "@commitlint/cli": "6.2.0",
-    "@commitlint/config-conventional": "6.1.3",
     "@types/fs-extra": "5.0.2",
     "@types/jest": "22.2.3",
-    "@types/node": "10.0.3",
+    "@types/node": "10.0.4",
     "commitizen": "2.9.6",
     "cz-conventional-changelog": "2.1.0",
     "fs-extra": "6.0.0",
-    "husky": "1.0.0-rc.2",
     "jest": "22.4.3",
     "npm-run-all": "^4.1.2",
     "prettier": "1.12.1",
@@ -64,7 +60,7 @@
     "travis-deploy-once": "5.0.0",
     "ts-jest": "22.4.4",
     "ts-node": "6.0.2",
-    "tslint": "5.9.1",
+    "tslint": "5.10.0",
     "tslint-config-prettier": "1.12.0",
     "tslint-config-standard": "7.0.0",
     "typedoc": "0.11.1",
@@ -72,11 +68,6 @@
   },
   "release": {
     "branch": "master"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "npm run commitlint"
-    }
   },
   "commitlint": {
     "extends": [

@@ -33,4 +33,5 @@ build
 docs
 dist
 .rpt2_cache
-demo/**/*.js*
+demo/**/*.js
+demo/**/*.js.map

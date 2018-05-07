@@ -525,8 +525,8 @@ equals(color1, color2);
 
 ### fromRandom
 
-Returns a random TinyColor object. This is an implementation of [randomColor](https://github.com/davidmerfield/fromRandom/) by David Merfield.
-The main changes are input parsing and output formatting are handled by TinyColor.
+Returns a random TinyColor object. This is an implementation of [randomColor](https://github.com/davidmerfield/randomColor/) by David Merfield.
+The difference input parsing and output formatting are handled by TinyColor.
 
 You can pass an options object to influence the type of color it produces. The options object accepts the following properties:
 

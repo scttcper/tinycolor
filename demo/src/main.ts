@@ -1,9 +1,10 @@
-import { fromRandom, mostReadable, names, TinyColor } from '@ctrl/tinycolor';
+import { fromRandom, mostReadable, names, TinyColor } from '../../src/public_api';
 
 // make tinycolor available in the console
 (window as any).tinycolor = TinyColor;
 (window as any).TinyColor = TinyColor;
 (window as any).fromRandom = fromRandom;
+console.log(`try "new TinyColor('blue')" or "fromRandom()"`);
 
 const input = document.querySelector<HTMLInputElement>('#color');
 
@@ -12,6 +13,7 @@ input.addEventListener('keyup', event => colorChange((event.target as HTMLInputE
 const codeOutputEl = document.querySelector<HTMLElement>('#code-output');
 const filtersEl = document.querySelector<HTMLElement>('#filter-output');
 const mostReadableEl = document.querySelector<HTMLElement>('#mostReadable');
+const colorBoxEl = document.querySelector<HTMLElement>('#colorBox');
 
 function colorChange(color) {
   const tiny = new TinyColor(color);
@@ -53,26 +55,19 @@ function colorChange(color) {
   mostReadableEl.style['background-color'] = readable.toHexString();
 
   const colorArrayToHTML = arr =>
-    arr
-      .map(e => `<div class="sample" style="background:${e.toHexString()}"></div>`)
-      .join('');
+    arr.map(e => `<div class="sample" style="background:${e.toHexString()}"></div>`).join('');
 
   filtersEl.querySelector('.triad').innerHTML = colorArrayToHTML(tiny.triad());
-  filtersEl.querySelector('.tetrad').innerHTML = colorArrayToHTML(
-    tiny.tetrad(),
-  );
-  filtersEl.querySelector('.mono').innerHTML = colorArrayToHTML(
-    tiny.monochromatic(),
-  );
-  filtersEl.querySelector('.analogous').innerHTML = colorArrayToHTML(
-    tiny.analogous(),
-  );
-  filtersEl.querySelector('.sc').innerHTML = colorArrayToHTML(
-    tiny.splitcomplement(),
-  );
+  filtersEl.querySelector('.tetrad').innerHTML = colorArrayToHTML(tiny.tetrad());
+  filtersEl.querySelector('.mono').innerHTML = colorArrayToHTML(tiny.monochromatic());
+  filtersEl.querySelector('.analogous').innerHTML = colorArrayToHTML(tiny.analogous());
+  filtersEl.querySelector('.sc').innerHTML = colorArrayToHTML(tiny.splitcomplement());
 }
 (window as any).handleChange = function handleChange(color) {
   input.value = color;
   colorChange(color);
 };
 colorChange({ r: 150, g: 0, b: 100 });
+
+// Set that box next to the title to a random color
+colorBoxEl.style['background-color'] = fromRandom({ luminosity: 'bright' }).toHexString();

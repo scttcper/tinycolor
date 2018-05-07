@@ -14,7 +14,7 @@ export default {
 	},
 	plugins: [
     typescript({
-      tsconfig: 'tsconfig.demo.json',
+      tsconfig: './demo/tsconfig.json',
     }),
 		production && uglify() // minify, but only in production
 	]

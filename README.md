@@ -547,13 +547,13 @@ fromRandom({
   hue: 'green',
 });
 
-// Returns a hex code for a light blue
+// Returns a TinyColor object in a light blue
 fromRandom({
   luminosity: 'light',
   hue: 'blue',
 });
 
-// Returns a hex code for a 'truly random' color
+// Returns a TinyColor object in a 'truly random' color
 fromRandom({
   luminosity: 'random',
   hue: 'random',

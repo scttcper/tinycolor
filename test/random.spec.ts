@@ -20,6 +20,12 @@ describe('fromRandom', () => {
     expect(colors).toEqual(['#f03ab9', '#f032b1', '#f22ca9']);
     colors = fromRandom({ hue: '#E6E6FA', count: 3, seed: 420420 }).map(n => n.toHexString());
     expect(colors).toEqual(['#4141d1', '#3939d4', '#3333d6']);
+    colors = fromRandom({ hue: 999, count: 3, seed: 420420 }).map(n => n.toHexString());
+    expect(colors).toEqual(['#4167d1', '#393cd4', '#5733d6']);
+    colors = fromRandom({ hue: 'monochrome', count: 3, seed: 420420 }).map(n => n.toHexString());
+    expect(colors).toEqual(['#9e9e9e', '#a8a8a8', '#b3b3b3']);
+    colors = fromRandom({ hue: NaN, count: 3, seed: 420420 }).map(n => n.toHexString());
+    expect(colors).toEqual(['#4167d1', '#393cd4', '#5733d6']);
   });
   it('should accept luminosity', () => {
     let colors = fromRandom({ luminosity: 'bright', count: 3, seed: 11100 }).map(n =>
@@ -58,7 +64,7 @@ describe('fromRandom', () => {
     expect(colors).toEqual(['#a60f07', '#a61205', '#a81805']);
   });
   it('should accept alpha', () => {
-    const colors = fromRandom({ alpha: 0.4, seed: 13378008 })
-    expect(colors[0].a).toBe(0.4);
+    const colors = fromRandom({ alpha: 0.4, seed: 13378008 });
+    expect(colors.a).toBe(0.4);
   });
 });

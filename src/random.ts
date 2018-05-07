@@ -7,7 +7,6 @@ import { HSVA } from './interfaces';
 
 export interface RandomOptions {
   seed?: number;
-  count?: number;
   hue?:
     | number
     | string
@@ -23,27 +22,32 @@ export interface RandomOptions {
   alpha?: number;
 }
 
-export function fromRandom(options: RandomOptions = {}): TinyColor[] {
+export interface RandomCountOptions extends RandomOptions {
+  count?: number;
+}
+
+export function fromRandom(options?: RandomOptions): TinyColor;
+export function fromRandom(options?: RandomCountOptions): TinyColor[];
+export function fromRandom(options: RandomOptions | RandomCountOptions = {}) {
   // Check if we need to generate multiple colors
-  if (options.count !== undefined) {
-    const totalColors = options.count;
+  if ((options as RandomCountOptions).count !== undefined && (options as RandomCountOptions).count !== null) {
+    const totalColors = (options as RandomCountOptions).count;
     const colors: TinyColor[] = [];
 
-    options.count = undefined;
+    (options as RandomCountOptions).count = undefined;
 
     while (totalColors > colors.length) {
       // Since we're generating multiple colors,
       // incremement the seed. Otherwise we'd just
       // generate the same color each time...
+      (options as RandomCountOptions).count = null;
       if (options.seed) {
         options.seed += 1;
       }
-
-      colors.push(fromRandom(options)[0]);
+      colors.push(fromRandom(options as RandomOptions));
     }
 
-    options.count = totalColors;
-
+    (options as RandomCountOptions).count = totalColors;
     return colors;
   }
 
@@ -61,7 +65,7 @@ export function fromRandom(options: RandomOptions = {}): TinyColor[] {
   }
 
   // Then we return the HSB color in the desired format
-  return [new TinyColor(res as HSVA)];
+  return new TinyColor(res as HSVA);
 }
 
 function pickHue(hue: number | string | undefined, seed?: number) {

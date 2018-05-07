@@ -1,4 +1,5 @@
 import {
+  fromLegacyRandom,
   fromRatio,
   isReadable,
   mostReadable,
@@ -188,7 +189,7 @@ describe('TinyColor', () => {
     expect(new TinyColor('rgb 255 0 0').toHex(true)).toBe('f00');
     expect(new TinyColor('rgba 255 0 0 0.5').toHex8()).toBe('ff000080');
   });
-  it('HSV Parsing', () => {
+  it('should parse hsv', () => {
     expect(new TinyColor('hsv 251.1 0.887 .918').toHsvString()).toBe('hsv(251, 89%, 92%)');
     expect(new TinyColor('hsv 251.1 0.887 0.918').toHsvString()).toBe('hsv(251, 89%, 92%)');
     expect(new TinyColor('hsva 251.1 0.887 0.918 0.5').toHsvString()).toBe(
@@ -232,7 +233,7 @@ describe('TinyColor', () => {
     expect(invalidColor.toHexString()).toBe('#000000');
     expect(invalidColor.isValid).toBe(false);
   });
-  it('Named colors', () => {
+  it('should parse named colors', () => {
     expect(new TinyColor('aliceblue').toHex()).toBe('f0f8ff');
     expect(new TinyColor('antiquewhite').toHex()).toBe('faebd7');
     expect(new TinyColor('aqua').toHex()).toBe('00ffff');
@@ -442,7 +443,7 @@ describe('TinyColor', () => {
     redHex.setAlpha(0.38);
     expect(redHex.toString()).toBe('rgba(255, 0, 0, 0.38)');
   });
-  it('setting alpha', () => {
+  it('should set alpha', () => {
     const hexSetter = new TinyColor('rgba(255, 0, 0, 1)');
     // Alpha should start as 1
     expect(hexSetter.a).toBe(1);
@@ -478,12 +479,12 @@ describe('TinyColor', () => {
     expect(new TinyColor('transparent').toString()).toBe('transparent');
     expect(new TinyColor('transparent').toHex()).toBe('000000');
   });
-  it('getBrightness', () => {
+  it('should getBrightness', () => {
     expect(new TinyColor('#000').getBrightness()).toBe(0);
     expect(new TinyColor('#fff').getBrightness()).toBe(255);
   });
 
-  it('getLuminance', () => {
+  it('should getLuminance', () => {
     expect(new TinyColor('#000').getLuminance()).toBe(0);
     expect(new TinyColor('#fff').getLuminance()).toBe(1);
   });
@@ -659,7 +660,7 @@ describe('TinyColor', () => {
     expect(isReadable('#db91b8', '#2e0c3a', { level: 'AAA', size: 'large' })).toBe(true);
     expect(isReadable('#db91b8', '#2e0c3a', { level: 'ZZZ', size: 'large' } as any)).toBe(false);
   });
-  it('readability', function() {
+  it('readability', () => {
     // check return values from readability function. See isReadable above for standards tests.
     const tinycolor = new TinyColor();
     expect(readability('#000', '#000')).toBe(1);
@@ -667,7 +668,7 @@ describe('TinyColor', () => {
     expect(readability('#000', '#fff')).toBe(21);
   });
 
-  it('mostReadable', function() {
+  it('mostReadable', () => {
     const tinycolor = new TinyColor();
     expect(mostReadable('#000', ['#111', '#222']).toHexString()).toBe('#222222');
     expect(mostReadable('#f00', ['#d00', '#0d0']).toHexString()).toBe('#00dd00');
@@ -725,7 +726,7 @@ describe('TinyColor', () => {
     ).toBe('#ffffff');
   });
 
-  it('should create microsoft filter', function() {
+  it('should create microsoft filter', () => {
     expect(toMsFilter('red')).toBe(
       'progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffff0000,endColorstr=#ffff0000)',
     );
@@ -747,7 +748,7 @@ describe('TinyColor', () => {
       'progid:DXImageTransform.Microsoft.gradient(startColorstr=#800000ff,endColorstr=#800000ff)',
     );
   });
-  it('Modifications', function() {
+  it('Modifications', () => {
     for (let i = 0; i <= 100; i++) {
       expect(new TinyColor('red').desaturate(i).toHex()).toBe(DESATURATIONS[i]);
     }
@@ -771,7 +772,7 @@ describe('TinyColor', () => {
     }
     expect(new TinyColor('red').greyscale().toHex()).toBe('808080');
   });
-  it('Spin', function() {
+  it('Spin', () => {
     expect(Math.round(new TinyColor('#f00').spin(-1234).toHsl().h)).toBe(206);
     expect(Math.round(new TinyColor('#f00').spin(-360).toHsl().h)).toBe(0);
     expect(Math.round(new TinyColor('#f00').spin(-120).toHsl().h)).toBe(240);
@@ -786,7 +787,7 @@ describe('TinyColor', () => {
       });
     });
   });
-  it('Mix', function() {
+  it('Mix', () => {
     // amount 0 or none
     expect(new TinyColor('#000').mix('#fff').toHsl().l).toBe(0.5);
     expect(new TinyColor('#f00').mix('#000', 0).toHex()).toBe('ff0000');
@@ -812,35 +813,39 @@ describe('TinyColor', () => {
       expect(new TinyColor('transparent').mix('#000', i).toRgb().a).toBe(i / 100);
     }
   });
-  it('complement', function() {
+  it('complement', () => {
     const complementDoesntModifyInstance = new TinyColor('red');
     expect(complementDoesntModifyInstance.complement().toHex()).toBe('00ffff');
     expect(complementDoesntModifyInstance.toHex()).toBe('ff0000');
   });
 
-  it('analogous', function() {
+  it('analogous', () => {
     const combination = new TinyColor('red').analogous();
     expect(colorsToHexString(combination)).toBe('ff0000,ff0066,ff0033,ff0000,ff3300,ff6600');
   });
 
-  it('monochromatic', function() {
+  it('monochromatic', () => {
     const combination = new TinyColor('red').monochromatic();
     expect(colorsToHexString(combination)).toBe('ff0000,2a0000,550000,800000,aa0000,d40000');
   });
 
-  it('splitcomplement', function() {
+  it('splitcomplement', () => {
     const combination = new TinyColor('red').splitcomplement();
     expect(colorsToHexString(combination)).toBe('ff0000,ccff00,0066ff');
   });
 
-  it('triad', function() {
+  it('triad', () => {
     const combination = new TinyColor('red').triad();
     expect(colorsToHexString(combination)).toBe('ff0000,00ff00,0000ff');
   });
 
-  it('tetrad', function() {
+  it('tetrad', () => {
     const combination = new TinyColor('red').tetrad();
     expect(colorsToHexString(combination)).toBe('ff0000,80ff00,00ffff,7f00ff');
+  });
+
+  it('legacy random', () => {
+    expect(fromLegacyRandom().isValid).toBeTruthy();
   });
 });
 

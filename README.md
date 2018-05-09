@@ -9,7 +9,7 @@ A fork of [tinycolor2](https://github.com/bgrins/TinyColor) by [Brian Grinstead]
 * reformatted into TypeScript / es2015 and requires node >= 8
   * tree shakeable "module" export and no package `sideEffects`
 * `tinycolor` is now exported as a class called `TinyColor`
-* new `fromRandom`, an implementation of [randomColor](https://github.com/davidmerfield/fromRandom/) by David Merfield that returns a TinyColor object
+* new `random`, an implementation of [randomColor](https://github.com/davidmerfield/randomColor/) by David Merfield that returns a TinyColor object
 * several functions moved out of the tinycolor class and are no longer `TinyColor.<function>`
   * `readability`, `fromRatio` moved out
   * `random` moved out and renamed to `fromLegacyRandom`
@@ -523,7 +523,7 @@ import { equals } from '@ctrl/tinycolor';
 equals(color1, color2);
 ```
 
-### fromRandom
+### random
 
 Returns a random TinyColor object. This is an implementation of [randomColor](https://github.com/davidmerfield/randomColor/) by David Merfield.
 The difference input parsing and output formatting are handled by TinyColor.
@@ -537,30 +537,30 @@ You can pass an options object to influence the type of color it produces. The o
 `alpha` – A decimal between 0 and 1. Only relevant when using a format with an alpha channel (rgba and hsla). Defaults to a random value.
 
 ```ts
-import { fromRandom } from '@ctrl/tinycolor';
+import { random } from '@ctrl/tinycolor';
 // Returns a TinyColor for an attractive color
-fromRandom();
+random();
 
 // Returns an array of ten green colors
-fromRandom({
+random({
   count: 10,
   hue: 'green',
 });
 
 // Returns a TinyColor object in a light blue
-fromRandom({
+random({
   luminosity: 'light',
   hue: 'blue',
 });
 
 // Returns a TinyColor object in a 'truly random' color
-fromRandom({
+random({
   luminosity: 'random',
   hue: 'random',
 });
 
 // Returns a dark RGB color with specified alpha
-fromRandom({
+random({
   luminosity: 'dark',
   alpha: 0.5,
 });

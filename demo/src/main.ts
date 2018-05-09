@@ -1,10 +1,10 @@
-import { fromRandom, mostReadable, names, TinyColor } from '../../src/public_api';
+import { mostReadable, names, random, TinyColor } from '../../src/public_api';
 
 // make tinycolor available in the console
 (window as any).tinycolor = TinyColor;
 (window as any).TinyColor = TinyColor;
-(window as any).fromRandom = fromRandom;
-console.log(`try "new TinyColor('blue')" or "fromRandom()"`);
+(window as any).random = random;
+console.log(`try "new TinyColor('blue')" or "random()"`);
 
 const input = document.querySelector<HTMLInputElement>('#color');
 
@@ -70,4 +70,4 @@ function colorChange(color) {
 colorChange({ r: 150, g: 0, b: 100 });
 
 // Set that box next to the title to a random color
-colorBoxEl.style['background-color'] = fromRandom({ luminosity: 'bright' }).toHexString();
+colorBoxEl.style['background-color'] = random({ luminosity: 'bright' }).toHexString();

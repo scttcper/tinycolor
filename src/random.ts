@@ -26,9 +26,9 @@ export interface RandomCountOptions extends RandomOptions {
   count?: number | null;
 }
 
-export function fromRandom(options?: RandomOptions): TinyColor;
-export function fromRandom(options?: RandomCountOptions): TinyColor[];
-export function fromRandom(options: RandomOptions | RandomCountOptions = {}) {
+export function random(options?: RandomOptions): TinyColor;
+export function random(options?: RandomCountOptions): TinyColor[];
+export function random(options: RandomOptions | RandomCountOptions = {}) {
   // Check if we need to generate multiple colors
   if ((options as RandomCountOptions).count !== undefined && (options as RandomCountOptions).count !== null) {
     const totalColors: number = (options as RandomCountOptions).count as number;
@@ -44,7 +44,7 @@ export function fromRandom(options: RandomOptions | RandomCountOptions = {}) {
       if (options.seed) {
         options.seed += 1;
       }
-      colors.push(fromRandom(options as RandomOptions));
+      colors.push(random(options as RandomOptions));
     }
 
     (options as RandomCountOptions).count = totalColors;

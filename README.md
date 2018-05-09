@@ -12,7 +12,7 @@ A fork of [tinycolor2](https://github.com/bgrins/TinyColor) by [Brian Grinstead]
 * new `random`, an implementation of [randomColor](https://github.com/davidmerfield/randomColor/) by David Merfield that returns a TinyColor object
 * several functions moved out of the tinycolor class and are no longer `TinyColor.<function>`
   * `readability`, `fromRatio` moved out
-  * `random` moved out and renamed to `fromLegacyRandom`
+  * `random` moved out and renamed to `legacyRandom`
   * `toFilter` has been moved out and renamed to `toMsFilter`
 * `mix`, `equals` use the current TinyColor object as the first parameter
 * added polyad colors tinycolor PR [126](https://github.com/bgrins/TinyColor/pull/126)

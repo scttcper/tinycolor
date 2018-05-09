@@ -15,7 +15,6 @@ deploy:
   provider: pages
   skip_cleanup: true
   local_dir: docs
-  github_token: $GH_TOKEN
   on:
     branch: master
 notifications:

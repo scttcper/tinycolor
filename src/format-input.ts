@@ -1,5 +1,5 @@
 import { convertHexToDecimal, hslToRgb, hsvToRgb, parseIntFromHex, rgbToRgb } from './conversion';
-import names from './css-color-names';
+import { names } from './css-color-names';
 import { HSL, HSLA, HSV, HSVA, RGB, RGBA } from './interfaces';
 import { boundAlpha, convertToPercentage } from './util';
 

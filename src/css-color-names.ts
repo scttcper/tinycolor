@@ -2,7 +2,7 @@
 /**
  * @hidden
  */
-const names: { [key: string]: string } = {
+export const names: { [key: string]: string } = {
   aliceblue: '#f0f8ff',
   antiquewhite: '#faebd7',
   aqua: '#00ffff',
@@ -152,4 +152,3 @@ const names: { [key: string]: string } = {
   yellow: '#ffff00',
   yellowgreen: '#9acd32',
 };
-export default names;

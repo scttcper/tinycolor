@@ -1,3 +1,9 @@
+/**
+ * A representation of additive color mixing.
+ * Projection of primary color lights on a white screen shows secondary
+ * colors where two overlap; the combination of all three of red, green,
+ * and blue in equal intensities makes white.
+ */
 export interface RGB {
   r: number | string;
   g: number | string;

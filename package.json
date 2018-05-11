@@ -57,7 +57,7 @@
     "rollup-plugin-uglify": "3.0.0",
     "semantic-release": "15.4.0",
     "travis-deploy-once": "5.0.0",
-    "ts-jest": "22.4.5",
+    "ts-jest": "22.4.6",
     "ts-node": "6.0.3",
     "tslint": "5.10.0",
     "tslint-config-prettier": "1.12.0",

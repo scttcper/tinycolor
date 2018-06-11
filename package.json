@@ -42,7 +42,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/fs-extra": "5.0.2",
+    "@types/fs-extra": "5.0.3",
     "@types/jest": "22.2.3",
     "@types/node": "10.3.2",
     "commitizen": "2.10.1",

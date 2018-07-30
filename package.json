@@ -44,7 +44,7 @@
   "devDependencies": {
     "@types/fs-extra": "5.0.4",
     "@types/jest": "23.3.0",
-    "@types/node": "10.5.2",
+    "@types/node": "10.5.4",
     "commitizen": "2.10.1",
     "cz-conventional-changelog": "2.1.0",
     "fs-extra": "6.0.1",

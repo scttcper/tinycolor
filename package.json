@@ -76,6 +76,7 @@
     }
   },
   "jest": {
+    "testURL": "http://localhost",
     "transform": {
       ".ts": "ts-jest"
     },

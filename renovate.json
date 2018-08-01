@@ -2,8 +2,7 @@
   "extends": [
     "config:js-lib",
     ":semanticCommitTypeAll(chore)",
-    "schedule:earlyMondays",
-    ":maintainLockFilesMonthly"
+    "schedule:monthly"
   ],
   "automerge": "minor",
   "rebaseStalePrs": true,

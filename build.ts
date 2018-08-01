@@ -8,6 +8,8 @@ const sourceMaps = require('rollup-plugin-sourcemaps');
 const moduleInputOptions: RollupFileOptions = {
   input: `dist/esm5/public_api.js`,
   plugins: [sourceMaps()],
+  // TODO: remove when new rollup released
+  inlineDynamicImports: false,
 };
 const moduleOutputOptions: OutputOptions = {
   file: './dist/package-dist/bundles/tinycolor.es2015.js',

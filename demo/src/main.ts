@@ -1,8 +1,7 @@
-import * as tinycolor from '../../src/public_api';
+import tinycolor from '../../src/umd_api';
 
 // make tinycolor available in the console
 (window as any).tinycolor = tinycolor;
-(window as any).TinyColor = tinycolor.TinyColor;
 console.log(`try "new TinyColor('blue')" or "tinycolor.random()" or tinycolor('red')`);
 
 const input = document.querySelector<HTMLInputElement>('#color');

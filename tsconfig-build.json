@@ -10,7 +10,5 @@
     "removeComments": true,
     "skipLibCheck": true
   },
-  "files": [
-    "./src/public_api"
-  ]
+  "files": ["./src/public_api", "./src/umd_api"]
 }

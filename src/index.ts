@@ -119,6 +119,12 @@ export class TinyColor {
     return 0.2126 * R + 0.7152 * G + 0.0722 * B;
   }
   /**
+   * Returns the alpha value of a color, from 0-1.
+   */
+  getAlpha(): number {
+    return this.a;
+  }
+  /**
    * Sets the alpha value on the current color.
    *
    * @param alpha - The new alpha value. The accepted range is 0-1.

@@ -454,6 +454,17 @@ describe('TinyColor', () => {
     redHex.setAlpha(0.38);
     expect(redHex.toString()).toBe('rgba(255, 0, 0, 0.38)');
   });
+  it('should get alpha', () => {
+    const hexSetter = new TinyColor('rgba(255, 0, 0, 1)');
+    // Alpha should start as 1
+    expect(hexSetter.getAlpha()).toBe(1);
+    const returnedFromSetAlpha = hexSetter.setAlpha(0.9);
+    // setAlpha should change alpha value
+    expect(returnedFromSetAlpha.getAlpha()).toBe(0.9);
+    hexSetter.setAlpha(0.5);
+    // setAlpha should change alpha value
+    expect(hexSetter.getAlpha()).toBe(0.5);
+  });
   it('should set alpha', () => {
     const hexSetter = new TinyColor('rgba(255, 0, 0, 1)');
     // Alpha should start as 1

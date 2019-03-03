@@ -35,3 +35,4 @@ dist
 .rpt2_cache
 demo/**/*.js
 demo/**/*.js.map
+junit.xml

@@ -1,13 +1,13 @@
 import { join } from 'path';
 
 import { copySync } from 'fs-extra';
-import { rollup, OutputOptions, RollupFileOptions } from 'rollup';
-const terser = require('rollup-plugin-terser').terser;
-const sourceMaps = require('rollup-plugin-sourcemaps');
+import { rollup, OutputOptions, RollupOptions } from 'rollup';
+import { terser } from 'rollup-plugin-terser';
+import sourceMaps from 'rollup-plugin-sourcemaps';
 
 // umd min
-const umdMinInputOptions: RollupFileOptions = {
-  input: `dist/es/umd_api.js`,
+const umdMinInputOptions: RollupOptions = {
+  input: 'dist/es/umd_api.js',
   plugins: [sourceMaps(), terser()],
 };
 const umdMinOutputOptions: OutputOptions = {

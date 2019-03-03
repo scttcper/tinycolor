@@ -25,12 +25,13 @@ export function bound01(n: any, max: number) {
     // If n is a hue given in degrees,
     // wrap around out-of-range values into [0, 360] range
     // then convert into [0, 1].
-    n = (n < 0 ? n % max + max : n % max) / parseFloat(String(max));
+    n = (n < 0 ? (n % max) + max : n % max) / parseFloat(String(max));
   } else {
     // If n not a hue given in degrees
     // Convert into [0, 1] range if it isn't already.
     n = (n % max) / parseFloat(String(max));
   }
+
   return n;
 }
 
@@ -79,8 +80,9 @@ export function boundAlpha(a?: number | string) {
  */
 export function convertToPercentage(n: number | string) {
   if (n <= 1) {
-    return +n * 100 + '%';
+    return `${Number(n) * 100}%`;
   }
+
   return n;
 }
 
@@ -89,5 +91,5 @@ export function convertToPercentage(n: number | string) {
  * @hidden
  */
 export function pad2(c: string) {
-  return c.length === 1 ? '0' + c : '' + c;
+  return c.length === 1 ? '0' + c : String(c);
 }

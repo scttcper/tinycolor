@@ -20,8 +20,9 @@ export function fromRatio(ratio: RatioInput, opts?: any) {
     b: convertToPercentage(ratio.b),
   };
   if (ratio.a !== undefined) {
-    newColor.a = +ratio.a;
+    newColor.a = Number(ratio.a);
   }
+
   return new TinyColor(newColor as RGBA, opts);
 }
 

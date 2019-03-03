@@ -772,24 +772,31 @@ describe('TinyColor', () => {
     for (let i = 0; i <= 100; i++) {
       expect(new TinyColor('red').desaturate(i).toHex()).toBe(DESATURATIONS[i]);
     }
+
     for (let i = 0; i <= 100; i++) {
       expect(new TinyColor('red').saturate(i).toHex()).toBe(SATURATIONS[i]);
     }
+
     for (let i = 0; i <= 100; i++) {
       expect(new TinyColor('red').lighten(i).toHex()).toBe(LIGHTENS[i]);
     }
+
     for (let i = 0; i <= 100; i++) {
       expect(new TinyColor('red').brighten(i).toHex()).toBe(BRIGHTENS[i]);
     }
+
     for (let i = 0; i <= 100; i++) {
       expect(new TinyColor('red').darken(i).toHex()).toBe(DARKENS[i]);
     }
+
     for (let i = 0; i <= 100; i++) {
       expect(new TinyColor('red').tint(i).toHex()).toBe(TINTS[i]);
     }
+
     for (let i = 0; i <= 100; i++) {
       expect(new TinyColor('red').shade(i).toHex()).toBe(SHADES[i]);
     }
+
     expect(new TinyColor('red').greyscale().toHex()).toBe('808080');
   });
   it('Spin', () => {
@@ -801,8 +808,8 @@ describe('TinyColor', () => {
     expect(Math.round(new TinyColor('#f00').spin(360).toHsl().h)).toBe(0);
     expect(Math.round(new TinyColor('#f00').spin(2345).toHsl().h)).toBe(185);
 
-    [-360, 0, 360].forEach(function(delta) {
-      Object.keys(names).forEach(function(name) {
+    [-360, 0, 360].forEach(delta => {
+      Object.keys(names).forEach(name => {
         expect(new TinyColor(name).toHex()).toBe(new TinyColor(name).spin(delta).toHex());
       });
     });
@@ -871,7 +878,7 @@ describe('TinyColor', () => {
 
 function colorsToHexString(colors: TinyColor[]) {
   return colors
-    .map(function(c) {
+    .map(c => {
       return c.toHex();
     })
     .join(',');

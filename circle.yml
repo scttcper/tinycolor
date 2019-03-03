@@ -1,0 +1,60 @@
+version: 2.1
+jobs:
+  test:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: npm-install
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: test
+          command: npm run test:ci
+      - run:
+          name: lint
+          command: npm run lint
+      - run:
+          name: codecov
+          command: bash <(curl -s https://codecov.io/bash)
+  release:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: npm install
+      - run: npm run build
+      - run: npm run semantic-release
+      - run:
+          name: Install and configure dependencies
+          command: |
+            git config credential.helper "cache --timeout=120"
+            git config user.email "scttcper@gmail.com"
+            git config user.name "ci-build"
+            ssh-add -D
+      - run: npm run build:docs
+      - run: cp -r demo/public/ docs
+      - run: npm run build:demo
+      - run: npx gh-pages -x -d docs -m "update docs [ci skip]" -r https://${GH_TOKEN}@github.com/scttcper/ts-trueskill.git
+
+workflows:
+  version: 2
+  test_and_release:
+    # Run the test jobs first, then the release only when all the test jobs are successful
+    jobs:
+      - test
+      - release:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - test

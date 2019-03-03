@@ -4,15 +4,18 @@
     "target": "es2015",
     "lib": ["es2017"],
     "module": "commonjs",
+    "esModuleInterop": true,
     "declaration": true,
     "outDir": "./dist",
     "strict": true,
     "sourceMap": true,
+    "inlineSources": true,
     "noUnusedParameters": true,
     "noUnusedLocals": true,
+    "noImplicitAny": false,
     "strictPropertyInitialization": false
   },
-  "files": ["./src/public_api", "./src/umd_api"],
+  "files": ["src/public_api.ts"],
   "typedocOptions": {
     "out": "docs/docs",
     "mode": "file",
@@ -29,6 +32,5 @@
     "theme": "minimal",
     "hideGenerator": true,
     "readme": "none"
-  },
-  "include": ["./src/*.ts"]
+  }
 }

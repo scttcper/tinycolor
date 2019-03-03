@@ -50,8 +50,9 @@ export function isReadable(
       return readabilityLevel >= 3;
     case 'AAAsmall':
       return readabilityLevel >= 7;
+    default:
+      return false;
   }
-  return false;
 }
 
 export interface WCAG2FallbackParms extends WCAG2Parms {
@@ -82,9 +83,7 @@ export function mostReadable(
 ): TinyColor | null {
   let bestColor: TinyColor | null = null;
   let bestScore = 0;
-  const includeFallbackColors = args.includeFallbackColors;
-  const level = args.level;
-  const size = args.size;
+  const { includeFallbackColors, level, size } = args;
 
   for (const color of colorList) {
     const score = readability(baseColor, color);
@@ -96,8 +95,8 @@ export function mostReadable(
 
   if (isReadable(baseColor, bestColor as TinyColor, { level, size }) || !includeFallbackColors) {
     return bestColor;
-  } else {
-    args.includeFallbackColors = false;
-    return mostReadable(baseColor, ['#fff', '#000'], args);
   }
+
+  args.includeFallbackColors = false;
+  return mostReadable(baseColor, ['#fff', '#000'], args);
 }

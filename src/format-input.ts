@@ -24,9 +24,9 @@ import { boundAlpha, convertToPercentage } from './util';
 export function inputToRGB(color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA | any) {
   let rgb = { r: 0, g: 0, b: 0 };
   let a = 1;
-  let s = null;
-  let v = null;
-  let l = null;
+  let s: string | number | null = null;
+  let v: string | number | null = null;
+  let l: string | number | null = null;
   let ok = false;
   let format: string | false = false;
 
@@ -53,7 +53,7 @@ export function inputToRGB(color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA 
       format = 'hsl';
     }
 
-    if (color.hasOwnProperty('a')) {
+    if (Object.prototype.hasOwnProperty.call(color, 'a')) {
       a = color.a;
     }
   }
@@ -108,6 +108,7 @@ export function stringInputToObject(color: string): any {
   if (color.length === 0) {
     return false;
   }
+
   let named = false;
   if (names[color]) {
     color = names[color];
@@ -124,26 +125,32 @@ export function stringInputToObject(color: string): any {
   if (match) {
     return { r: match[1], g: match[2], b: match[3] };
   }
+
   match = matchers.rgba.exec(color);
   if (match) {
     return { r: match[1], g: match[2], b: match[3], a: match[4] };
   }
+
   match = matchers.hsl.exec(color);
   if (match) {
     return { h: match[1], s: match[2], l: match[3] };
   }
+
   match = matchers.hsla.exec(color);
   if (match) {
     return { h: match[1], s: match[2], l: match[3], a: match[4] };
   }
+
   match = matchers.hsv.exec(color);
   if (match) {
     return { h: match[1], s: match[2], v: match[3] };
   }
+
   match = matchers.hsva.exec(color);
   if (match) {
     return { h: match[1], s: match[2], v: match[3], a: match[4] };
   }
+
   match = matchers.hex8.exec(color);
   if (match) {
     return {
@@ -154,6 +161,7 @@ export function stringInputToObject(color: string): any {
       format: named ? 'name' : 'hex8',
     };
   }
+
   match = matchers.hex6.exec(color);
   if (match) {
     return {
@@ -163,6 +171,7 @@ export function stringInputToObject(color: string): any {
       format: named ? 'name' : 'hex',
     };
   }
+
   match = matchers.hex4.exec(color);
   if (match) {
     return {
@@ -173,6 +182,7 @@ export function stringInputToObject(color: string): any {
       format: named ? 'name' : 'hex8',
     };
   }
+
   match = matchers.hex3.exec(color);
   if (match) {
     return {
@@ -191,5 +201,5 @@ export function stringInputToObject(color: string): any {
  * (see `matchers` above for definition).
  */
 export function isValidCSSUnit(color: string | number) {
-  return !!matchers.CSS_UNIT.exec(String(color));
+  return Boolean(matchers.CSS_UNIT.exec(String(color)));
 }

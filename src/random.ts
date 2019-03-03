@@ -6,16 +6,16 @@ import { HSVA } from './interfaces';
 export interface RandomOptions {
   seed?: number;
   hue?:
-    | number
-    | string
-    | 'red'
-    | 'orange'
-    | 'yellow'
-    | 'green'
-    | 'blue'
-    | 'purple'
-    | 'pink'
-    | 'monochrome';
+  | number
+  | string
+  | 'red'
+  | 'orange'
+  | 'yellow'
+  | 'green'
+  | 'blue'
+  | 'purple'
+  | 'pink'
+  | 'monochrome';
   luminosity?: 'random' | 'bright' | 'dark' | 'light';
   alpha?: number;
 }
@@ -42,6 +42,7 @@ export function random(options: RandomOptions | RandomCountOptions = {}) {
       if (options.seed) {
         options.seed += 1;
       }
+
       colors.push(random(options as RandomOptions));
     }
 
@@ -88,7 +89,7 @@ function pickSaturation(hue: number, options: RandomOptions) {
     return randomWithin([0, 100], options.seed);
   }
 
-  const saturationRange = getColorInfo(hue).saturationRange;
+  const { saturationRange } = getColorInfo(hue);
 
   let sMin = saturationRange[0];
   let sMax = saturationRange[1];
@@ -97,13 +98,13 @@ function pickSaturation(hue: number, options: RandomOptions) {
     case 'bright':
       sMin = 55;
       break;
-
     case 'dark':
       sMin = sMax - 10;
       break;
-
     case 'light':
       sMax = 55;
+      break;
+    default:
       break;
   }
 
@@ -118,14 +119,14 @@ function pickBrightness(H: number, S: number, options: RandomOptions) {
     case 'dark':
       bMax = bMin + 20;
       break;
-
     case 'light':
       bMin = (bMax + bMin) / 2;
       break;
-
     case 'random':
       bMin = 0;
       bMax = 100;
+      break;
+    default:
       break;
   }
 
@@ -133,7 +134,7 @@ function pickBrightness(H: number, S: number, options: RandomOptions) {
 }
 
 function getMinimumBrightness(H: number, S: number) {
-  const lowerBounds = getColorInfo(H).lowerBounds;
+  const { lowerBounds } = getColorInfo(H);
 
   for (let i = 0; i < lowerBounds.length - 1; i++) {
     const s1 = lowerBounds[i][0];
@@ -144,9 +145,9 @@ function getMinimumBrightness(H: number, S: number) {
 
     if (S >= s1 && S <= s2) {
       const m = (v2 - v1) / (s2 - s1);
-      const b = v1 - m * s1;
+      const b = v1 - (m * s1);
 
-      return m * S + b;
+      return (m * S) + b;
     }
   }
 
@@ -167,6 +168,7 @@ function getHueRange(colorInput?: number | string): [number, number] {
         return color.hueRange;
       }
     }
+
     const parsed = new TinyColor(colorInput);
     if (parsed.isValid) {
       const hue = parsed.toHsv().h;
@@ -182,26 +184,28 @@ function getColorInfo(hue: number) {
   if (hue >= 334 && hue <= 360) {
     hue -= 360;
   }
+
   for (const bound of bounds) {
     const color = defineColor(bound);
     if (color.hueRange && hue >= color.hueRange[0] && hue <= color.hueRange[1]) {
       return color;
     }
   }
+
   throw Error('Color not found');
 }
 
 function randomWithin(range: [number, number], seed?: number) {
   if (seed === undefined) {
-    return Math.floor(range[0] + Math.random() * (range[1] + 1 - range[0]));
-  } else {
-    // Seeded random algorithm from http://indiegamr.com/generate-repeatable-random-numbers-in-js/
-    const max = range[1] || 1;
-    const min = range[0] || 0;
-    seed = (seed * 9301 + 49297) % 233280;
-    const rnd = seed / 233280.0;
-    return Math.floor(min + rnd * (max - min));
+    return Math.floor(range[0] + (Math.random() * (range[1] + 1 - range[0])));
   }
+
+  // Seeded random algorithm from http://indiegamr.com/generate-repeatable-random-numbers-in-js/
+  const max = range[1] || 1;
+  const min = range[0] || 0;
+  seed = ((seed * 9301) + 49297) % 233280;
+  const rnd = seed / 233280.0;
+  return Math.floor(min + (rnd * (max - min)));
 }
 
 function defineColor(bound: ColorBound) {
@@ -218,7 +222,6 @@ function defineColor(bound: ColorBound) {
     brightnessRange: [bMin, bMax],
   };
 }
-
 
 /**
  * @hidden

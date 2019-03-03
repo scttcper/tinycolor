@@ -25,8 +25,8 @@
     "build:demo": "rollup -c rollup.demo.js",
     "watch:demo": "rollup -c rollup.demo.js -w",
     "start:demo": "serve demo/public",
-    "lint": "tslint -p tsconfig.json -t stylish 'src/**/*.ts' 'test/**/*.ts'",
-    "lint:fix": "tslint -p tsconfig.json -t stylish --fix 'src/**/*.ts' 'test/**/*.ts'",
+    "lint": "eslint src/**/*.ts test/**/*.ts",
+    "lint:fix": "eslint --fix src/**/*.ts test/**/*.ts",
     "prebuild": "rimraf dist",
     "build": "npm run build-es6; npm run build-cmjs; ts-node build",
     "build-es6": "tsc -P ./tsconfig-build.json --outDir 'dist/es' --module es2015 -d false --moduleResolution node",
@@ -35,59 +35,36 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:prod": "npm run test -- --coverage --no-cache",
-    "commit": "git-cz",
-    "travis-deploy-once": "travis-deploy-once",
     "semantic-release": "cd dist && semantic-release"
   },
   "devDependencies": {
     "@types/fs-extra": "5.0.5",
-    "@types/jest": "23.3.14",
-    "@types/node": "10.12.19",
-    "commitizen": "2.10.1",
-    "cz-conventional-changelog": "2.1.0",
+    "@types/jest": "24.0.9",
+    "@types/node": "11.10.4",
+    "@typescript-eslint/eslint-plugin": "1.4.2",
+    "@typescript-eslint/parser": "1.4.2",
+    "eslint": "5.15.0",
+    "eslint-config-prettier": "4.1.0",
+    "eslint-config-xo-space": "0.21.0",
+    "eslint-config-xo-typescript": "0.8.0",
+    "eslint-plugin-import": "2.16.0",
     "fs-extra": "7.0.1",
-    "jest": "23.6.0",
+    "jest": "24.1.0",
     "npm-run-all": "4.1.5",
     "rimraf": "2.6.3",
-    "rollup": "0.68.2",
+    "rollup": "1.4.0",
     "rollup-plugin-sourcemaps": "0.4.2",
-    "rollup-plugin-terser": "3.0.0",
-    "rollup-plugin-typescript2": "0.19.2",
+    "rollup-plugin-terser": "4.0.4",
+    "rollup-plugin-typescript2": "0.19.3",
     "rollup-plugin-uglify": "6.0.2",
     "semantic-release": "15.13.3",
-    "travis-deploy-once": "5.0.8",
-    "ts-jest": "23.10.1",
-    "ts-node": "7.0.1",
-    "tslint": "5.11.0",
-    "tslint-config-prettier": "1.15.0",
-    "tslint-config-standard": "8.0.1",
-    "typedoc": "0.12.0",
-    "typescript": "3.0.3"
+    "ts-jest": "24.0.0",
+    "ts-node": "8.0.2",
+    "typedoc": "0.14.2",
+    "typescript": "3.3.3333"
   },
   "release": {
     "branch": "master"
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
-  },
-  "jest": {
-    "testURL": "http://localhost",
-    "transform": {
-      ".ts": "ts-jest"
-    },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ],
-    "collectCoverage": true
   },
   "engines": {
     "node": ">=8.0.0"

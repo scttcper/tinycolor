@@ -458,7 +458,7 @@ Combination functions return an array of TinyColor objects unless otherwise note
 
 ### analogous
 
-`analogous: function(, results = 6, slices = 30) -> array<TinyColor>`.
+`analogous: function(results = 6, slices = 30) -> array<TinyColor>`.
 
 ```ts
 const colors = new TinyColor('#f00').analogous();
@@ -485,7 +485,7 @@ colors.map(t => t.toHexString()); // [ "#ff0000", "#ccff00", "#0066ff" ]
 
 ### triad
 
-`triad: function() -> array<TinyColor>`.
+`triad: function() -> array<TinyColor>`. Alias for `polyad(3)`.
 
 ```ts
 const colors = new TinyColor('#f00').triad();
@@ -494,6 +494,8 @@ colors.map(t => t.toHexString()); // [ "#ff0000", "#00ff00", "#0000ff" ]
 
 ### tetrad
 
+`tetrad: function() -> array<TinyColor>`. Alias for `polyad(4)`.
+
 ```ts
 const colors = new TinyColor('#f00').tetrad();
 colors.map(t => t.toHexString()); // [ "#ff0000", "#80ff00", "#00ffff", "#7f00ff" ]
@@ -501,8 +503,10 @@ colors.map(t => t.toHexString()); // [ "#ff0000", "#80ff00", "#00ffff", "#7f00ff
 
 ### polyad
 
+`polyad: function(number) -> array<TinyColor>`.
+
 ```ts
-const colors = new TinyColor('#f00').polyad(3);
+const colors = new TinyColor('#f00').polyad(4);
 colors.map(t => t.toHexString()); // [ "#ff0000", "#80ff00", "#00ffff", "#7f00ff" ]
 ```
 

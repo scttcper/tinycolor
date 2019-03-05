@@ -120,6 +120,17 @@ If you are calling this from code, you may want to use object input. Here are so
 
 ## Properties
 
+### originalInput
+
+The original input passed into the constructer used to create the tinycolor instance
+
+```ts
+const color = new TinyColor('red');
+color.originalInput; // "red"
+color = new TinyColor({ r: 255, g: 255, b: 255 });
+color.originalInput; // "{r: 255, g: 255, b: 255}"
+```
+
 ### format
 
 Returns the format used to create the tinycolor instance
@@ -146,17 +157,6 @@ color2.toString(); // "#000000"
 ```
 
 ## Methods
-
-### getOriginalInput
-
-Returns the input passed into the constructer used to create the tinycolor instance
-
-```ts
-const color = new TinyColor('red');
-color.getOriginalInput(); // "red"
-color = new TinyColor({ r: 255, g: 255, b: 255 });
-color.getOriginalInput(); // "{r: 255, g: 255, b: 255}"
-```
 
 ### getBrightness
 

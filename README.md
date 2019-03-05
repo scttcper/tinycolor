@@ -523,8 +523,10 @@ new TinyColor('#f00').complement().toHexString(); // "#00ffff"
 ### equals
 
 ```ts
-import { equals } from '@ctrl/tinycolor';
-equals(color1, color2);
+let color1 = new TinyColor('red');
+let color2 = new TinyColor('#f00');
+
+color1.equals(color2); // true
 ```
 
 ### random

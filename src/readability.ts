@@ -78,7 +78,7 @@ export interface WCAG2FallbackParms extends WCAG2Parms {
  */
 export function mostReadable(
   baseColor: ColorInput,
-  colorList: string[],
+  colorList: ColorInput[],
   args: WCAG2FallbackParms = { includeFallbackColors: false, level: 'AA', size: 'small' },
 ): TinyColor | null {
   let bestColor: TinyColor | null = null;

@@ -692,6 +692,7 @@ describe('TinyColor', () => {
   it('mostReadable', () => {
     expect(mostReadable('#000', ['#111', '#222'])!.toHexString()).toBe('#222222');
     expect(mostReadable('#f00', ['#d00', '#0d0'])!.toHexString()).toBe('#00dd00');
+    expect(mostReadable(new TinyColor('#f00'), [new TinyColor('#d00'), new TinyColor('#0d0')])!.toHexString()).toBe('#00dd00');
     expect(mostReadable('#fff', ['#fff', '#fff'])!.toHexString()).toBe('#ffffff');
     // includeFallbackColors
     expect(

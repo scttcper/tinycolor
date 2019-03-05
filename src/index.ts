@@ -457,6 +457,10 @@ export class TinyColor {
     return new TinyColor(hsl);
   }
 
+  /**
+   * Mix the current color a given amount with another color, from 0 to 100.
+   * 0 means no mixing (return current color).
+   */
   mix(color: ColorInput, amount = 50) {
     const rgb1 = this.toRgb();
     const rgb2 = new TinyColor(color).toRgb();

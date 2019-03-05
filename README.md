@@ -452,6 +452,17 @@ new TinyColor('#f00').spin(0).toString(); // "#ff0000"
 new TinyColor('#f00').spin(360).toString(); // "#ff0000"
 ```
 
+### mix
+
+`mix: function(amount = 50) => TinyColor`. Mix the current color a given amount with another color, from 0 to 100. 0 means no mixing (return current color).
+
+```ts
+let color1 = new TinyColor('#f0f');
+let color2 = new TinyColor('#0f0');
+
+color1.mix(color2).toHexString(); // #808080
+```
+
 ### Color Combinations
 
 Combination functions return an array of TinyColor objects unless otherwise noted.

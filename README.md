@@ -589,7 +589,7 @@ TinyColor assesses readability based on the [Web Content Accessibility Guideline
 
 #### readability
 
-`readability: function(TinyColor, TinyColor) -> Object`.
+`readability: function(TinyColor, TinyColor) -> number`.
 Returns the contrast ratio between two colors.
 
 ```ts

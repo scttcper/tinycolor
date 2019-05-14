@@ -46,7 +46,7 @@
     "eslint": "5.16.0",
     "eslint-config-prettier": "4.2.0",
     "eslint-config-xo-space": "0.21.0",
-    "eslint-config-xo-typescript": "0.9.0",
+    "eslint-config-xo-typescript": "0.12.0",
     "eslint-plugin-import": "2.17.2",
     "fs-extra": "7.0.1",
     "jest": "24.7.1",

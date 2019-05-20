@@ -49,7 +49,7 @@ export function clamp01(val: number) {
  * @hidden
  */
 export function isOnePointZero(n: string | number) {
-  return typeof n === 'string' && n.indexOf('.') !== -1 && parseFloat(n) === 1;
+  return typeof n === 'string' && n.includes('.') && parseFloat(n) === 1;
 }
 
 /**
@@ -57,7 +57,7 @@ export function isOnePointZero(n: string | number) {
  * @hidden
  */
 export function isPercentage(n: string | number) {
-  return typeof n === 'string' && n.indexOf('%') !== -1;
+  return typeof n === 'string' && n.includes('%');
 }
 
 /**

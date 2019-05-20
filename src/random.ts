@@ -229,7 +229,7 @@ function defineColor(bound: ColorBound) {
 export interface ColorBound {
   name: string;
   hueRange: [number, number] | null;
-  lowerBounds: [number, number][];
+  lowerBounds: Array<[number, number]>;
 }
 
 /**

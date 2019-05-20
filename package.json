@@ -16,9 +16,12 @@
     "hsa",
     "rgb"
   ],
-  "main": "./public_api.js",
-  "module": "./es/public_api.js",
-  "typings": "./public_api.d.ts",
+  "main": "./dist/public_api.js",
+  "module": "./dist/es/public_api.js",
+  "typings": "./dist/public_api.d.ts",
+  "files": [
+    "dist"
+  ],
   "sideEffects": false,
   "scripts": {
     "demo": "npm-run-all --parallel start:demo watch:demo",
@@ -27,15 +30,15 @@
     "start:demo": "serve demo/public",
     "lint": "eslint src/**/*.ts test/**/*.ts",
     "lint:fix": "eslint --fix src/**/*.ts test/**/*.ts",
-    "prebuild": "rimraf dist",
-    "build": "npm run build-es6; npm run build-cmjs; ts-node build",
+    "prepare": "npm run build",
+    "build": "del dist && npm run build-es6; npm run build-cmjs; ts-node build",
     "build-es6": "tsc -P ./tsconfig-build.json --outDir 'dist/es' --module es2015 -d false --moduleResolution node",
     "build-cmjs": "tsc -P ./tsconfig-build.json",
     "build:docs": "typedoc src && touch docs/.nojekyll",
     "test": "jest",
     "test:ci": "jest --ci --runInBand --reporters=default --reporters=jest-junit --coverage",
     "test:watch": "jest --watch",
-    "semantic-release": "cd dist && semantic-release"
+    "semantic-release": "semantic-release"
   },
   "devDependencies": {
     "@types/fs-extra": "7.0.0",
@@ -43,6 +46,7 @@
     "@types/node": "12.0.2",
     "@typescript-eslint/eslint-plugin": "1.9.0",
     "@typescript-eslint/parser": "1.9.0",
+    "del-cli": "^1.1.0",
     "eslint": "5.16.0",
     "eslint-config-prettier": "4.3.0",
     "eslint-config-xo-space": "0.21.0",
@@ -52,7 +56,6 @@
     "jest": "24.8.0",
     "jest-junit": "6.4.0",
     "npm-run-all": "4.1.5",
-    "rimraf": "2.6.3",
     "rollup": "1.12.3",
     "rollup-plugin-sourcemaps": "0.4.2",
     "rollup-plugin-terser": "4.0.4",

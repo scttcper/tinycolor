@@ -4,6 +4,8 @@
 
 A fork of [tinycolor2](https://github.com/bgrins/TinyColor) by [Brian Grinstead](https://github.com/bgrins)
 
+__DEMO__: https://tinycolor.netlify.com/  
+
 ### Changes from tinycolor2
 
 * reformatted into TypeScript / es2015 and requires node >= 8

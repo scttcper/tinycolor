@@ -2,7 +2,7 @@ import tinycolor from '../../src/umd_api';
 
 // make tinycolor available in the console
 (window as any).tinycolor = tinycolor;
-console.log(`try "new TinyColor('blue')" or "tinycolor.random()" or tinycolor('red')`);
+console.log('try "new TinyColor(\'blue\')" or "tinycolor.random()" or tinycolor(\'red\')');
 
 const input = document.querySelector<HTMLInputElement>('#color');
 
@@ -45,10 +45,8 @@ function colorChange(color) {
   const brighten = new tinycolor.TinyColor(color).brighten(20).toHexString();
   filtersEl.querySelector<HTMLElement>('.brighten').style['background-color'] = brighten;
 
-  const allColors = [];
-  for (const i in tinycolor.names) {
-    allColors.push(i);
-  }
+  const allColors = Object.keys(tinycolor.names);
+
   const readable = tinycolor.mostReadable(color, allColors);
   mostReadableEl.style['background-color'] = readable.toHexString();
 
@@ -61,10 +59,12 @@ function colorChange(color) {
   filtersEl.querySelector('.analogous').innerHTML = colorArrayToHTML(tiny.analogous());
   filtersEl.querySelector('.sc').innerHTML = colorArrayToHTML(tiny.splitcomplement());
 }
-(window as any).handleChange = function handleChange(color) {
+
+(window as any).handleChange = function (color) {
   input.value = color;
   colorChange(color);
 };
+
 colorChange({ r: 150, g: 0, b: 100 });
 
 // Set that box next to the title to a random color

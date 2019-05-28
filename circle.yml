@@ -37,17 +37,6 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: npm run semantic-release
-      - run:
-          name: Install and configure dependencies
-          command: |
-            git config credential.helper "cache --timeout=120"
-            git config user.email "scttcper@gmail.com"
-            git config user.name "ci-build"
-            ssh-add -D
-      - run: npm run build:docs
-      - run: cp -r demo/public/ docs
-      - run: npm run build:demo
-      - run: npx gh-pages -x -d docs -m "update docs [ci skip]" -r https://${GH_TOKEN}@github.com/scttcper/ts-trueskill.git
 
 workflows:
   version: 2

@@ -8,5 +8,6 @@
     "strict": false,
     "target": "es5",
   },
-  "files": ["./src/main"]
+  "files": ["./src/main.ts"],
+  "include": ["./**/*.ts"]
 }

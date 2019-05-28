@@ -36,3 +36,4 @@ dist
 demo/**/*.js
 demo/**/*.js.map
 junit.xml
+yarn.lock

@@ -81,10 +81,6 @@ new TinyColor('hsla(0, 100%, 50%, .5)');
 new TinyColor('hsl(0, 100%, 50%)');
 new TinyColor('hsl 0 1.0 0.5');
 new TinyColor({ h: 0, s: 1, l: 0.5 });
-
-import { fromRatio } from '@ctrl/tinycolor';
-fromRatio({ h: 1, s: 0, l: 0 });
-fromRatio({ h: 0.5, s: 0.5, l: 0.5 });
 ```
 
 ### HSV, HSVA
@@ -95,10 +91,6 @@ new TinyColor('hsva(0, 100%, 100%, .5)');
 new TinyColor('hsv (0 100% 100%)');
 new TinyColor('hsv 0 1 1');
 new TinyColor({ h: 0, s: 100, v: 100 });
-
-import { fromRatio } from '@ctrl/tinycolor';
-fromRatio({ h: 1, s: 0, v: 0 });
-fromRatio({ h: 0.5, s: 0.5, v: 0.5 });
 ```
 
 ### Named

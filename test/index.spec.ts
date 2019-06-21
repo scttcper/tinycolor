@@ -408,9 +408,7 @@ describe('TinyColor', () => {
     // Greater than 1
     expect(new TinyColor({ r: 255, g: 20, b: 10, a: 100 }).toRgbString()).toBe('rgb(255, 20, 10)');
     // Non Numeric
-    expect(new TinyColor({ r: 255, g: 20, b: 10, a: 'asdfasd' }).toRgbString()).toBe(
-      'rgb(255, 20, 10)',
-    );
+    expect(new TinyColor({ r: 255, g: 20, b: 10, a: 'asdfasd' } as any).toRgbString()).toBe('rgb(255, 20, 10)');
 
     expect(new TinyColor('#fff').toRgbString()).toBe('rgb(255, 255, 255)');
     // Greater than 1 in string parsing

@@ -13,5 +13,6 @@ module.exports = {
     'comma-dangle': ['error', 'always-multiline'],
     'max-params': 0,
     '@typescript-eslint/prefer-string-starts-ends-with': 0,
+    '@typescript-eslint/no-explicit-any': 0,
   },
 };

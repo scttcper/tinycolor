@@ -9,6 +9,7 @@
     "outDir": "./dist",
     "strict": true,
     "sourceMap": true,
+    "incremental": true,
     "inlineSources": true,
     "noUnusedParameters": true,
     "noUnusedLocals": true,

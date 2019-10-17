@@ -4,3 +4,4 @@ docs
 build.ts
 rollup.demo.js
 jest.config.js
+coverage

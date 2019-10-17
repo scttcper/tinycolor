@@ -4,6 +4,7 @@ module.exports = {
     project: 'tsconfig.eslint.json',
   },
   env: {
+    browser: true,
     node: true,
     jest: true,
   },
@@ -17,5 +18,7 @@ module.exports = {
     'max-params': 0,
     '@typescript-eslint/prefer-string-starts-ends-with': 0,
     '@typescript-eslint/no-explicit-any': 0,
+    '@typescript-eslint/strict-boolean-expressions': 0,
+    '@typescript-eslint/no-unnecessary-condition': 0,
   },
 };

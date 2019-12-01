@@ -45,7 +45,7 @@
     "@typescript-eslint/parser": "2.6.0",
     "eslint": "6.7.2",
     "eslint-config-xo-space": "0.22.0",
-    "eslint-config-xo-typescript": "0.19.0",
+    "eslint-config-xo-typescript": "0.23.0",
     "eslint-plugin-import": "2.18.2",
     "jest": "24.9.0",
     "jest-junit": "8.0.0",

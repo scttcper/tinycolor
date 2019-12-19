@@ -64,7 +64,7 @@ export class TinyColor {
     this.b = rgb.b;
     this.a = rgb.a;
     this.roundA = Math.round(100 * this.a) / 100;
-    this.format = opts.format || rgb.format;
+    this.format = opts.format ?? rgb.format;
     this.gradientType = opts.gradientType;
 
     // Don't let the range of [0,255] come back in [0,1].

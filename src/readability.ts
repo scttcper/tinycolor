@@ -42,7 +42,7 @@ export function isReadable(
   wcag2: WCAG2Parms = { level: 'AA', size: 'small' },
 ): boolean {
   const readabilityLevel = readability(color1, color2);
-  switch ((wcag2.level || 'AA') + (wcag2.size || 'small')) {
+  switch ((wcag2.level ?? 'AA') + (wcag2.size ?? 'small')) {
     case 'AAsmall':
     case 'AAAlarge':
       return readabilityLevel >= 4.5;

@@ -196,9 +196,9 @@ export function rgbToHex(r: number, g: number, b: number, allow3Char: boolean): 
   // Return a 3 character hex if possible
   if (
     allow3Char &&
-    hex[0].charAt(0) === hex[0].charAt(1) &&
-    hex[1].charAt(0) === hex[1].charAt(1) &&
-    hex[2].charAt(0) === hex[2].charAt(1)
+    hex[0].startsWith(hex[0].charAt(1)) &&
+    hex[1].startsWith(hex[1].charAt(1)) &&
+    hex[2].startsWith(hex[2].charAt(1))
   ) {
     return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0);
   }
@@ -223,10 +223,10 @@ export function rgbaToHex(r: number, g: number, b: number, a: number, allow4Char
   // Return a 4 character hex if possible
   if (
     allow4Char &&
-    hex[0].charAt(0) === hex[0].charAt(1) &&
-    hex[1].charAt(0) === hex[1].charAt(1) &&
-    hex[2].charAt(0) === hex[2].charAt(1) &&
-    hex[3].charAt(0) === hex[3].charAt(1)
+    hex[0].startsWith(hex[0].charAt(1)) &&
+    hex[1].startsWith(hex[1].charAt(1)) &&
+    hex[2].startsWith(hex[2].charAt(1)) &&
+    hex[3].startsWith(hex[3].charAt(1))
   ) {
     return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0) + hex[3].charAt(0);
   }

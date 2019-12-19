@@ -26,7 +26,7 @@ export interface RandomCountOptions extends RandomOptions {
 
 export function random(options?: RandomOptions): TinyColor;
 export function random(options?: RandomCountOptions): TinyColor[];
-export function random(options: RandomOptions | RandomCountOptions = {}) {
+export function random(options: RandomOptions | RandomCountOptions = {}): TinyColor | TinyColor[] {
   // Check if we need to generate multiple colors
   if ((options as RandomCountOptions).count !== undefined && (options as RandomCountOptions).count !== null) {
     const totalColors: number = (options as RandomCountOptions).count as number;
@@ -67,7 +67,7 @@ export function random(options: RandomOptions | RandomCountOptions = {}) {
   return new TinyColor(res as HSVA);
 }
 
-function pickHue(hue: number | string | undefined, seed?: number) {
+function pickHue(hue: number | string | undefined, seed?: number): number {
   const hueRange = getHueRange(hue);
   let res = randomWithin(hueRange, seed);
 
@@ -80,7 +80,7 @@ function pickHue(hue: number | string | undefined, seed?: number) {
   return res;
 }
 
-function pickSaturation(hue: number, options: RandomOptions) {
+function pickSaturation(hue: number, options: RandomOptions): number {
   if (options.hue === 'monochrome') {
     return 0;
   }
@@ -111,7 +111,7 @@ function pickSaturation(hue: number, options: RandomOptions) {
   return randomWithin([sMin, sMax], options.seed);
 }
 
-function pickBrightness(H: number, S: number, options: RandomOptions) {
+function pickBrightness(H: number, S: number, options: RandomOptions): number {
   let bMin = getMinimumBrightness(H, S);
   let bMax = 100;
 
@@ -133,7 +133,7 @@ function pickBrightness(H: number, S: number, options: RandomOptions) {
   return randomWithin([bMin, bMax], options.seed);
 }
 
-function getMinimumBrightness(H: number, S: number) {
+function getMinimumBrightness(H: number, S: number): number {
   const { lowerBounds } = getColorInfo(H);
 
   for (let i = 0; i < lowerBounds.length - 1; i++) {
@@ -179,7 +179,13 @@ function getHueRange(colorInput?: number | string): [number, number] {
   return [0, 360];
 }
 
-function getColorInfo(hue: number) {
+function getColorInfo(hue: number): {
+  name: string;
+  hueRange: [number, number] | null;
+  lowerBounds: Array<[number, number]>;
+  saturationRange: number[];
+  brightnessRange: number[];
+} {
   // Maps red colors to make picking hue easier
   if (hue >= 334 && hue <= 360) {
     hue -= 360;
@@ -195,7 +201,7 @@ function getColorInfo(hue: number) {
   throw Error('Color not found');
 }
 
-function randomWithin(range: [number, number], seed?: number) {
+function randomWithin(range: [number, number], seed?: number): number {
   if (seed === undefined) {
     return Math.floor(range[0] + (Math.random() * (range[1] + 1 - range[0])));
   }
@@ -208,7 +214,13 @@ function randomWithin(range: [number, number], seed?: number) {
   return Math.floor(min + (rnd * (max - min)));
 }
 
-function defineColor(bound: ColorBound) {
+function defineColor(bound: ColorBound): {
+  name: string;
+  hueRange: [number, number] | null;
+  lowerBounds: Array<[number, number]>;
+  saturationRange: number[];
+  brightnessRange: number[];
+} {
   const sMin = bound.lowerBounds[0][0];
   const sMax = bound.lowerBounds[bound.lowerBounds.length - 1][0];
   const bMin = bound.lowerBounds[bound.lowerBounds.length - 1][1];

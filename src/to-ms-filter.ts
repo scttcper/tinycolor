@@ -3,7 +3,7 @@ import { ColorInput, TinyColor } from './index';
 /**
  * Returns the color represented as a Microsoft filter for use in old versions of IE.
  */
-export function toMsFilter(firstColor: ColorInput, secondColor?: ColorInput) {
+export function toMsFilter(firstColor: ColorInput, secondColor?: ColorInput): string {
   const color = new TinyColor(firstColor);
   const hex8String = '#' + rgbaToArgbHex(color.r, color.g, color.b, color.a);
   let secondHex8String = hex8String;

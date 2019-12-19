@@ -2,7 +2,7 @@
  * Take input from [0, n] and return it as [0, 1]
  * @hidden
  */
-export function bound01(n: any, max: number) {
+export function bound01(n: any, max: number): any {
   if (isOnePointZero(n)) {
     n = '100%';
   }
@@ -39,7 +39,7 @@ export function bound01(n: any, max: number) {
  * Force a number between 0 and 1
  * @hidden
  */
-export function clamp01(val: number) {
+export function clamp01(val: number): number {
   return Math.min(1, Math.max(0, val));
 }
 
@@ -48,7 +48,7 @@ export function clamp01(val: number) {
  * <http://stackoverflow.com/questions/7422072/javascript-how-to-detect-number-as-a-decimal-including-1-0>
  * @hidden
  */
-export function isOnePointZero(n: string | number) {
+export function isOnePointZero(n: string | number): boolean {
   return typeof n === 'string' && n.includes('.') && parseFloat(n) === 1;
 }
 
@@ -56,7 +56,7 @@ export function isOnePointZero(n: string | number) {
  * Check to see if string passed in is a percentage
  * @hidden
  */
-export function isPercentage(n: string | number) {
+export function isPercentage(n: string | number): boolean {
   return typeof n === 'string' && n.includes('%');
 }
 
@@ -64,7 +64,7 @@ export function isPercentage(n: string | number) {
  * Return a valid alpha value [0,1] with all invalid values being set to 1
  * @hidden
  */
-export function boundAlpha(a?: number | string) {
+export function boundAlpha(a?: number | string): number {
   a = parseFloat(a as string);
 
   if (isNaN(a) || a < 0 || a > 1) {
@@ -78,7 +78,7 @@ export function boundAlpha(a?: number | string) {
  * Replace a decimal with it's percentage value
  * @hidden
  */
-export function convertToPercentage(n: number | string) {
+export function convertToPercentage(n: number | string): number | string {
   if (n <= 1) {
     return `${Number(n) * 100}%`;
   }
@@ -90,6 +90,6 @@ export function convertToPercentage(n: number | string) {
  * Force a hex value to have 2 characters
  * @hidden
  */
-export function pad2(c: string) {
+export function pad2(c: string): string {
   return c.length === 1 ? '0' + c : String(c);
 }

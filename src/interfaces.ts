@@ -1,4 +1,12 @@
 /**
+ * convert all properties in an interface to a number
+ */
+export type Numberify<T> = {
+  // eslint-disable-next-line @typescript-eslint/generic-type-naming
+  [P in keyof T]: number;
+};
+
+/**
  * A representation of additive color mixing.
  * Projection of primary color lights on a white screen shows secondary
  * colors where two overlap; the combination of all three of red, green,

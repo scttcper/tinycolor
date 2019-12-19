@@ -9,7 +9,7 @@ import { ColorInput, TinyColor } from './index';
  *
  * Analyze the 2 colors and returns the color contrast defined by (WCAG Version 2)
  */
-export function readability(color1: ColorInput, color2: ColorInput) {
+export function readability(color1: ColorInput, color2: ColorInput): number {
   const c1 = new TinyColor(color1);
   const c2 = new TinyColor(color2);
   return (
@@ -40,7 +40,7 @@ export function isReadable(
   color1: ColorInput,
   color2: ColorInput,
   wcag2: WCAG2Parms = { level: 'AA', size: 'small' },
-) {
+): boolean {
   const readabilityLevel = readability(color1, color2);
   switch ((wcag2.level || 'AA') + (wcag2.size || 'small')) {
     case 'AAsmall':

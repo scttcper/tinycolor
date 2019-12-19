@@ -1,7 +1,7 @@
 import { rgbaToHex, rgbToHex, rgbToHsl, rgbToHsv } from './conversion';
 import { names } from './css-color-names';
 import { inputToRGB } from './format-input';
-import { HSL, HSLA, HSV, HSVA, RGB, RGBA } from './interfaces';
+import { HSL, HSLA, HSV, HSVA, RGB, RGBA, Numberify } from './interfaces';
 import { bound01, boundAlpha, clamp01 } from './util';
 
 export interface TinyColorOptions {
@@ -86,11 +86,11 @@ export class TinyColor {
     this.isValid = rgb.ok;
   }
 
-  isDark() {
+  isDark(): boolean {
     return this.getBrightness() < 128;
   }
 
-  isLight() {
+  isLight(): boolean {
     return !this.isDark();
   }
 
@@ -158,7 +158,7 @@ export class TinyColor {
   /**
    * Returns the object as a HSVA object.
    */
-  toHsv() {
+  toHsv(): Numberify<HSVA> {
     const hsv = rgbToHsv(this.r, this.g, this.b);
     return { h: hsv.h * 360, s: hsv.s, v: hsv.v, a: this.a };
   }
@@ -178,7 +178,7 @@ export class TinyColor {
   /**
    * Returns the object as a HSLA object.
    */
-  toHsl() {
+  toHsl(): Numberify<HSLA> {
     const hsl = rgbToHsl(this.r, this.g, this.b);
     return { h: hsl.h * 360, s: hsl.s, l: hsl.l, a: this.a };
   }
@@ -230,7 +230,7 @@ export class TinyColor {
   /**
    * Returns the object as a RGBA object.
    */
-  toRgb() {
+  toRgb(): Numberify<RGBA> {
     return {
       r: Math.round(this.r),
       g: Math.round(this.g),
@@ -243,7 +243,7 @@ export class TinyColor {
    * Returns the RGBA values interpolated into a string with the following format:
    * "RGBA(xxx, xxx, xxx, xx)".
    */
-  toRgbString() {
+  toRgbString(): string {
     const r = Math.round(this.r);
     const g = Math.round(this.g);
     const b = Math.round(this.b);
@@ -253,8 +253,8 @@ export class TinyColor {
   /**
    * Returns the object as a RGBA object.
    */
-  toPercentageRgb() {
-    const fmt = (x: number) => `${Math.round(bound01(x, 255) * 100)}%`;
+  toPercentageRgb(): RGBA {
+    const fmt = (x: number): string => `${Math.round(bound01(x, 255) * 100)}%`;
     return {
       r: fmt(this.r),
       g: fmt(this.g),
@@ -266,8 +266,8 @@ export class TinyColor {
   /**
    * Returns the RGBA relative values interpolated into a string
    */
-  toPercentageRgbString() {
-    const rnd = (x: number) => Math.round(bound01(x, 255) * 100);
+  toPercentageRgbString(): string {
+    const rnd = (x: number): number => Math.round(bound01(x, 255) * 100);
     return this.a === 1 ?
       `rgb(${rnd(this.r)}%, ${rnd(this.g)}%, ${rnd(this.b)}%)` :
       `rgba(${rnd(this.r)}%, ${rnd(this.g)}%, ${rnd(this.b)}%, ${this.roundA})`;
@@ -300,9 +300,9 @@ export class TinyColor {
    *
    * @param format - The format to be used when displaying the string representation.
    */
-  toString(format?: ColorFormats) {
+  toString(format?: ColorFormats): string | false {
     const formatSet = Boolean(format);
-    format = format || this.format;
+    format = format ?? this.format;
 
     let formattedString: string | false = false;
     const hasAlpha = this.a < 1 && this.a >= 0;
@@ -358,7 +358,7 @@ export class TinyColor {
     return formattedString || this.toHexString();
   }
 
-  clone() {
+  clone(): TinyColor {
     return new TinyColor(this.toString() as string);
   }
 
@@ -366,7 +366,7 @@ export class TinyColor {
    * Lighten the color a given amount. Providing 100 will always return white.
    * @param amount - valid between 1-100
    */
-  lighten(amount = 10) {
+  lighten(amount = 10): TinyColor {
     const hsl = this.toHsl();
     hsl.l += amount / 100;
     hsl.l = clamp01(hsl.l);
@@ -377,7 +377,7 @@ export class TinyColor {
    * Brighten the color a given amount, from 0 to 100.
    * @param amount - valid between 1-100
    */
-  brighten(amount = 10) {
+  brighten(amount = 10): TinyColor {
     const rgb = this.toRgb();
     rgb.r = Math.max(0, Math.min(255, rgb.r - Math.round(255 * -(amount / 100))));
     rgb.g = Math.max(0, Math.min(255, rgb.g - Math.round(255 * -(amount / 100))));
@@ -390,7 +390,7 @@ export class TinyColor {
    * Providing 100 will always return black.
    * @param amount - valid between 1-100
    */
-  darken(amount = 10) {
+  darken(amount = 10): TinyColor {
     const hsl = this.toHsl();
     hsl.l -= amount / 100;
     hsl.l = clamp01(hsl.l);
@@ -402,7 +402,7 @@ export class TinyColor {
    * Providing 0 will do nothing, providing 100 will always return white.
    * @param amount - valid between 1-100
    */
-  tint(amount = 10) {
+  tint(amount = 10): TinyColor {
     return this.mix('white', amount);
   }
 
@@ -411,7 +411,7 @@ export class TinyColor {
    * Providing 0 will do nothing, providing 100 will always return black.
    * @param amount - valid between 1-100
    */
-  shade(amount = 10) {
+  shade(amount = 10): TinyColor {
     return this.mix('black', amount);
   }
 
@@ -420,7 +420,7 @@ export class TinyColor {
    * Providing 100 will is the same as calling greyscale
    * @param amount - valid between 1-100
    */
-  desaturate(amount = 10) {
+  desaturate(amount = 10): TinyColor {
     const hsl = this.toHsl();
     hsl.s -= amount / 100;
     hsl.s = clamp01(hsl.s);
@@ -431,7 +431,7 @@ export class TinyColor {
    * Saturate the color a given amount, from 0 to 100.
    * @param amount - valid between 1-100
    */
-  saturate(amount = 10) {
+  saturate(amount = 10): TinyColor {
     const hsl = this.toHsl();
     hsl.s += amount / 100;
     hsl.s = clamp01(hsl.s);
@@ -442,7 +442,7 @@ export class TinyColor {
    * Completely desaturates a color into greyscale.
    * Same as calling `desaturate(100)`
    */
-  greyscale() {
+  greyscale(): TinyColor {
     return this.desaturate(100);
   }
 
@@ -450,7 +450,7 @@ export class TinyColor {
    * Spin takes a positive or negative amount within [-360, 360] indicating the change of hue.
    * Values outside of this range will be wrapped into this range.
    */
-  spin(amount: number) {
+  spin(amount: number): TinyColor {
     const hsl = this.toHsl();
     const hue = (hsl.h + amount) % 360;
     hsl.h = hue < 0 ? 360 + hue : hue;
@@ -461,7 +461,7 @@ export class TinyColor {
    * Mix the current color a given amount with another color, from 0 to 100.
    * 0 means no mixing (return current color).
    */
-  mix(color: ColorInput, amount = 50) {
+  mix(color: ColorInput, amount = 50): TinyColor {
     const rgb1 = this.toRgb();
     const rgb2 = new TinyColor(color).toRgb();
 
@@ -476,7 +476,7 @@ export class TinyColor {
     return new TinyColor(rgba);
   }
 
-  analogous(results = 6, slices = 30) {
+  analogous(results = 6, slices = 30): TinyColor[] {
     const hsl = this.toHsl();
     const part = 360 / slices;
     const ret: TinyColor[] = [this];
@@ -492,13 +492,13 @@ export class TinyColor {
   /**
    * taken from https://github.com/infusion/jQuery-xcolor/blob/master/jquery.xcolor.js
    */
-  complement() {
+  complement(): TinyColor {
     const hsl = this.toHsl();
     hsl.h = (hsl.h + 180) % 360;
     return new TinyColor(hsl);
   }
 
-  monochromatic(results = 6) {
+  monochromatic(results = 6): TinyColor[] {
     const hsv = this.toHsv();
     const { h } = hsv;
     const { s } = hsv;
@@ -514,7 +514,7 @@ export class TinyColor {
     return res;
   }
 
-  splitcomplement() {
+  splitcomplement(): TinyColor[] {
     const hsl = this.toHsl();
     const { h } = hsl;
     return [
@@ -524,11 +524,11 @@ export class TinyColor {
     ];
   }
 
-  triad() {
+  triad(): TinyColor[] {
     return this.polyad(3);
   }
 
-  tetrad() {
+  tetrad(): TinyColor[] {
     return this.polyad(4);
   }
 
@@ -536,7 +536,7 @@ export class TinyColor {
    * Get polyad colors, like (for 1, 2, 3, 4, 5, 6, 7, 8, etc...)
    * monad, dyad, triad, tetrad, pentad, hexad, heptad, octad, etc...
    */
-  polyad(n: number) {
+  polyad(n: number): TinyColor[] {
     const hsl = this.toHsl();
     const { h } = hsl;
 
@@ -558,6 +558,6 @@ export class TinyColor {
 }
 
 // kept for backwards compatability with v1
-export function tinycolor(color: ColorInput = '', opts: Partial<TinyColorOptions> = {}) {
+export function tinycolor(color: ColorInput = '', opts: Partial<TinyColorOptions> = {}): TinyColor {
   return new TinyColor(color, opts);
 }

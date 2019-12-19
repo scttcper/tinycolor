@@ -21,7 +21,16 @@ import { boundAlpha, convertToPercentage } from './util';
  * "hsv(0, 100%, 100%)" or "hsv 0 100% 100%"
  * ```
  */
-export function inputToRGB(color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA | any) {
+export function inputToRGB(
+  color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA | any,
+): {
+    ok: boolean;
+    format: any;
+    r: number;
+    g: number;
+    b: number;
+    a: number;
+  } {
   let rgb = { r: 0, g: 0, b: 0 };
   let a = 1;
   let s: string | number | null = null;
@@ -200,6 +209,6 @@ export function stringInputToObject(color: string): any {
  * Check to see if it looks like a CSS unit
  * (see `matchers` above for definition).
  */
-export function isValidCSSUnit(color: string | number) {
+export function isValidCSSUnit(color: string | number): boolean {
   return Boolean(matchers.CSS_UNIT.exec(String(color)));
 }

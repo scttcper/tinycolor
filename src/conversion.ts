@@ -1,4 +1,5 @@
 import { bound01, pad2 } from './util';
+import { RGB, HSL, HSV, Numberify } from './interfaces';
 
 // `rgbToHsl`, `rgbToHsv`, `hslToRgb`, `hsvToRgb` modified from:
 // <http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript>
@@ -9,7 +10,7 @@ import { bound01, pad2 } from './util';
  * *Assumes:* r, g, b in [0, 255] or [0, 1]
  * *Returns:* { r, g, b } in [0, 255]
  */
-export function rgbToRgb(r: number, g: number, b: number) {
+export function rgbToRgb(r: number, g: number, b: number): Numberify<RGB> {
   return {
     r: bound01(r, 255) * 255,
     g: bound01(g, 255) * 255,
@@ -22,7 +23,7 @@ export function rgbToRgb(r: number, g: number, b: number) {
  * *Assumes:* r, g, and b are contained in [0, 255] or [0, 1]
  * *Returns:* { h, s, l } in [0,1]
  */
-export function rgbToHsl(r: number, g: number, b: number) {
+export function rgbToHsl(r: number, g: number, b: number): Numberify<HSL> {
   r = bound01(r, 255);
   g = bound01(g, 255);
   b = bound01(b, 255);
@@ -59,13 +60,37 @@ export function rgbToHsl(r: number, g: number, b: number) {
   return { h, s, l };
 }
 
+function hue2rgb(p: number, q: number, t: number): number {
+  if (t < 0) {
+    t += 1;
+  }
+
+  if (t > 1) {
+    t -= 1;
+  }
+
+  if (t < 1 / 6) {
+    return p + ((q - p) * (6 * t));
+  }
+
+  if (t < 1 / 2) {
+    return q;
+  }
+
+  if (t < 2 / 3) {
+    return p + ((q - p) * ((2 / 3) - t) * 6);
+  }
+
+  return p;
+}
+
 /**
  * Converts an HSL color value to RGB.
  *
  * *Assumes:* h is contained in [0, 1] or [0, 360] and s and l are contained [0, 1] or [0, 100]
  * *Returns:* { r, g, b } in the set [0, 255]
  */
-export function hslToRgb(h: number, s: number, l: number) {
+export function hslToRgb(h: number, s: number, l: number): Numberify<RGB> {
   let r;
   let g;
   let b;
@@ -73,30 +98,6 @@ export function hslToRgb(h: number, s: number, l: number) {
   h = bound01(h, 360);
   s = bound01(s, 100);
   l = bound01(l, 100);
-
-  function hue2rgb(p: number, q: number, t: number) {
-    if (t < 0) {
-      t += 1;
-    }
-
-    if (t > 1) {
-      t -= 1;
-    }
-
-    if (t < 1 / 6) {
-      return p + ((q - p) * (6 * t));
-    }
-
-    if (t < 1 / 2) {
-      return q;
-    }
-
-    if (t < 2 / 3) {
-      return p + ((q - p) * ((2 / 3) - t) * 6);
-    }
-
-    return p;
-  }
 
   if (s === 0) {
     // achromatic
@@ -120,7 +121,7 @@ export function hslToRgb(h: number, s: number, l: number) {
  * *Assumes:* r, g, and b are contained in the set [0, 255] or [0, 1]
  * *Returns:* { h, s, v } in [0,1]
  */
-export function rgbToHsv(r: number, g: number, b: number) {
+export function rgbToHsv(r: number, g: number, b: number): Numberify<HSV> {
   r = bound01(r, 255);
   g = bound01(g, 255);
   b = bound01(b, 255);
@@ -161,7 +162,7 @@ export function rgbToHsv(r: number, g: number, b: number) {
  * *Assumes:* h is contained in [0, 1] or [0, 360] and s and v are contained in [0, 1] or [0, 100]
  * *Returns:* { r, g, b } in the set [0, 255]
  */
-export function hsvToRgb(h: number, s: number, v: number) {
+export function hsvToRgb(h: number, s: number, v: number): Numberify<RGB> {
   h = bound01(h, 360) * 6;
   s = bound01(s, 100);
   v = bound01(v, 100);
@@ -185,7 +186,7 @@ export function hsvToRgb(h: number, s: number, v: number) {
  * Assumes r, g, and b are contained in the set [0, 255]
  * Returns a 3 or 6 character hex
  */
-export function rgbToHex(r: number, g: number, b: number, allow3Char: boolean) {
+export function rgbToHex(r: number, g: number, b: number, allow3Char: boolean): string {
   const hex = [
     pad2(Math.round(r).toString(16)),
     pad2(Math.round(g).toString(16)),
@@ -211,7 +212,7 @@ export function rgbToHex(r: number, g: number, b: number, allow3Char: boolean) {
  * Assumes r, g, b are contained in the set [0, 255] and
  * a in [0, 1]. Returns a 4 or 8 character rgba hex
  */
-export function rgbaToHex(r: number, g: number, b: number, a: number, allow4Char: boolean) {
+export function rgbaToHex(r: number, g: number, b: number, a: number, allow4Char: boolean): string {
   const hex = [
     pad2(Math.round(r).toString(16)),
     pad2(Math.round(g).toString(16)),
@@ -237,7 +238,7 @@ export function rgbaToHex(r: number, g: number, b: number, a: number, allow4Char
  * Converts an RGBA color to an ARGB Hex8 string
  * Rarely used, but required for "toFilter()"
  */
-export function rgbaToArgbHex(r: number, g: number, b: number, a: number) {
+export function rgbaToArgbHex(r: number, g: number, b: number, a: number): string {
   const hex = [
     pad2(convertDecimalToHex(a)),
     pad2(Math.round(r).toString(16)),
@@ -249,16 +250,16 @@ export function rgbaToArgbHex(r: number, g: number, b: number, a: number) {
 }
 
 /** Converts a decimal to a hex value */
-export function convertDecimalToHex(d: string | number) {
+export function convertDecimalToHex(d: string | number): string {
   return Math.round(parseFloat(d as string) * 255).toString(16);
 }
 
 /** Converts a hex value to a decimal */
-export function convertHexToDecimal(h: string) {
+export function convertHexToDecimal(h: string): number {
   return parseIntFromHex(h) / 255;
 }
 
 /** Parse a base-16 hex value into a base-10 integer */
-export function parseIntFromHex(val: string) {
+export function parseIntFromHex(val: string): number {
   return parseInt(val, 16);
 }

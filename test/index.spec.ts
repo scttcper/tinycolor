@@ -875,7 +875,7 @@ describe('TinyColor', () => {
   });
 });
 
-function colorsToHexString(colors: TinyColor[]) {
+function colorsToHexString(colors: TinyColor[]): string {
   return colors
     .map(c => {
       return c.toHex();

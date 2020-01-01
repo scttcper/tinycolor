@@ -49,7 +49,7 @@
     "eslint-plugin-import": "2.19.1",
     "jest": "24.9.0",
     "jest-junit": "10.0.0",
-    "rollup": "1.27.13",
+    "rollup": "1.27.14",
     "rollup-plugin-livereload": "1.0.4",
     "rollup-plugin-serve": "1.0.1",
     "rollup-plugin-sourcemaps": "0.4.2",

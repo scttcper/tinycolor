@@ -2,7 +2,6 @@
  * convert all properties in an interface to a number
  */
 export type Numberify<T> = {
-  // eslint-disable-next-line @typescript-eslint/generic-type-naming
   [P in keyof T]: number;
 };
 

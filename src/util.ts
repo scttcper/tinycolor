@@ -2,7 +2,7 @@
  * Take input from [0, n] and return it as [0, 1]
  * @hidden
  */
-export function bound01(n: any, max: number): any {
+export function bound01(n: any, max: number): number {
   if (isOnePointZero(n)) {
     n = '100%';
   }
@@ -32,7 +32,7 @@ export function bound01(n: any, max: number): any {
     n = (n % max) / parseFloat(String(max));
   }
 
-  return n;
+  return n as number;
 }
 
 /**

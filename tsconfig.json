@@ -1,20 +1,17 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "target": "es2015",
-    "lib": ["es2017"],
+    "lib": ["es2019"],
+    "target": "es2018",
     "module": "commonjs",
     "esModuleInterop": true,
     "declaration": true,
     "outDir": "./dist",
     "strict": true,
     "sourceMap": true,
-    "incremental": true,
-    "inlineSources": true,
     "noUnusedParameters": true,
     "noUnusedLocals": true,
-    "noImplicitAny": false,
-    "strictPropertyInitialization": false
+    "noImplicitAny": false
   },
   "files": ["src/public_api.ts"],
   "typedocOptions": {

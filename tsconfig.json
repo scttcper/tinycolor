@@ -13,7 +13,6 @@
     "noUnusedLocals": true,
     "noImplicitAny": false
   },
-  "files": ["src/public_api.ts"],
   "typedocOptions": {
     "out": "docs/docs",
     "mode": "file",

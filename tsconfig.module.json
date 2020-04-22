@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "declaration": false,
+    "outDir": "dist/module",
+    "skipLibCheck": true
+  },
+  "files": ["./src/public_api", "./src/umd_api"]
+}

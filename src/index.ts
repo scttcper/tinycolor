@@ -287,8 +287,8 @@ export class TinyColor {
     }
 
     const hex = '#' + rgbToHex(this.r, this.g, this.b, false);
-    for (const key of Object.keys(names)) {
-      if (names[key] === hex) {
+    for (const [key, value] of Object.entries(names)) {
+      if (hex === value) {
         return key;
       }
     }

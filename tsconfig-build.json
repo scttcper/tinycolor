@@ -1,15 +1,4 @@
 {
   "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
-    "declaration": true,
-    "sourceMap": false,
-    "inlineSources": false,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "removeComments": true,
-    "skipLibCheck": true
-  },
   "files": ["./src/public_api", "./src/umd_api"]
 }

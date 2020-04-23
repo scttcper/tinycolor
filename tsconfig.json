@@ -12,22 +12,5 @@
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "noImplicitAny": false
-  },
-  "typedocOptions": {
-    "out": "docs/docs",
-    "mode": "file",
-    "target": "ES6",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "exclude": "source/test",
-    "ignoreCompilerErrors": true,
-    "excludePrivate": true,
-    "excludeNotExported": true,
-    "stripInternal": true,
-    "suppressExcessPropertyErrors": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "theme": "minimal",
-    "hideGenerator": true,
-    "readme": "none"
   }
 }

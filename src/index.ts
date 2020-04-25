@@ -525,10 +525,16 @@ export class TinyColor {
     ];
   }
 
+  /**
+   * Alias for `polyad(3)`
+   */
   triad(): TinyColor[] {
     return this.polyad(3);
   }
 
+  /**
+   * Alias for `polyad(4)`
+   */
   tetrad(): TinyColor[] {
     return this.polyad(4);
   }

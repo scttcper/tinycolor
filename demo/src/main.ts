@@ -65,7 +65,8 @@ function colorChange(color) {
   colorChange(color);
 };
 
-colorChange({ r: 150, g: 0, b: 100 });
+const starterColor = tinycolor.random({ luminosity: 'bright' }).toHexString();
+colorChange(starterColor);
 
 // Set that box next to the title to a random color
-colorBoxEl.style['background-color'] = tinycolor.random({ luminosity: 'bright' }).toHexString();
+colorBoxEl.style['background-color'] = starterColor;

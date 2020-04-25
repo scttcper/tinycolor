@@ -4,7 +4,7 @@
 
 A fork of [tinycolor2](https://github.com/bgrins/TinyColor) by [Brian Grinstead](https://github.com/bgrins)
 
-__DEMO__: https://tinycolor.netlify.com/  
+__DEMO__: https://tinycolor.netlify.app  
 
 ### Changes from tinycolor2
 

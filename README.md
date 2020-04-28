@@ -101,6 +101,12 @@ new TinyColor('blanchedalmond');
 new TinyColor('darkblue');
 ```
 
+### Number
+```ts
+new TinyColor(0x0);
+new TinyColor(0xaabbcc);
+```
+
 ### Accepted Object Input
 
 If you are calling this from code, you may want to use object input. Here are some examples of the different types of accepted object inputs:
@@ -261,6 +267,12 @@ const color = new TinyColor('red');
 color.toHslString(); // "hsl(0, 100%, 50%)"
 color.setAlpha(0.5);
 color.toHslString(); // "hsla(0, 100%, 50%, 0.5)"
+```
+
+### toNumber
+```ts
+new TinyColor('#aabbcc').toNumber() === 0xaabbcc // true
+new TinyColor('rgb(1, 1, 1)').toNumber() === (1 << 16) + (1 << 8) + 1 // true
 ```
 
 ### toHex

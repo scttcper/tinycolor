@@ -1,4 +1,4 @@
-import { rgbaToHex, rgbToHex, rgbToHsl, rgbToHsv } from './conversion';
+import { rgbaToHex, rgbToHex, rgbToHsl, rgbToHsv, numberInputToObject } from './conversion';
 import { names } from './css-color-names';
 import { inputToRGB } from './format-input';
 import { HSL, HSLA, HSV, HSVA, RGB, RGBA, Numberify } from './interfaces';
@@ -9,7 +9,7 @@ export interface TinyColorOptions {
   gradientType: string;
 }
 
-export type ColorInput = string | RGB | RGBA | HSL | HSLA | HSV | HSVA | TinyColor;
+export type ColorInput = string | number | RGB | RGBA | HSL | HSLA | HSV | HSVA | TinyColor;
 
 export type ColorFormats =
   | 'rgb'
@@ -55,6 +55,10 @@ export class TinyColor {
     if (color instanceof TinyColor) {
       // eslint-disable-next-line no-constructor-return
       return color;
+    }
+
+    if (typeof color === 'number') {
+      color = numberInputToObject(color);
     }
 
     this.originalInput = color;
@@ -357,6 +361,10 @@ export class TinyColor {
     }
 
     return formattedString || this.toHexString();
+  }
+
+  toNumber(): number {
+    return (Math.round(this.r) << 16) + (Math.round(this.g) << 8) + (Math.round(this.b));
   }
 
   clone(): TinyColor {

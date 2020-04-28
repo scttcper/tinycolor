@@ -873,6 +873,20 @@ describe('TinyColor', () => {
   it('legacy random', () => {
     expect(legacyRandom().isValid).toBeTruthy();
   });
+
+  it('should handle conversion to number', () => {
+    expect(tinycolor('rgb(18, 0, 0)').toString()).toBe(tinycolor(0x120000).toString());
+    expect(tinycolor('rgb(0, 52, 0)').toString()).toBe(tinycolor(0x3400).toString());
+    expect(tinycolor('rgb(0, 0, 86)').toString()).toBe(tinycolor(0x56).toString());
+
+    expect(tinycolor('rgb(1, 1, 1)').toNumber()).toBe((1 << 16) + (1 << 8) + 1);
+    expect(tinycolor('#aabbcc').toNumber()).toBe(0xaabbcc);
+  });
+
+  it('should convert hex number input to hex string', () => {
+    expect(tinycolor(0x0).toHexString()).toBe('#000000');
+    expect(tinycolor(0xaabbcc).toHexString()).toBe('#aabbcc');
+  });
 });
 
 function colorsToHexString(colors: TinyColor[]): string {

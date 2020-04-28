@@ -263,3 +263,11 @@ export function convertHexToDecimal(h: string): number {
 export function parseIntFromHex(val: string): number {
   return parseInt(val, 16);
 }
+
+export function numberInputToObject(color: number): RGB {
+  return {
+    r: color >> 16,
+    g: (color & 0xff00) >> 8,
+    b: color & 0xff,
+  };
+}

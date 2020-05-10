@@ -1,3 +1,5 @@
+import { describe, it, expect } from '@jest/globals';
+
 import {
   default as defaultTiny,
   fromRatio,
@@ -10,7 +12,6 @@ import {
   toMsFilter,
   TinyColor,
 } from '../src/public_api';
-import conversions from './conversions';
 import {
   BRIGHTENS,
   DARKENS,
@@ -69,23 +70,6 @@ describe('TinyColor', () => {
     expect(new TinyColor('').originalInput).toBe('');
     //  when given an undefined value, an empty string is returned
     expect(new TinyColor().originalInput).toBe('');
-  });
-  it('should have color equality', () => {
-    expect(conversions.length).toBe(16);
-    for (const c of conversions) {
-      const tiny = new TinyColor(c.hex);
-      expect(tiny.isValid).toBe(true);
-      expect(new TinyColor(c.rgb).equals(c.hex)).toBe(true);
-      expect(new TinyColor(c.rgb).equals(c.hex8)).toBe(true);
-      expect(new TinyColor(c.rgb).equals(c.hsl)).toBe(true);
-      expect(new TinyColor(c.rgb).equals(c.hsv)).toBe(true);
-      expect(new TinyColor(c.rgb).equals(c.rgb)).toBe(true);
-      expect(new TinyColor(c.hex).equals(c.hex)).toBe(true);
-      expect(new TinyColor(c.hex).equals(c.hex8)).toBe(true);
-      expect(new TinyColor(c.hex).equals(c.hsl)).toBe(true);
-      expect(new TinyColor(c.hex).equals(c.hsv)).toBe(true);
-      expect(new TinyColor(c.hsl).equals(c.hsv)).toBe(true);
-    }
   });
   it('should parse ratio', () => {
     // with ratio
@@ -200,12 +184,11 @@ describe('TinyColor', () => {
     expect(new TinyColor('rgb 255 0 0').toHex(true)).toBe('f00');
     expect(new TinyColor('rgba 255 0 0 0.5').toHex8()).toBe('ff000080');
   });
-  it('should parse hsv', () => {
+  it('should parse hsv string', () => {
+    expect(new TinyColor('hsv 251.1 0.887 .918').format).toBe('hsv');
     expect(new TinyColor('hsv 251.1 0.887 .918').toHsvString()).toBe('hsv(251, 89%, 92%)');
     expect(new TinyColor('hsv 251.1 0.887 0.918').toHsvString()).toBe('hsv(251, 89%, 92%)');
-    expect(new TinyColor('hsva 251.1 0.887 0.918 0.5').toHsvString()).toBe(
-      'hsva(251, 89%, 92%, 0.5)',
-    );
+    expect(new TinyColor('hsva 251.1 0.887 0.918 0.5').toHsvString()).toBe('hsva(251, 89%, 92%, 0.5)');
   });
   it('should parse invalid input', () => {
     let invalidColor = new TinyColor('not a color');
@@ -545,95 +528,6 @@ describe('TinyColor', () => {
     expect(new TinyColor('#eee').isLight()).toBe(true);
     expect(new TinyColor('#fff').isLight()).toBe(true);
   });
-  it('HSL Object', () => {
-    for (const c of conversions) {
-      const tiny = new TinyColor(c.hex);
-      expect(tiny.toHexString()).toBe(new TinyColor(tiny.toHsl()).toHexString());
-    }
-  });
-  it('HSL String', () => {
-    for (const c of conversions) {
-      const tiny = new TinyColor(c.hex);
-      const input = tiny.toRgb();
-      const output = new TinyColor(tiny.toHslString()).toRgb();
-      const maxDiff = 2;
-
-      // toHslString red value difference <= ' + maxDiff
-      expect(Math.abs(input.r - output.r) <= maxDiff).toBe(true);
-      // toHslString green value difference <= ' + maxDiff
-      expect(Math.abs(input.g - output.g) <= maxDiff).toBe(true);
-      // toHslString blue value difference <= ' + maxDiff
-      expect(Math.abs(input.b - output.b) <= maxDiff).toBe(true);
-    }
-  });
-  it('HSV String', () => {
-    for (const c of conversions) {
-      const tiny = new TinyColor(c.hex);
-      const input = tiny.toRgb();
-      const output = new TinyColor(tiny.toHsvString()).toRgb();
-      const maxDiff = 2;
-
-      // toHsvString red value difference <= ' + maxDiff
-      expect(Math.abs(input.r - output.r) <= maxDiff).toBe(true);
-      // toHsvString green value difference <= ' + maxDiff
-      expect(Math.abs(input.g - output.g) <= maxDiff).toBe(true);
-      // toHsvString blue value difference <= ' + maxDiff
-      expect(Math.abs(input.b - output.b) <= maxDiff).toBe(true);
-    }
-  });
-
-  it('HSV Object', () => {
-    for (const c of conversions) {
-      const tiny = new TinyColor(c.hex);
-      expect(tiny.toHexString()).toBe(new TinyColor(tiny.toHsv()).toHexString());
-    }
-  });
-
-  it('RGB Object', () => {
-    for (const c of conversions) {
-      const tiny = new TinyColor(c.hex);
-      expect(tiny.toHexString()).toBe(new TinyColor(tiny.toRgb()).toHexString());
-    }
-  });
-
-  it('RGB String', () => {
-    for (const c of conversions) {
-      const tiny = new TinyColor(c.hex);
-      expect(tiny.toHexString()).toBe(new TinyColor(tiny.toRgbString()).toHexString());
-    }
-  });
-
-  it('PRGB Object', () => {
-    for (const c of conversions) {
-      const tiny = new TinyColor(c.hex);
-      const input = tiny.toRgb();
-      const output = new TinyColor(tiny.toPercentageRgb()).toRgb();
-      const maxDiff = 2;
-
-      expect(Math.abs(input.r - output.r)).toBeLessThanOrEqual(maxDiff);
-      expect(Math.abs(input.g - output.g)).toBeLessThanOrEqual(maxDiff);
-      expect(Math.abs(input.b - output.b)).toBeLessThanOrEqual(maxDiff);
-    }
-  });
-
-  it('PRGB String', () => {
-    for (const c of conversions) {
-      const tiny = new TinyColor(c.hex);
-      const input = tiny.toRgb();
-      const output = new TinyColor(tiny.toPercentageRgbString()).toRgb();
-      const maxDiff = 2;
-
-      expect(Math.abs(input.r - output.r)).toBeLessThanOrEqual(maxDiff);
-      expect(Math.abs(input.g - output.g)).toBeLessThanOrEqual(maxDiff);
-      expect(Math.abs(input.b - output.b)).toBeLessThanOrEqual(maxDiff);
-    }
-  });
-  it('Object', () => {
-    for (const c of conversions) {
-      const tiny = new TinyColor(c.hex);
-      expect(tiny.toHexString()).toBe(new TinyColor(tiny).toHexString());
-    }
-  });
   it('Color equality', () => {
     expect(new TinyColor('#ff0000').equals('#ff0000')).toBe(true);
     expect(new TinyColor('#ff0000').equals('rgb(255, 0, 0)')).toBe(true);
@@ -690,7 +584,12 @@ describe('TinyColor', () => {
   it('mostReadable', () => {
     expect(mostReadable('#000', ['#111', '#222'])!.toHexString()).toBe('#222222');
     expect(mostReadable('#f00', ['#d00', '#0d0'])!.toHexString()).toBe('#00dd00');
-    expect(mostReadable(new TinyColor('#f00'), [new TinyColor('#d00'), new TinyColor('#0d0')])!.toHexString()).toBe('#00dd00');
+    expect(
+      mostReadable(new TinyColor('#f00'), [
+        new TinyColor('#d00'),
+        new TinyColor('#0d0'),
+      ])!.toHexString(),
+    ).toBe('#00dd00');
     expect(mostReadable('#fff', ['#fff', '#fff'])!.toHexString()).toBe('#ffffff');
     // includeFallbackColors
     expect(

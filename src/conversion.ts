@@ -10,7 +10,7 @@ import { RGB, HSL, HSV, Numberify } from './interfaces';
  * *Assumes:* r, g, b in [0, 255] or [0, 1]
  * *Returns:* { r, g, b } in [0, 255]
  */
-export function rgbToRgb(r: number, g: number, b: number): Numberify<RGB> {
+export function rgbToRgb(r: number | string, g: number | string, b: number | string): Numberify<RGB> {
   return {
     r: bound01(r, 255) * 255,
     g: bound01(g, 255) * 255,
@@ -90,10 +90,10 @@ function hue2rgb(p: number, q: number, t: number): number {
  * *Assumes:* h is contained in [0, 1] or [0, 360] and s and l are contained [0, 1] or [0, 100]
  * *Returns:* { r, g, b } in the set [0, 255]
  */
-export function hslToRgb(h: number, s: number, l: number): Numberify<RGB> {
-  let r;
-  let g;
-  let b;
+export function hslToRgb(h: number | string, s: number | string, l: number | string): Numberify<RGB> {
+  let r: number;
+  let g: number;
+  let b: number;
 
   h = bound01(h, 360);
   s = bound01(s, 100);
@@ -162,7 +162,7 @@ export function rgbToHsv(r: number, g: number, b: number): Numberify<HSV> {
  * *Assumes:* h is contained in [0, 1] or [0, 360] and s and v are contained in [0, 1] or [0, 100]
  * *Returns:* { r, g, b } in the set [0, 255]
  */
-export function hsvToRgb(h: number, s: number, v: number): Numberify<RGB> {
+export function hsvToRgb(h: number | string, s: number | string, v: number | string): Numberify<RGB> {
   h = bound01(h, 360) * 6;
   s = bound01(s, 100);
   v = bound01(v, 100);

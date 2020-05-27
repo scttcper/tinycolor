@@ -5,3 +5,4 @@ build.ts
 rollup.demo.js
 jest.config.js
 coverage
+.eslintrc.js

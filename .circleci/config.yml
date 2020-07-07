@@ -2,12 +2,10 @@ version: 2.1
 jobs:
   test:
     docker:
-      - image: circleci/node:12
+      - image: circleci/node:14
     steps:
       - checkout
-      - run:
-          name: npm-install
-          command: npm ci
+      - run: npm ci
       - run:
           name: test
           command: npm run test:ci
@@ -26,12 +24,11 @@ jobs:
           path: jest
   release:
     docker:
-      - image: circleci/node:12
+      - image: circleci/node:14
     steps:
       - checkout
       - run: npm ci
-      - run: npm run build
-      - run: npm run semantic-release
+      - run: npx semantic-release
 
 workflows:
   version: 2

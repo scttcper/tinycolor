@@ -212,6 +212,7 @@ export function rgbToHex(r: number, g: number, b: number, allow3Char: boolean): 
  * Assumes r, g, b are contained in the set [0, 255] and
  * a in [0, 1]. Returns a 4 or 8 character rgba hex
  */
+// eslint-disable-next-line max-params
 export function rgbaToHex(r: number, g: number, b: number, a: number, allow4Char: boolean): string {
   const hex = [
     pad2(Math.round(r).toString(16)),

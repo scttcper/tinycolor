@@ -1,4 +1,9 @@
-# tinycolor [![npm](https://img.shields.io/npm/v/%40ctrl%2Ftinycolor.svg?maxAge=3600)](https://www.npmjs.com/package/%40ctrl%2Ftinycolor) [![CircleCI](https://circleci.com/gh/TypeCtrl/tinycolor.svg?style=svg)](https://circleci.com/gh/TypeCtrl/tinycolor) [![coverage status](https://codecov.io/gh/typectrl/tinycolor/branch/master/graph/badge.svg)](https://codecov.io/gh/typectrl/tinycolor)
+# tinycolor 
+
+[![npm](https://badgen.net/npm/v/@ctrl/tinycolor)](https://www.npmjs.com/package/@ctrl/tinycolor)
+[![CircleCI](https://badgen.net/circleci/github/scttcper/tinycolor)](https://circleci.com/gh/scttcper/tinycolor)
+[![coverage](https://badgen.net/codecov/c/github/scttcper/tinycolor)](https://codecov.io/gh/scttcper/tinycolor)
+[![bundlesize](https://badgen.net/bundlephobia/min/@ctrl/tinycolor)](https://bundlephobia.com/result?p=@ctrl/tinycolor)
 
 > TinyColor is a small library for color manipulation and conversion
 

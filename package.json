@@ -7,7 +7,8 @@
     "access": "public"
   },
   "license": "MIT",
-  "repository": "typectrl/tinycolor",
+  "homepage": "https://tinycolor.vercel.app",
+  "repository": "scttcper/tinycolor",
   "keywords": [
     "typescript",
     "color",
@@ -16,9 +17,9 @@
     "hsa",
     "rgb"
   ],
-  "main": "./dist/public_api.js",
-  "module": "./dist/module/public_api.js",
-  "typings": "./dist/public_api.d.ts",
+  "main": "dist/public_api.js",
+  "module": "dist/module/public_api.js",
+  "typings": "dist/public_api.d.ts",
   "files": [
     "dist"
   ],
@@ -33,34 +34,27 @@
     "build:docs": "typedoc --out demo/public/docs --hideGenerator --target ES6 --mode file src",
     "test": "jest",
     "test:ci": "jest --ci --runInBand --reporters=default --reporters=jest-junit --coverage",
-    "test:watch": "jest --watch",
-    "semantic-release": "semantic-release"
+    "test:watch": "jest --watch"
   },
   "dependencies": {},
   "devDependencies": {
-    "@jest/globals": "26.0.1",
-    "@types/node": "14.0.14",
-    "@typescript-eslint/eslint-plugin": "3.2.0",
-    "@typescript-eslint/parser": "3.2.0",
+    "@ctrl/eslint-config": "1.0.3",
+    "@jest/globals": "26.1.0",
+    "@types/node": "14.0.18",
     "del-cli": "3.0.1",
-    "eslint": "7.3.1",
-    "eslint-config-xo-space": "0.25.0",
-    "eslint-config-xo-typescript": "0.31.0",
-    "eslint-plugin-import": "2.22.0",
-    "jest": "26.0.1",
-    "jest-junit": "10.0.0",
-    "rollup": "2.15.0",
+    "jest": "26.1.0",
+    "jest-junit": "11.0.1",
+    "rollup": "2.20.0",
     "rollup-plugin-livereload": "1.3.0",
     "rollup-plugin-serve": "1.0.1",
     "rollup-plugin-sourcemaps": "0.6.2",
     "rollup-plugin-terser": "6.1.0",
     "rollup-plugin-typescript2": "0.27.1",
     "rollup-plugin-uglify": "6.0.4",
-    "semantic-release": "17.0.8",
-    "ts-jest": "26.1.0",
     "ts-node": "8.10.2",
-    "typedoc": "0.17.7",
-    "typescript": "3.9.5"
+    "ts-jest": "26.1.1",
+    "typedoc": "0.17.8",
+    "typescript": "3.9.6"
   },
   "jest": {
     "preset": "ts-jest",

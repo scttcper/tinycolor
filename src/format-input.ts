@@ -24,13 +24,13 @@ import { boundAlpha, convertToPercentage } from './util';
 export function inputToRGB(
   color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA | any,
 ): {
-    ok: boolean;
-    format: any;
-    r: number;
-    g: number;
-    b: number;
-    a: number;
-  } {
+  ok: boolean;
+  format: any;
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+} {
   let rgb = { r: 0, g: 0, b: 0 };
   let a = 1;
   let s: string | number | null = null;

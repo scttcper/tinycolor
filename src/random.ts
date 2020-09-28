@@ -6,16 +6,16 @@ import { HSVA } from './interfaces';
 export interface RandomOptions {
   seed?: number;
   hue?:
-  | number
-  | string
-  | 'red'
-  | 'orange'
-  | 'yellow'
-  | 'green'
-  | 'blue'
-  | 'purple'
-  | 'pink'
-  | 'monochrome';
+    | number
+    | string
+    | 'red'
+    | 'orange'
+    | 'yellow'
+    | 'green'
+    | 'blue'
+    | 'purple'
+    | 'pink'
+    | 'monochrome';
   luminosity?: 'random' | 'bright' | 'dark' | 'light';
   alpha?: number;
 }
@@ -28,7 +28,10 @@ export function random(options?: RandomOptions): TinyColor;
 export function random(options?: RandomCountOptions): TinyColor[];
 export function random(options: RandomOptions | RandomCountOptions = {}): TinyColor | TinyColor[] {
   // Check if we need to generate multiple colors
-  if ((options as RandomCountOptions).count !== undefined && (options as RandomCountOptions).count !== null) {
+  if (
+    (options as RandomCountOptions).count !== undefined &&
+    (options as RandomCountOptions).count !== null
+  ) {
     const totalColors: number = (options as RandomCountOptions).count as number;
     const colors: TinyColor[] = [];
 
@@ -145,9 +148,9 @@ function getMinimumBrightness(H: number, S: number): number {
 
     if (S >= s1 && S <= s2) {
       const m = (v2 - v1) / (s2 - s1);
-      const b = v1 - (m * s1);
+      const b = v1 - m * s1;
 
-      return (m * S) + b;
+      return m * S + b;
     }
   }
 
@@ -179,7 +182,9 @@ function getHueRange(colorInput?: number | string): [number, number] {
   return [0, 360];
 }
 
-function getColorInfo(hue: number): {
+function getColorInfo(
+  hue: number,
+): {
   name: string;
   hueRange: [number, number] | null;
   lowerBounds: Array<[number, number]>;
@@ -203,18 +208,20 @@ function getColorInfo(hue: number): {
 
 function randomWithin(range: [number, number], seed?: number): number {
   if (seed === undefined) {
-    return Math.floor(range[0] + (Math.random() * (range[1] + 1 - range[0])));
+    return Math.floor(range[0] + Math.random() * (range[1] + 1 - range[0]));
   }
 
   // Seeded random algorithm from http://indiegamr.com/generate-repeatable-random-numbers-in-js/
   const max = range[1] || 1;
   const min = range[0] || 0;
-  seed = ((seed * 9301) + 49297) % 233280;
+  seed = (seed * 9301 + 49297) % 233280;
   const rnd = seed / 233280.0;
-  return Math.floor(min + (rnd * (max - min)));
+  return Math.floor(min + rnd * (max - min));
 }
 
-function defineColor(bound: ColorBound): {
+function defineColor(
+  bound: ColorBound,
+): {
   name: string;
   hueRange: [number, number] | null;
   lowerBounds: Array<[number, number]>;
@@ -251,7 +258,10 @@ export const bounds: ColorBound[] = [
   {
     name: 'monochrome',
     hueRange: null,
-    lowerBounds: [[0, 0], [100, 0]],
+    lowerBounds: [
+      [0, 0],
+      [100, 0],
+    ],
   },
   {
     name: 'red',
@@ -271,17 +281,43 @@ export const bounds: ColorBound[] = [
   {
     name: 'orange',
     hueRange: [19, 46],
-    lowerBounds: [[20, 100], [30, 93], [40, 88], [50, 86], [60, 85], [70, 70], [100, 70]],
+    lowerBounds: [
+      [20, 100],
+      [30, 93],
+      [40, 88],
+      [50, 86],
+      [60, 85],
+      [70, 70],
+      [100, 70],
+    ],
   },
   {
     name: 'yellow',
     hueRange: [47, 62],
-    lowerBounds: [[25, 100], [40, 94], [50, 89], [60, 86], [70, 84], [80, 82], [90, 80], [100, 75]],
+    lowerBounds: [
+      [25, 100],
+      [40, 94],
+      [50, 89],
+      [60, 86],
+      [70, 84],
+      [80, 82],
+      [90, 80],
+      [100, 75],
+    ],
   },
   {
     name: 'green',
     hueRange: [63, 178],
-    lowerBounds: [[30, 100], [40, 90], [50, 85], [60, 81], [70, 74], [80, 64], [90, 50], [100, 40]],
+    lowerBounds: [
+      [30, 100],
+      [40, 90],
+      [50, 85],
+      [60, 81],
+      [70, 74],
+      [80, 64],
+      [90, 50],
+      [100, 40],
+    ],
   },
   {
     name: 'blue',
@@ -316,6 +352,14 @@ export const bounds: ColorBound[] = [
   {
     name: 'pink',
     hueRange: [283, 334],
-    lowerBounds: [[20, 100], [30, 90], [40, 86], [60, 84], [80, 80], [90, 75], [100, 73]],
+    lowerBounds: [
+      [20, 100],
+      [30, 90],
+      [40, 86],
+      [60, 84],
+      [80, 80],
+      [90, 75],
+      [100, 73],
+    ],
   },
 ];

@@ -105,7 +105,7 @@ export class TinyColor {
   getBrightness(): number {
     // http://www.w3.org/TR/AERT#color-contrast
     const rgb = this.toRgb();
-    return ((rgb.r * 299) + (rgb.g * 587) + (rgb.b * 114)) / 1000;
+    return (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
   }
 
   /**
@@ -139,7 +139,7 @@ export class TinyColor {
       B = ((BsRGB + 0.055) / 1.055) ** 2.4;
     }
 
-    return (0.2126 * R) + (0.7152 * G) + (0.0722 * B);
+    return 0.2126 * R + 0.7152 * G + 0.0722 * B;
   }
 
   /**
@@ -273,9 +273,9 @@ export class TinyColor {
    */
   toPercentageRgbString(): string {
     const rnd = (x: number): number => Math.round(bound01(x, 255) * 100);
-    return this.a === 1 ?
-      `rgb(${rnd(this.r)}%, ${rnd(this.g)}%, ${rnd(this.b)}%)` :
-      `rgba(${rnd(this.r)}%, ${rnd(this.g)}%, ${rnd(this.b)}%, ${this.roundA})`;
+    return this.a === 1
+      ? `rgb(${rnd(this.r)}%, ${rnd(this.g)}%, ${rnd(this.b)}%)`
+      : `rgba(${rnd(this.r)}%, ${rnd(this.g)}%, ${rnd(this.b)}%, ${this.roundA})`;
   }
 
   /**
@@ -364,7 +364,7 @@ export class TinyColor {
   }
 
   toNumber(): number {
-    return (Math.round(this.r) << 16) + (Math.round(this.g) << 8) + (Math.round(this.b));
+    return (Math.round(this.r) << 16) + (Math.round(this.g) << 8) + Math.round(this.b);
   }
 
   clone(): TinyColor {
@@ -476,10 +476,10 @@ export class TinyColor {
 
     const p = amount / 100;
     const rgba = {
-      r: ((rgb2.r - rgb1.r) * p) + rgb1.r,
-      g: ((rgb2.g - rgb1.g) * p) + rgb1.g,
-      b: ((rgb2.b - rgb1.b) * p) + rgb1.b,
-      a: ((rgb2.a - rgb1.a) * p) + rgb1.a,
+      r: (rgb2.r - rgb1.r) * p + rgb1.r,
+      g: (rgb2.g - rgb1.g) * p + rgb1.g,
+      b: (rgb2.b - rgb1.b) * p + rgb1.b,
+      a: (rgb2.a - rgb1.a) * p + rgb1.a,
     };
 
     return new TinyColor(rgba);
@@ -490,7 +490,7 @@ export class TinyColor {
     const part = 360 / slices;
     const ret: TinyColor[] = [this];
 
-    for (hsl.h = (hsl.h - ((part * results) >> 1) + 720) % 360; --results;) {
+    for (hsl.h = (hsl.h - ((part * results) >> 1) + 720) % 360; --results; ) {
       hsl.h = (hsl.h + part) % 360;
       ret.push(new TinyColor(hsl));
     }
@@ -558,7 +558,7 @@ export class TinyColor {
     const result: TinyColor[] = [this];
     const increment = 360 / n;
     for (let i = 1; i < n; i++) {
-      result.push(new TinyColor({ h: (h + (i * increment)) % 360, s: hsl.s, l: hsl.l }));
+      result.push(new TinyColor({ h: (h + i * increment) % 360, s: hsl.s, l: hsl.l }));
     }
 
     return result;

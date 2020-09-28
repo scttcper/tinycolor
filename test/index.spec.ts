@@ -89,7 +89,14 @@ describe('TinyColor', () => {
     expect(new TinyColor({ r: 0.1, g: 0.1, b: 0.1 }).toHexString()).toBe('#000000');
     expect(new TinyColor('rgb .1 .1 .1').toHexString()).toBe('#000000');
   });
-  it('should parse rgb text', () => {
+  it('should parse hex', () => {
+    expect(new TinyColor('#000').toHexString(true)).toBe('#000');
+    expect(new TinyColor('#0000').toHexString(true)).toBe('#000');
+    expect(new TinyColor('#000').getAlpha()).toBe(1);
+    // Not sure this is expected behavior
+    expect(new TinyColor('#0000').getAlpha()).toBe(0);
+  });
+  it('should parse rgb', () => {
     // spaced input
     expect(new TinyColor('rgb 255 0 0').toHexString()).toBe('#ff0000');
     // parenthesized input
@@ -173,7 +180,7 @@ describe('TinyColor', () => {
     expect(new TinyColor('hsl -700 20 10').toHslString()).toBe('hsl(20, 20%, 10%)');
     expect(new TinyColor('hsl -490 100% 50%').toHslString()).toBe('hsl(230, 100%, 50%)');
   });
-  it('should parse Hex', () => {
+  it('should parse rgb strings', () => {
     expect(new TinyColor('rgb 255 0 0').toHexString()).toBe('#ff0000');
     expect(new TinyColor('rgb 255 0 0').toHexString(true)).toBe('#f00');
     expect(new TinyColor('rgba 255 0 0 0.5').toHex8String()).toBe('#ff000080');
@@ -188,7 +195,9 @@ describe('TinyColor', () => {
     expect(new TinyColor('hsv 251.1 0.887 .918').format).toBe('hsv');
     expect(new TinyColor('hsv 251.1 0.887 .918').toHsvString()).toBe('hsv(251, 89%, 92%)');
     expect(new TinyColor('hsv 251.1 0.887 0.918').toHsvString()).toBe('hsv(251, 89%, 92%)');
-    expect(new TinyColor('hsva 251.1 0.887 0.918 0.5').toHsvString()).toBe('hsva(251, 89%, 92%, 0.5)');
+    expect(new TinyColor('hsva 251.1 0.887 0.918 0.5').toHsvString()).toBe(
+      'hsva(251, 89%, 92%, 0.5)',
+    );
   });
   it('should parse invalid input', () => {
     let invalidColor = new TinyColor('not a color');
@@ -391,7 +400,9 @@ describe('TinyColor', () => {
     // Greater than 1
     expect(new TinyColor({ r: 255, g: 20, b: 10, a: 100 }).toRgbString()).toBe('rgb(255, 20, 10)');
     // Non Numeric
-    expect(new TinyColor({ r: 255, g: 20, b: 10, a: 'asdfasd' } as any).toRgbString()).toBe('rgb(255, 20, 10)');
+    expect(new TinyColor({ r: 255, g: 20, b: 10, a: 'asdfasd' } as any).toRgbString()).toBe(
+      'rgb(255, 20, 10)',
+    );
 
     expect(new TinyColor('#fff').toRgbString()).toBe('rgb(255, 255, 255)');
     // Greater than 1 in string parsing

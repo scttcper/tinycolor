@@ -29,29 +29,21 @@ describe('random', () => {
     expect(colors).toEqual(['#4167d1', '#393cd4', '#5733d6']);
   });
   it('should accept luminosity', () => {
-    let colors = random({ luminosity: 'bright', count: 3, seed: 11100 }).map(n =>
-      n.toHexString(),
-    );
+    let colors = random({ luminosity: 'bright', count: 3, seed: 11100 }).map(n => n.toHexString());
     expect(colors).toEqual(['#d916f2', '#f511da', '#f70ca5']);
     colors = random({ luminosity: 'dark', count: 3, seed: 9999923 }).map(n => n.toHexString());
     expect(colors).toEqual(['#06377a', '#05197d', '#0d0580']);
   });
   it('should accept luminosity', () => {
-    let colors = random({ luminosity: 'bright', count: 3, seed: 11100 }).map(n =>
-      n.toHexString(),
-    );
+    let colors = random({ luminosity: 'bright', count: 3, seed: 11100 }).map(n => n.toHexString());
     expect(colors).toEqual(['#d916f2', '#f511da', '#f70ca5']);
     colors = random({ luminosity: 'dark', count: 3, seed: 9999923 }).map(n => n.toHexString());
     expect(colors).toEqual(['#06377a', '#05197d', '#0d0580']);
     colors = random({ luminosity: 'light', count: 3, seed: 9999923 }).map(n => n.toHexString());
     expect(colors).toEqual(['#91baf2', '#8e9ff5', '#938cf5']);
-    colors = random({ luminosity: 'bright', count: 3, seed: 9999923 }).map(n =>
-      n.toHexString(),
-    );
+    colors = random({ luminosity: 'bright', count: 3, seed: 9999923 }).map(n => n.toHexString());
     expect(colors).toEqual(['#2568c4', '#223ec9', '#2b1fcf']);
-    colors = random({ luminosity: 'random', count: 3, seed: 9999923 }).map(n =>
-      n.toHexString(),
-    );
+    colors = random({ luminosity: 'random', count: 3, seed: 9999923 }).map(n => n.toHexString());
     expect(colors).toEqual(['#3e6396', '#3b4ca1', '#4038ab']);
   });
   it('should accept hue and luminosity', () => {

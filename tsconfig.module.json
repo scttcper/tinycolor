@@ -2,9 +2,10 @@
   "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "module": "esnext",
-    "target": "ES5",
+    "target": "es5",
     "declaration": false,
     "outDir": "dist/module",
+    "sourceMap": false,
     "skipLibCheck": true
   },
   "files": ["./src/public_api", "./src/umd_api"]

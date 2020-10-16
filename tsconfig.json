@@ -6,9 +6,9 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "declaration": true,
-    "outDir": "./dist",
+    "outDir": "dist",
     "strict": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "noImplicitAny": false

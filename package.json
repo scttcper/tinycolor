@@ -38,6 +38,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "@babel/plugin-transform-exponentiation-operator": "^7.12.1",
     "@babel/plugin-transform-modules-commonjs": "7.12.1",
     "@babel/preset-typescript": "7.12.1",
     "@ctrl/eslint-config": "1.2.4",
@@ -65,7 +66,8 @@
       "@babel/preset-typescript"
     ],
     "plugins": [
-      "@babel/plugin-transform-modules-commonjs"
+      "@babel/plugin-transform-modules-commonjs",
+      "@babel/plugin-transform-exponentiation-operator"
     ]
   },
   "release": {

@@ -749,6 +749,12 @@ describe('TinyColor', () => {
       expect(new TinyColor('transparent').mix('#000', i).toRgb().a).toBe(i / 100);
     }
   });
+  it('onBackground', () => {
+    expect(new TinyColor('#ffffff').onBackground('#000').toHex()).toBe('ffffff');
+    expect(new TinyColor('#ffffff00').onBackground('#000').toHex()).toBe('000000');
+    expect(new TinyColor('#ffffff77').onBackground('#000').toHex()).toBe('777777');
+    expect(new TinyColor('#262a6d82').onBackground('#644242').toHex()).toBe('443658');
+  });
   it('complement', () => {
     const complementDoesntModifyInstance = new TinyColor('red');
     expect(complementDoesntModifyInstance.complement().toHex()).toBe('00ffff');

@@ -534,6 +534,20 @@ export class TinyColor {
   }
 
   /**
+   * Compute how the color would appear on a background
+   */
+  onBackground(background: ColorInput): TinyColor {
+    const fg = this.toRgb();
+    const bg = new TinyColor(background).toRgb();
+
+    return new TinyColor({
+      r: bg.r + (fg.r - bg.r) * fg.a,
+      g: bg.g + (fg.g - bg.g) * fg.a,
+      b: bg.b + (fg.b - bg.b) * fg.a,
+    });
+  }
+
+  /**
    * Alias for `polyad(3)`
    */
   triad(): TinyColor[] {

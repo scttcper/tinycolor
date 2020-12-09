@@ -124,19 +124,22 @@ export class TinyColor {
     if (RsRGB <= 0.03928) {
       R = RsRGB / 12.92;
     } else {
-      R = ((RsRGB + 0.055) / 1.055) ** 2.4;
+      // eslint-disable-next-line prefer-exponentiation-operator
+      R = Math.pow((RsRGB + 0.055) / 1.055, 2.4);
     }
 
     if (GsRGB <= 0.03928) {
       G = GsRGB / 12.92;
     } else {
-      G = ((GsRGB + 0.055) / 1.055) ** 2.4;
+      // eslint-disable-next-line prefer-exponentiation-operator
+      G = Math.pow((GsRGB + 0.055) / 1.055, 2.4);
     }
 
     if (BsRGB <= 0.03928) {
       B = BsRGB / 12.92;
     } else {
-      B = ((BsRGB + 0.055) / 1.055) ** 2.4;
+      // eslint-disable-next-line prefer-exponentiation-operator
+      B = Math.pow((BsRGB + 0.055) / 1.055, 2.4);
     }
 
     return 0.2126 * R + 0.7152 * G + 0.0722 * B;

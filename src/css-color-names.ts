@@ -2,7 +2,7 @@
 /**
  * @hidden
  */
-export const names: { [key: string]: string } = {
+export const names: Record<string, string> = {
   aliceblue: '#f0f8ff',
   antiquewhite: '#faebd7',
   aqua: '#00ffff',

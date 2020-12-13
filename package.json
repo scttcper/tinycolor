@@ -18,6 +18,7 @@
     "rgb"
   ],
   "main": "dist/public_api.js",
+  "exports": "./dist/modern/public_api.js",
   "module": "dist/module/public_api.js",
   "typings": "dist/public_api.d.ts",
   "files": [
@@ -30,7 +31,7 @@
     "lint": "eslint --ext .js,.ts, .",
     "lint:fix": "eslint --fix --ext .js,.ts, .",
     "prepare": "npm run build",
-    "build": "del-cli dist && tsc -p tsconfig.build.json && tsc -p tsconfig.module.json && ts-node build",
+    "build": "del-cli dist && tsc -p tsconfig.build.json && tsc -p tsconfig.module.json && tsc -p tsconfig.modern.json && ts-node build",
     "build:docs": "typedoc --out demo/public/docs --hideGenerator --target ES6 --mode file src",
     "test": "jest",
     "test:ci": "jest --ci --runInBand --reporters=default --reporters=jest-junit --coverage",
@@ -40,9 +41,9 @@
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "7.12.1",
     "@babel/preset-typescript": "7.12.7",
-    "@ctrl/eslint-config": "1.2.7",
+    "@ctrl/eslint-config": "1.2.8",
     "@jest/globals": "26.6.2",
-    "@types/node": "14.14.11",
+    "@types/node": "14.14.13",
     "del-cli": "3.0.1",
     "jest": "26.6.3",
     "jest-junit": "12.0.0",
@@ -55,7 +56,7 @@
     "rollup-plugin-uglify": "6.0.4",
     "ts-node": "9.1.1",
     "typedoc": "0.19.2",
-    "typescript": "4.1.2"
+    "typescript": "4.1.3"
   },
   "jest": {
     "testEnvironment": "node"

@@ -2,9 +2,11 @@
   "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "module": "esnext",
+    "target": "ES2019",
     "declaration": false,
-    "outDir": "dist/module",
+    "outDir": "dist/modern",
+    "sourceMap": false,
     "skipLibCheck": true
   },
-  "files": ["./src/public_api", "./src/umd_api"]
+  "files": ["./src/public_api"]
 }

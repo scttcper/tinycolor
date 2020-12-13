@@ -18,7 +18,6 @@
     "rgb"
   ],
   "main": "dist/public_api.js",
-  "exports": "./dist/modern/public_api.js",
   "module": "dist/module/public_api.js",
   "typings": "dist/public_api.d.ts",
   "files": [
@@ -31,7 +30,7 @@
     "lint": "eslint --ext .js,.ts, .",
     "lint:fix": "eslint --fix --ext .js,.ts, .",
     "prepare": "npm run build",
-    "build": "del-cli dist && tsc -p tsconfig.build.json && tsc -p tsconfig.module.json && tsc -p tsconfig.modern.json && ts-node build",
+    "build": "del-cli dist && tsc -p tsconfig.build.json && tsc -p tsconfig.module.json && ts-node build",
     "build:docs": "typedoc --out demo/public/docs --hideGenerator --target ES6 --mode file src",
     "test": "jest",
     "test:ci": "jest --ci --runInBand --reporters=default --reporters=jest-junit --coverage",

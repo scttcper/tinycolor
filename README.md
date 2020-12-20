@@ -9,7 +9,7 @@
 
 A fork of [tinycolor2](https://github.com/bgrins/TinyColor) by [Brian Grinstead](https://github.com/bgrins)
 
-__DEMO__: https://tinycolor.netlify.app  
+__DEMO__: https://tinycolor.vercel.app  
 
 ### Changes from tinycolor2
 

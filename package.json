@@ -7,7 +7,7 @@
     "access": "public"
   },
   "license": "MIT",
-  "homepage": "https://tinycolor.vercel.app",
+  "homepage": "https://tinycolor.netlify.app",
   "repository": "scttcper/tinycolor",
   "keywords": [
     "typescript",

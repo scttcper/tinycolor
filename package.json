@@ -31,7 +31,7 @@
     "lint:fix": "eslint --fix --ext .js,.ts, .",
     "prepare": "npm run build",
     "build": "del-cli dist && tsc -p tsconfig.build.json && tsc -p tsconfig.module.json && ts-node build",
-    "build:docs": "typedoc --out demo/public/docs --hideGenerator --target ES6 --mode file src",
+    "build:docs": "typedoc --out demo/public/docs --hideGenerator --tsconfig tsconfig.build.json src/public_api.ts",
     "test": "jest",
     "test:ci": "jest --ci --runInBand --reporters=default --reporters=jest-junit --coverage",
     "test:watch": "jest --watch"
@@ -42,11 +42,11 @@
     "@babel/preset-typescript": "7.12.7",
     "@ctrl/eslint-config": "1.2.8",
     "@jest/globals": "26.6.2",
-    "@types/node": "14.14.13",
+    "@types/node": "14.14.16",
     "del-cli": "3.0.1",
     "jest": "26.6.3",
     "jest-junit": "12.0.0",
-    "rollup": "2.34.2",
+    "rollup": "2.35.1",
     "rollup-plugin-livereload": "2.0.0",
     "rollup-plugin-serve": "1.1.0",
     "rollup-plugin-sourcemaps": "0.6.3",
@@ -54,7 +54,7 @@
     "rollup-plugin-typescript2": "0.29.0",
     "rollup-plugin-uglify": "6.0.4",
     "ts-node": "9.1.1",
-    "typedoc": "0.19.2",
+    "typedoc": "0.20.4",
     "typescript": "4.1.3"
   },
   "jest": {

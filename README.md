@@ -238,6 +238,16 @@ color.getAlpha(); // .5
 color.toRgbString(); // "rgba(255, 0, 0, .5)"
 ```
 
+### onBackground
+
+Compute how the color would appear on a background. When the color is fully transparent (i.e. `getAlpha() == 0`), the result will be the background color. When the color is not transparent at all (i.e. `getAlpha() == 1`), the result will be the color itself. Otherwise you will get a computed result.
+
+```ts
+const color = new TinyColor('rgba(255, 0, 0, .5)');
+const computedColor = color.onBackground('rgb(0, 0, 255)');
+computedColor.toRgbString(); // "rgb(128, 0, 128)"
+```
+
 ### String Representations
 
 The following methods will return a property for the `alpha` value, which can be ignored: `toHsv`, `toHsl`, `toRgb`

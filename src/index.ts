@@ -157,7 +157,7 @@ export class TinyColor {
    *
    * @param alpha - The new alpha value. The accepted range is 0-1.
    */
-  setAlpha(alpha?: string | number) {
+  setAlpha(alpha?: string | number): this {
     this.a = boundAlpha(alpha);
     this.roundA = Math.round(100 * this.a) / 100;
     return this;

@@ -487,6 +487,8 @@ describe('TinyColor', () => {
     hexSetter.setAlpha('test');
     // setAlpha with invalid value should be bound to 1
     expect(hexSetter.a).toBe(1);
+    // Check abiliity to chain
+    hexSetter.setAlpha(1).toHex();
   });
   it('Alpha = 0 should act differently on toName()', () => {
     expect(new TinyColor({ r: 255, g: 20, b: 10, a: 0 }).toName()).toBe('transparent');

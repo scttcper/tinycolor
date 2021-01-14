@@ -380,7 +380,7 @@ export class TinyColor {
    * Lighten the color a given amount. Providing 100 will always return white.
    * @param amount - valid between 1-100
    */
-  lighten(amount = 10): TinyColor {
+  lighten(amount = 10) {
     const hsl = this.toHsl();
     hsl.l += amount / 100;
     hsl.l = clamp01(hsl.l);
@@ -391,7 +391,7 @@ export class TinyColor {
    * Brighten the color a given amount, from 0 to 100.
    * @param amount - valid between 1-100
    */
-  brighten(amount = 10): TinyColor {
+  brighten(amount = 10) {
     const rgb = this.toRgb();
     rgb.r = Math.max(0, Math.min(255, rgb.r - Math.round(255 * -(amount / 100))));
     rgb.g = Math.max(0, Math.min(255, rgb.g - Math.round(255 * -(amount / 100))));
@@ -404,7 +404,7 @@ export class TinyColor {
    * Providing 100 will always return black.
    * @param amount - valid between 1-100
    */
-  darken(amount = 10): TinyColor {
+  darken(amount = 10) {
     const hsl = this.toHsl();
     hsl.l -= amount / 100;
     hsl.l = clamp01(hsl.l);
@@ -416,7 +416,7 @@ export class TinyColor {
    * Providing 0 will do nothing, providing 100 will always return white.
    * @param amount - valid between 1-100
    */
-  tint(amount = 10): TinyColor {
+  tint(amount = 10) {
     return this.mix('white', amount);
   }
 
@@ -425,7 +425,7 @@ export class TinyColor {
    * Providing 0 will do nothing, providing 100 will always return black.
    * @param amount - valid between 1-100
    */
-  shade(amount = 10): TinyColor {
+  shade(amount = 10) {
     return this.mix('black', amount);
   }
 
@@ -434,7 +434,7 @@ export class TinyColor {
    * Providing 100 will is the same as calling greyscale
    * @param amount - valid between 1-100
    */
-  desaturate(amount = 10): TinyColor {
+  desaturate(amount = 10) {
     const hsl = this.toHsl();
     hsl.s -= amount / 100;
     hsl.s = clamp01(hsl.s);
@@ -445,7 +445,7 @@ export class TinyColor {
    * Saturate the color a given amount, from 0 to 100.
    * @param amount - valid between 1-100
    */
-  saturate(amount = 10): TinyColor {
+  saturate(amount = 10) {
     const hsl = this.toHsl();
     hsl.s += amount / 100;
     hsl.s = clamp01(hsl.s);
@@ -456,7 +456,7 @@ export class TinyColor {
    * Completely desaturates a color into greyscale.
    * Same as calling `desaturate(100)`
    */
-  greyscale(): TinyColor {
+  greyscale() {
     return this.desaturate(100);
   }
 
@@ -464,7 +464,7 @@ export class TinyColor {
    * Spin takes a positive or negative amount within [-360, 360] indicating the change of hue.
    * Values outside of this range will be wrapped into this range.
    */
-  spin(amount: number): TinyColor {
+  spin(amount: number) {
     const hsl = this.toHsl();
     const hue = (hsl.h + amount) % 360;
     hsl.h = hue < 0 ? 360 + hue : hue;
@@ -475,7 +475,7 @@ export class TinyColor {
    * Mix the current color a given amount with another color, from 0 to 100.
    * 0 means no mixing (return current color).
    */
-  mix(color: ColorInput, amount = 50): TinyColor {
+  mix(color: ColorInput, amount = 50) {
     const rgb1 = this.toRgb();
     const rgb2 = new TinyColor(color).toRgb();
 
@@ -506,7 +506,7 @@ export class TinyColor {
   /**
    * taken from https://github.com/infusion/jQuery-xcolor/blob/master/jquery.xcolor.js
    */
-  complement(): TinyColor {
+  complement() {
     const hsl = this.toHsl();
     hsl.h = (hsl.h + 180) % 360;
     return new TinyColor(hsl);
@@ -541,7 +541,7 @@ export class TinyColor {
   /**
    * Compute how the color would appear on a background
    */
-  onBackground(background: ColorInput): TinyColor {
+  onBackground(background: ColorInput) {
     const fg = this.toRgb();
     const bg = new TinyColor(background).toRgb();
 
@@ -592,6 +592,6 @@ export class TinyColor {
 }
 
 // kept for backwards compatability with v1
-export function tinycolor(color: ColorInput = '', opts: Partial<TinyColorOptions> = {}): TinyColor {
+export function tinycolor(color: ColorInput = '', opts: Partial<TinyColorOptions> = {}) {
   return new TinyColor(color, opts);
 }

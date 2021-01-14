@@ -1,5 +1,5 @@
 {
-  "name": "@ctrl/tinycolor",
+  "name": "tinycolor-ts",
   "version": "0.0.0",
   "description": "Fast, small color manipulation and conversion for JavaScript",
   "author": "Scott Cooper <scttcper@gmail.com>",

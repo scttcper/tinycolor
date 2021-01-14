@@ -308,6 +308,9 @@ export class TinyColor {
    *
    * @param format - The format to be used when displaying the string representation.
    */
+  toString<T extends ColorFormats>(): string;
+  toString<T extends 'name'>(format: T): boolean | string;
+  toString<T extends ColorFormats>(format: T): string;
   toString(format?: ColorFormats): string | false {
     const formatSet = Boolean(format);
     format = format ?? this.format;

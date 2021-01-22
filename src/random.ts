@@ -32,7 +32,7 @@ export function random(options: RandomOptions | RandomCountOptions = {}): TinyCo
     (options as RandomCountOptions).count !== undefined &&
     (options as RandomCountOptions).count !== null
   ) {
-    const totalColors: number = (options as RandomCountOptions).count as number;
+    const totalColors: number = (options as RandomCountOptions).count!;
     const colors: TinyColor[] = [];
 
     (options as RandomCountOptions).count = undefined;

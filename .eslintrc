@@ -4,5 +4,8 @@
     "node": true,
     "jest": true
   },
-  "extends": ["@ctrl/eslint-config"]
+  "extends": ["@ctrl/eslint-config"],
+  "rules": {
+    "@typescript-eslint/prefer-includes": "off"
+  }
 }

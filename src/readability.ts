@@ -93,7 +93,7 @@ export function mostReadable(
     }
   }
 
-  if (isReadable(baseColor, bestColor as TinyColor, { level, size }) || !includeFallbackColors) {
+  if (isReadable(baseColor, bestColor!, { level, size }) || !includeFallbackColors) {
     return bestColor;
   }
 

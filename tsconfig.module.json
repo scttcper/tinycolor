@@ -2,7 +2,7 @@
   "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "module": "esnext",
-    "declaration": false,
+    "declaration": true,
     "outDir": "dist/module",
     "skipLibCheck": true
   },

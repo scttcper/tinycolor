@@ -1,6 +1,7 @@
-import { describe, it, expect } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 
 import { TinyColor } from '../src/public_api';
+
 import conversions from './conversions';
 
 describe('TinyColor Conversions', () => {

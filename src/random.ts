@@ -182,9 +182,7 @@ function getHueRange(colorInput?: number | string): [number, number] {
   return [0, 360];
 }
 
-function getColorInfo(
-  hue: number,
-): {
+function getColorInfo(hue: number): {
   name: string;
   hueRange: [number, number] | null;
   lowerBounds: Array<[number, number]>;
@@ -219,9 +217,7 @@ function randomWithin(range: [number, number], seed?: number): number {
   return Math.floor(min + rnd * (max - min));
 }
 
-function defineColor(
-  bound: ColorBound,
-): {
+function defineColor(bound: ColorBound): {
   name: string;
   hueRange: [number, number] | null;
   lowerBounds: Array<[number, number]>;

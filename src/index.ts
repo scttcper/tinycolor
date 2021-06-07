@@ -1,7 +1,7 @@
-import { rgbaToHex, rgbToHex, rgbToHsl, rgbToHsv, numberInputToObject } from './conversion';
+import { numberInputToObject, rgbaToHex, rgbToHex, rgbToHsl, rgbToHsv } from './conversion';
 import { names } from './css-color-names';
 import { inputToRGB } from './format-input';
-import { HSL, HSLA, HSV, HSVA, RGB, RGBA, Numberify } from './interfaces';
+import { HSL, HSLA, HSV, HSVA, Numberify, RGB, RGBA } from './interfaces';
 import { bound01, boundAlpha, clamp01 } from './util';
 
 export interface TinyColorOptions {

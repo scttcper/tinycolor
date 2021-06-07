@@ -21,9 +21,7 @@ import { boundAlpha, convertToPercentage } from './util';
  * "hsv(0, 100%, 100%)" or "hsv 0 100% 100%"
  * ```
  */
-export function inputToRGB(
-  color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA | any,
-): {
+export function inputToRGB(color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA | any): {
   ok: boolean;
   format: any;
   r: number;

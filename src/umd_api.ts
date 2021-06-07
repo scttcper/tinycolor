@@ -3,7 +3,7 @@
 import { names } from './css-color-names';
 import { inputToRGB, isValidCSSUnit, stringInputToObject } from './format-input';
 import { fromRatio, legacyRandom } from './from-ratio';
-import { tinycolor, TinyColor } from './index';
+import { TinyColor, tinycolor } from './index';
 import { random } from './random';
 import { mostReadable, readability } from './readability';
 import { toMsFilter } from './to-ms-filter';

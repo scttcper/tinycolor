@@ -1,11 +1,15 @@
 version: 2.1
+orbs:
+  node: circleci/node@4
+  codecov: codecov/codecov@1
 jobs:
   test:
-    docker:
-      - image: circleci/node:14
+    executor:
+      name: node/default
+      tag: 'current'
     steps:
       - checkout
-      - run: npm ci
+      - node/install-packages
       - run:
           name: test
           command: npm run test:ci
@@ -17,17 +21,13 @@ jobs:
       - run:
           name: lint
           command: npm run lint
-      - run:
-          name: codecov
-          command: bash <(curl -s https://codecov.io/bash)
-      - store_test_results:
-          path: jest
+      - codecov/upload
   release:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:current
     steps:
       - checkout
-      - run: npm ci
+      - node/install-packages
       - run: npx semantic-release
 
 workflows:

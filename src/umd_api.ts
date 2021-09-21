@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/member-ordering */
-
 import { names } from './css-color-names';
 import { inputToRGB, isValidCSSUnit, stringInputToObject } from './format-input';
 import { fromRatio, legacyRandom } from './from-ratio';

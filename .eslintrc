@@ -6,6 +6,7 @@
   },
   "extends": ["@ctrl/eslint-config"],
   "rules": {
-    "@typescript-eslint/prefer-includes": "off"
+    "@typescript-eslint/prefer-includes": "off",
+    "no-bitwise": "off"
   }
 }

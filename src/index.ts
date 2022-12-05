@@ -164,6 +164,14 @@ export class TinyColor {
   }
 
   /**
+   * Returns whether the color is monochrome.
+   */
+  isMonochrome(): boolean {
+    const { s } = this.toHsl();
+    return s === 0;
+  }
+
+  /**
    * Returns the object as a HSVA object.
    */
   toHsv(): Numberify<HSVA> {

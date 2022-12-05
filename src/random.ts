@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 // randomColor by David Merfield under the CC0 license
 // https://github.com/davidmerfield/randomColor/
 import { TinyColor } from './index';

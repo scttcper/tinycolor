@@ -552,11 +552,13 @@ export class TinyColor {
   onBackground(background: ColorInput): TinyColor {
     const fg = this.toRgb();
     const bg = new TinyColor(background).toRgb();
+    const alpha = fg.a + bg.a * (1 - fg.a);
 
     return new TinyColor({
-      r: bg.r + (fg.r - bg.r) * fg.a,
-      g: bg.g + (fg.g - bg.g) * fg.a,
-      b: bg.b + (fg.b - bg.b) * fg.a,
+      r: (fg.r * fg.a + bg.r * bg.a * (1 - fg.a)) / alpha,
+      g: (fg.g * fg.a + bg.g * bg.a * (1 - fg.a)) / alpha,
+      b: (fg.b * fg.a + bg.b * bg.a * (1 - fg.a)) / alpha,
+      a: alpha,
     });
   }
 

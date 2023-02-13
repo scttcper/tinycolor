@@ -111,4 +111,13 @@ describe('TinyColor Conversions', () => {
       expect(tiny.toHexString()).toBe(new TinyColor(tiny).toHexString());
     }
   });
+  it('Alpha compositing correctly', () => {
+    const tiny1 = new TinyColor('rgba(255,0,0,0.5)');
+    const tiny2 = new TinyColor('rgba(0,255,0,0.5)');
+    const tiny3 = new TinyColor('rgba(0,0,255,1)');
+    const tiny4 = new TinyColor('rgba(0,0,0,0.5)');
+    expect(tiny1.onBackground(tiny2).toRgbString()).toBe('rgba(170, 85, 0, 0.75)');
+    expect(tiny1.onBackground(tiny3).toRgbString()).toBe('rgb(128, 0, 128)');
+    expect(tiny3.onBackground(tiny4).toRgbString()).toBe('rgb(0, 0, 255)');
+  });
 });

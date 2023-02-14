@@ -244,6 +244,14 @@ export class TinyColor {
   }
 
   /**
+   * Returns the shorter hex value of the color depends on its alpha -with a # append.
+   * @param allowShortChar will shorten hex value to 3 or 4 char if possible
+   */
+  toHexShortString(allowShortChar = false): string {
+    return this.a === 1 ? this.toHexString(allowShortChar) : this.toHex8String(allowShortChar);
+  }
+
+  /**
    * Returns the object as a RGBA object.
    */
   toRgb(): Numberify<RGBA> {

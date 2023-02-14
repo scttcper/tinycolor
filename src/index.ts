@@ -220,7 +220,7 @@ export class TinyColor {
   }
 
   /**
-   * Returns the hex value of the color -with a # appened.
+   * Returns the hex value of the color -with a # prefixed.
    * @param allow3Char will shorten hex value to 3 char if possible
    */
   toHexString(allow3Char = false): string {
@@ -236,7 +236,7 @@ export class TinyColor {
   }
 
   /**
-   * Returns the hex 8 value of the color -with a # appened.
+   * Returns the hex 8 value of the color -with a # prefixed.
    * @param allow4Char will shorten hex value to 4 char if possible
    */
   toHex8String(allow4Char = false): string {
@@ -244,7 +244,7 @@ export class TinyColor {
   }
 
   /**
-   * Returns the shorter hex value of the color depends on its alpha -with a # append.
+   * Returns the shorter hex value of the color depends on its alpha -with a # prefixed.
    * @param allowShortChar will shorten hex value to 3 or 4 char if possible
    */
   toHexShortString(allowShortChar = false): string {

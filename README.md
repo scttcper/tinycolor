@@ -318,6 +318,18 @@ const color = new TinyColor('red');
 color.toHex8String(); // "#ff0000ff"
 ```
 
+### toHexShortString
+
+```ts
+const color1 = new TinyColor('#ff000000');
+color1.toHexShortString(); // "#ff000000"
+color1.toHexShortString(true); // "#f000"
+
+const color2 = new TinyColor('#ff0000ff');
+color2.toHexShortString(); // "#ff0000"
+color2.toHexShortString(true); // "#f00"
+```
+
 ### toRgb
 
 ```ts

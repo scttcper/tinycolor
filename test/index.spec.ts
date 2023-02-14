@@ -188,6 +188,10 @@ describe('TinyColor', () => {
     expect(new TinyColor('rgba 255 0 0 0').toHex8String()).toBe('#ff000000');
     expect(new TinyColor('rgba 255 0 0 1').toHex8String()).toBe('#ff0000ff');
     expect(new TinyColor('rgba 255 0 0 1').toHex8String(true)).toBe('#f00f');
+    expect(new TinyColor('rgba 255 0 0 0').toHexShortString()).toBe('#ff000000');
+    expect(new TinyColor('rgba 255 0 0 0').toHexShortString(true)).toBe('#f000');
+    expect(new TinyColor('rgba 255 0 0 1').toHexShortString()).toBe('#ff0000');
+    expect(new TinyColor('rgba 255 0 0 1').toHexShortString(true)).toBe('#f00');
     expect(new TinyColor('rgb 255 0 0').toHex()).toBe('ff0000');
     expect(new TinyColor('rgb 255 0 0').toHex(true)).toBe('f00');
     expect(new TinyColor('rgba 255 0 0 0.5').toHex8()).toBe('ff000080');
@@ -757,6 +761,15 @@ describe('TinyColor', () => {
     expect(new TinyColor('#ffffff00').onBackground('#000').toHex()).toBe('000000');
     expect(new TinyColor('#ffffff77').onBackground('#000').toHex()).toBe('777777');
     expect(new TinyColor('#262a6d82').onBackground('#644242').toHex()).toBe('443658');
+    expect(new TinyColor('rgba(255,0,0,0.5)').onBackground('rgba(0,255,0,0.5)').toRgbString()).toBe(
+      'rgba(170, 85, 0, 0.75)',
+    );
+    expect(new TinyColor('rgba(255,0,0,0.5)').onBackground('rgba(0,0,255,1)').toRgbString()).toBe(
+      'rgb(128, 0, 128)',
+    );
+    expect(new TinyColor('rgba(0,0,255,1)').onBackground('rgba(0,0,0,0.5)').toRgbString()).toBe(
+      'rgb(0, 0, 255)',
+    );
   });
   it('complement', () => {
     const complementDoesntModifyInstance = new TinyColor('red');

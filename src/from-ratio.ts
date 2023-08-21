@@ -1,6 +1,6 @@
-import { TinyColor } from './index';
-import { RGBA } from './interfaces';
-import { convertToPercentage } from './util';
+import { TinyColor } from './index.js';
+import { RGBA } from './interfaces.js';
+import { convertToPercentage } from './util.js';
 
 export interface RatioInput {
   r: number | string;

@@ -1,8 +1,8 @@
-import { numberInputToObject, rgbaToHex, rgbToHex, rgbToHsl, rgbToHsv } from './conversion';
-import { names } from './css-color-names';
+import { numberInputToObject, rgbaToHex, rgbToHex, rgbToHsl, rgbToHsv } from './conversion.js';
+import { names } from './css-color-names.js';
 import { inputToRGB } from './format-input';
-import { HSL, HSLA, HSV, HSVA, Numberify, RGB, RGBA } from './interfaces';
-import { bound01, boundAlpha, clamp01 } from './util';
+import { HSL, HSLA, HSV, HSVA, Numberify, RGB, RGBA } from './interfaces.js';
+import { bound01, boundAlpha, clamp01 } from './util.js';
 
 export interface TinyColorOptions {
   format: string;

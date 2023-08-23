@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 // randomColor by David Merfield under the CC0 license
 // https://github.com/davidmerfield/randomColor/
-import { TinyColor } from './index';
-import { HSVA } from './interfaces';
+import { TinyColor } from './index.js';
+import { HSVA } from './interfaces.js';
 
 export interface RandomOptions {
   seed?: number;

@@ -1,10 +1,10 @@
-import { names } from './css-color-names';
-import { inputToRGB, isValidCSSUnit, stringInputToObject } from './format-input';
-import { fromRatio, legacyRandom } from './from-ratio';
-import { TinyColor, tinycolor } from './index';
-import { random } from './random';
-import { mostReadable, readability } from './readability';
-import { toMsFilter } from './to-ms-filter';
+import { names } from './css-color-names.js';
+import { inputToRGB, isValidCSSUnit, stringInputToObject } from './format-input.js';
+import { fromRatio, legacyRandom } from './from-ratio.js';
+import { TinyColor, tinycolor } from './index.js';
+import { random } from './random.js';
+import { mostReadable, readability } from './readability.js';
+import { toMsFilter } from './to-ms-filter.js';
 
 export interface TinyColorUMD {
   (): TinyColor;

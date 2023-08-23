@@ -1,5 +1,5 @@
-import { rgbaToArgbHex } from './conversion';
-import { ColorInput, TinyColor } from './index';
+import { rgbaToArgbHex } from './conversion.js';
+import { ColorInput, TinyColor } from './index.js';
 /**
  * Returns the color represented as a Microsoft filter for use in old versions of IE.
  */

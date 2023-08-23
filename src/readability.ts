@@ -1,4 +1,4 @@
-import { ColorInput, TinyColor } from './index';
+import { ColorInput, TinyColor } from './index.js';
 
 // Readability Functions
 // ---------------------

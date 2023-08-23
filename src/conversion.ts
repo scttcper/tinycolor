@@ -1,5 +1,5 @@
-import { HSL, HSV, Numberify, RGB } from './interfaces';
-import { bound01, pad2 } from './util';
+import { HSL, HSV, Numberify, RGB } from './interfaces.js';
+import { bound01, pad2 } from './util.js';
 
 // `rgbToHsl`, `rgbToHsv`, `hslToRgb`, `hsvToRgb` modified from:
 // <http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript>

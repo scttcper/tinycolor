@@ -58,7 +58,10 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "coverageProvider": "v8"
+    "coverageProvider": "v8",
+    "moduleNameMapper": {
+        "(.+)\\.js": "$1"
+    }
   },
   "babel": {
     "presets": [

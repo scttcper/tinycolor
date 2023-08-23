@@ -1,6 +1,6 @@
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
-import { random } from '../src/random';
+import { random } from '../src/random.js';
 
 describe('random', () => {
   it('should accept count', () => {

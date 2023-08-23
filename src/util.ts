@@ -79,7 +79,7 @@ export function boundAlpha(a?: number | string): number {
  * @hidden
  */
 export function convertToPercentage(n: number | string): number | string {
-  if (n <= 1) {
+  if (Number(n) <= 1) {
     return `${Number(n) * 100}%`;
   }
 

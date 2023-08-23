@@ -3,7 +3,7 @@
   "compilerOptions": {
     "declaration": false,
     "lib": ["es2017", "dom"],
-    "module": "ES2015",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "strict": false,
     "target": "es5",

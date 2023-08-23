@@ -1,7 +1,6 @@
 # tinycolor 
 
 [![npm](https://badgen.net/npm/v/@ctrl/tinycolor)](https://www.npmjs.com/package/@ctrl/tinycolor)
-[![CircleCI](https://badgen.net/circleci/github/scttcper/tinycolor)](https://circleci.com/gh/scttcper/tinycolor)
 [![coverage](https://badgen.net/codecov/c/github/scttcper/tinycolor)](https://codecov.io/gh/scttcper/tinycolor)
 [![bundlesize](https://badgen.net/bundlephobia/min/@ctrl/tinycolor)](https://bundlephobia.com/result?p=@ctrl/tinycolor)
 
@@ -16,6 +15,7 @@ __DEMO__: https://tinycolor.vercel.app
 * reformatted into TypeScript / es2015 and requires node >= 8
   * tree shakeable "module" export and no package `sideEffects`
 * `tinycolor` is now exported as a class called `TinyColor`
+* default export removed, use `import { TinyColor } from '@ctrl/tinycolor'`
 * new `random`, an implementation of [randomColor](https://github.com/davidmerfield/randomColor/) by David Merfield that returns a TinyColor object
 * several functions moved out of the tinycolor class and are no longer `TinyColor.<function>`
   * `readability`, `fromRatio` moved out

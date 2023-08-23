@@ -1,8 +1,8 @@
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
-import { TinyColor } from '../src/public_api';
+import { TinyColor } from '../src/public_api.js';
 
-import conversions from './conversions';
+import conversions from './conversions.js';
 
 describe('TinyColor Conversions', () => {
   it('should have color equality', () => {

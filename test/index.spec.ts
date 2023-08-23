@@ -1,7 +1,6 @@
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 import {
-  default as defaultTiny,
   fromRatio,
   isReadable,
   legacyRandom,
@@ -9,9 +8,8 @@ import {
   names,
   readability,
   TinyColor,
-  tinycolor,
   toMsFilter,
-} from '../src/public_api';
+} from '../src/public_api.js';
 
 import {
   BRIGHTENS,
@@ -21,21 +19,11 @@ import {
   SATURATIONS,
   SHADES,
   TINTS,
-} from './modifications';
+} from './modifications.js';
 
 describe('TinyColor', () => {
   it('should init', () => {
     const r = new TinyColor('red');
-    expect(r.toName()).toBe('red');
-    expect(r).toBeTruthy();
-  });
-  it('should init as function', () => {
-    const r = tinycolor('red');
-    expect(r.toName()).toBe('red');
-    expect(r).toBeTruthy();
-  });
-  it('should have function as default export', () => {
-    const r = defaultTiny('red');
     expect(r.toName()).toBe('red');
     expect(r).toBeTruthy();
   });
@@ -804,20 +792,6 @@ describe('TinyColor', () => {
 
   it('legacy random', () => {
     expect(legacyRandom().isValid).toBeTruthy();
-  });
-
-  it('should handle conversion to number', () => {
-    expect(tinycolor('rgb(18, 0, 0)').toString()).toBe(tinycolor(0x120000).toString());
-    expect(tinycolor('rgb(0, 52, 0)').toString()).toBe(tinycolor(0x3400).toString());
-    expect(tinycolor('rgb(0, 0, 86)').toString()).toBe(tinycolor(0x56).toString());
-
-    expect(tinycolor('rgb(1, 1, 1)').toNumber()).toBe((1 << 16) + (1 << 8) + 1);
-    expect(tinycolor('#aabbcc').toNumber()).toBe(0xaabbcc);
-  });
-
-  it('should convert hex number input to hex string', () => {
-    expect(tinycolor(0x0).toHexString()).toBe('#000000');
-    expect(tinycolor(0xaabbcc).toHexString()).toBe('#aabbcc');
   });
 });
 

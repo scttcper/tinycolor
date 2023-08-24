@@ -1,6 +1,6 @@
 import { numberInputToObject, rgbaToHex, rgbToHex, rgbToHsl, rgbToHsv } from './conversion.js';
 import { names } from './css-color-names.js';
-import { inputToRGB } from './format-input';
+import { inputToRGB } from './format-input.js';
 import { HSL, HSLA, HSV, HSVA, Numberify, RGB, RGBA } from './interfaces.js';
 import { bound01, boundAlpha, clamp01 } from './util.js';
 

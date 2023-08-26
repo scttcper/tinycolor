@@ -195,8 +195,8 @@ export function hsvToRgb(
 /**
  * Converts an RGB color to hex
  *
- * Assumes r, g, and b are contained in the set [0, 255]
- * Returns a 3 or 6 character hex
+ * *Assumes:* r, g, and b are contained in the set [0, 255]
+ * *Returns:* a 3 or 6 character hex
  */
 export function rgbToHex(r: number, g: number, b: number, allow3Char: boolean): string {
   const hex = [
@@ -221,8 +221,8 @@ export function rgbToHex(r: number, g: number, b: number, allow3Char: boolean): 
 /**
  * Converts an RGBA color plus alpha transparency to hex
  *
- * Assumes r, g, b are contained in the set [0, 255] and
- * a in [0, 1]. Returns a 4 or 8 character rgba hex
+ * *Assumes:* r, g, b are contained in the set [0, 255] and a in [0, 1]
+ * *Returns:* a 4 or 8 character rgba hex
  */
 // eslint-disable-next-line max-params
 export function rgbaToHex(r: number, g: number, b: number, a: number, allow4Char: boolean): string {
@@ -250,6 +250,9 @@ export function rgbaToHex(r: number, g: number, b: number, a: number, allow4Char
 /**
  * Converts an RGBA color to an ARGB Hex8 string
  * Rarely used, but required for "toFilter()"
+ *
+ * *Assumes:* r, g, b are contained in the set [0, 255] and a in [0, 1]
+ * *Returns:* a 8 character argb hex
  */
 export function rgbaToArgbHex(r: number, g: number, b: number, a: number): string {
   const hex = [

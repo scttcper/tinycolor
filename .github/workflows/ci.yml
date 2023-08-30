@@ -41,6 +41,8 @@ jobs:
           node-version: 20
           cache: 'npm'
       - run: npm ci
+      - name: Delete Workspaces
+        run: npm pkg delete workspaces
       - name: release
         run: npx semantic-release
         env:

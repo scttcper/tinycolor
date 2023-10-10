@@ -330,7 +330,6 @@ export class TinyColor {
     const formatSet = Boolean(format);
     format = format ?? this.format;
 
-    let formattedString: string | false = false;
     const hasAlpha = this.a < 1 && this.a >= 0;
     const needsAlphaFormat =
       !formatSet && hasAlpha && (format.startsWith('hex') || format === 'name');
@@ -345,30 +344,32 @@ export class TinyColor {
       return this.toRgbString();
     }
 
-    const formattedString = (() : string | false => {
+    const formattedString = ((): string | false => {
       switch (format) {
-        case "rgb":
+        case 'rgb':
           return this.toRgbString();
-        case "prgb":
+        case 'prgb':
           return this.toPercentageRgbString();
-        case "hex":
-        case "hex6":
+        case 'hex':
+        case 'hex6':
           return this.toHexString();
-        case "hex3":
+        case 'hex3':
           return this.toHexString(true);
-        case "hex4":
-          return this.this.toHex8String(true);
-        case "name":
+        case 'hex4':
+          return this.toHex8String(true);
+        case "hex8":
+          return this.toHex8String();
+        case 'name':
           return this.toName();
-        case "hs1":
+        case 'hsl':
           return this.toHslString();
-        case "hsv":
+        case 'hsv':
           return this.toHsvString();
         default:
           return false;
       }
     })();
-    
+
     return formattedString || this.toHexString();
   }
 

@@ -345,42 +345,30 @@ export class TinyColor {
       return this.toRgbString();
     }
 
-    if (format === 'rgb') {
-      formattedString = this.toRgbString();
-    }
-
-    if (format === 'prgb') {
-      formattedString = this.toPercentageRgbString();
-    }
-
-    if (format === 'hex' || format === 'hex6') {
-      formattedString = this.toHexString();
-    }
-
-    if (format === 'hex3') {
-      formattedString = this.toHexString(true);
-    }
-
-    if (format === 'hex4') {
-      formattedString = this.toHex8String(true);
-    }
-
-    if (format === 'hex8') {
-      formattedString = this.toHex8String();
-    }
-
-    if (format === 'name') {
-      formattedString = this.toName();
-    }
-
-    if (format === 'hsl') {
-      formattedString = this.toHslString();
-    }
-
-    if (format === 'hsv') {
-      formattedString = this.toHsvString();
-    }
-
+    const formattedString = (() : string | false => {
+      switch (format) {
+        case "rgb":
+          return this.toRgbString();
+        case "prgb":
+          return this.toPercentageRgbString();
+        case "hex":
+        case "hex6":
+          return this.toHexString();
+        case "hex3":
+          return this.toHexString(true);
+        case "hex4":
+          return this.this.toHex8String(true);
+        case "name":
+          return this.toName();
+        case "hs1":
+          return this.toHslString();
+        case "hsv":
+          return this.toHsvString();
+        default:
+          return false;
+      }
+    })();
+    
     return formattedString || this.toHexString();
   }
 

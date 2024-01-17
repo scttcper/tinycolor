@@ -95,8 +95,10 @@ const CSS_UNIT = '(?:' + CSS_NUMBER + ')|(?:' + CSS_INTEGER + ')';
 // Actual matching.
 // Parentheses and commas are optional, but not required.
 // Whitespace can take the place of commas or opening paren
+// eslint-disable-next-line prettier/prettier
 const PERMISSIVE_MATCH3 = '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?';
 const PERMISSIVE_MATCH4 =
+  // eslint-disable-next-line prettier/prettier
   '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?';
 
 const matchers = {

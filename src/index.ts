@@ -330,7 +330,6 @@ export class TinyColor {
     const formatSet = Boolean(format);
     format = format ?? this.format;
 
-    let formattedString: string | false = false;
     const hasAlpha = this.a < 1 && this.a >= 0;
     const needsAlphaFormat =
       !formatSet && hasAlpha && (format.startsWith('hex') || format === 'name');
@@ -345,41 +344,31 @@ export class TinyColor {
       return this.toRgbString();
     }
 
-    if (format === 'rgb') {
-      formattedString = this.toRgbString();
-    }
-
-    if (format === 'prgb') {
-      formattedString = this.toPercentageRgbString();
-    }
-
-    if (format === 'hex' || format === 'hex6') {
-      formattedString = this.toHexString();
-    }
-
-    if (format === 'hex3') {
-      formattedString = this.toHexString(true);
-    }
-
-    if (format === 'hex4') {
-      formattedString = this.toHex8String(true);
-    }
-
-    if (format === 'hex8') {
-      formattedString = this.toHex8String();
-    }
-
-    if (format === 'name') {
-      formattedString = this.toName();
-    }
-
-    if (format === 'hsl') {
-      formattedString = this.toHslString();
-    }
-
-    if (format === 'hsv') {
-      formattedString = this.toHsvString();
-    }
+    const formattedString = ((): string | false => {
+      switch (format) {
+        case 'rgb':
+          return this.toRgbString();
+        case 'prgb':
+          return this.toPercentageRgbString();
+        case 'hex':
+        case 'hex6':
+          return this.toHexString();
+        case 'hex3':
+          return this.toHexString(true);
+        case 'hex4':
+          return this.toHex8String(true);
+        case "hex8":
+          return this.toHex8String();
+        case 'name':
+          return this.toName();
+        case 'hsl':
+          return this.toHslString();
+        case 'hsv':
+          return this.toHsvString();
+        default:
+          return false;
+      }
+    })();
 
     return formattedString || this.toHexString();
   }

@@ -98,6 +98,15 @@ new TinyColor('hsv 0 1 1');
 new TinyColor({ h: 0, s: 100, v: 100 });
 ```
 
+### CMYK
+
+```ts
+new TinyColor('cmyk(0, 25, 20, 0)');
+new TinyColor('cmyk(0, 100, 100, 0)');
+new TinyColor('cmyk 100 0 100 0)');
+new TinyColor({c: 0, m: 25, y: 25, k: 0});
+```
+
 ### Named
 
 ```ts
@@ -282,6 +291,13 @@ const color = new TinyColor('red');
 color.toHslString(); // "hsl(0, 100%, 50%)"
 color.setAlpha(0.5);
 color.toHslString(); // "hsla(0, 100%, 50%, 0.5)"
+```
+
+### toCmykString
+
+```ts
+const color = new TinyColor('red');
+color.toCmykString(); // "cmyk(0, 100, 100, 0)"
 ```
 
 ### toNumber

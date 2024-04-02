@@ -265,6 +265,49 @@ export function rgbaToArgbHex(r: number, g: number, b: number, a: number): strin
   return hex.join('');
 }
 
+/**
+ * Converts CMYK to RBG
+ * Assumes c, m, y, k are in the set [0, 100]
+ */
+export function cmykToRgb(c: number, m: number, y: number, k: number) {
+  const cConv = c / 100;
+  const mConv = m / 100;
+  const yConv = y / 100;
+  const kConv = k / 100;
+
+  const r = 255 * (1 - cConv) * (1 - kConv);
+  const g = 255 * (1 - mConv) * (1 - kConv);
+  const b = 255 * (1 - yConv) * (1 - kConv);
+
+  return { r, g, b };
+}
+
+export function rgbToCmyk(r: number, g: number, b: number) {
+  let c = 1 - r / 255;
+  let m = 1 - g / 255;
+  let y = 1 - b / 255;
+  let k = Math.min(c, m, y);
+
+  if (k === 1) {
+    c = 0;
+    m = 0;
+    y = 0;
+  } else {
+    c = ((c - k) / (1 - k)) * 100;
+    m = ((m - k) / (1 - k)) * 100;
+    y = ((y - k) / (1 - k)) * 100;
+  }
+
+  k *= 100;
+
+  return {
+    c: Math.round(c),
+    m: Math.round(m),
+    y: Math.round(y),
+    k: Math.round(k),
+  };
+}
+
 /** Converts a decimal to a hex value */
 export function convertDecimalToHex(d: string | number): string {
   return Math.round(parseFloat(d as string) * 255).toString(16);

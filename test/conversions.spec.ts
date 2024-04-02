@@ -20,6 +20,7 @@ describe('TinyColor Conversions', () => {
       expect(new TinyColor(c.hex).equals(c.hsl)).toBe(true);
       expect(new TinyColor(c.hex).equals(c.hsv)).toBe(true);
       expect(new TinyColor(c.hsl).equals(c.hsv)).toBe(true);
+      expect(new TinyColor(c.cmyk).equals(c.hex)).toBe(true);
     }
   });
   it('HSL Object', () => {

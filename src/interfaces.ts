@@ -50,3 +50,15 @@ export interface HSV {
 export interface HSVA extends HSV {
   a: number;
 }
+
+/**
+ * The CMYK color model is a subtractive color model used in the printing process.
+ * It described four ink palettes: Cyan, Magenta, Yellow, and Black.
+ * @link https://en.wikipedia.org/wiki/CMYK_color_model
+ */
+export interface CMYK {
+  c: number | string;
+  m: number | string;
+  y: number | string;
+  k: number | string;
+}

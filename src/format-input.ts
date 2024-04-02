@@ -1,4 +1,5 @@
 import {
+  cmykToRgb,
   convertHexToDecimal,
   hslToRgb,
   hsvToRgb,
@@ -6,7 +7,7 @@ import {
   rgbToRgb,
 } from './conversion.js';
 import { names } from './css-color-names.js';
-import { HSL, HSLA, HSV, HSVA, RGB, RGBA } from './interfaces.js';
+import { CMYK, HSL, HSLA, HSV, HSVA, RGB, RGBA } from './interfaces.js';
 import { boundAlpha, convertToPercentage } from './util.js';
 
 /**
@@ -25,9 +26,10 @@ import { boundAlpha, convertToPercentage } from './util.js';
  * "hsl(0, 100%, 50%)" or "hsl 0 100% 50%"
  * "hsla(0, 100%, 50%, 1)" or "hsla 0 100% 50%, 1"
  * "hsv(0, 100%, 100%)" or "hsv 0 100% 100%"
+ * "cmyk(0, 20, 0, 0)" or "cmyk 0 20 0 0"
  * ```
  */
-export function inputToRGB(color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA | any): {
+export function inputToRGB(color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA | CMYK | any): {
   ok: boolean;
   format: any;
   r: number;
@@ -64,6 +66,15 @@ export function inputToRGB(color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA 
       rgb = hslToRgb(color.h, s as number, l as number);
       ok = true;
       format = 'hsl';
+    } else if (
+      isValidCSSUnit(color.c) &&
+      isValidCSSUnit(color.m) &&
+      isValidCSSUnit(color.y) &&
+      isValidCSSUnit(color.k)
+    ) {
+      rgb = cmykToRgb(color.c, color.m, color.y, color.k);
+      ok = true;
+      format = 'cmyk';
     }
 
     if (Object.prototype.hasOwnProperty.call(color, 'a')) {
@@ -109,6 +120,7 @@ const matchers = {
   hsla: new RegExp('hsla' + PERMISSIVE_MATCH4),
   hsv: new RegExp('hsv' + PERMISSIVE_MATCH3),
   hsva: new RegExp('hsva' + PERMISSIVE_MATCH4),
+  cmyk: new RegExp('cmyk' + PERMISSIVE_MATCH4),
   hex3: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
   hex6: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
   hex4: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
@@ -117,7 +129,7 @@ const matchers = {
 
 /**
  * Permissive string parsing.  Take in a number of formats, and output an object
- * based on detected format.  Returns `{ r, g, b }` or `{ h, s, l }` or `{ h, s, v}`
+ * based on detected format.  Returns `{ r, g, b }` or `{ h, s, l }` or `{ h, s, v}` or `{c, m, y, k}` or `{c, m, y, k, a}`
  */
 export function stringInputToObject(color: string): any {
   color = color.trim().toLowerCase();
@@ -165,6 +177,16 @@ export function stringInputToObject(color: string): any {
   match = matchers.hsva.exec(color);
   if (match) {
     return { h: match[1], s: match[2], v: match[3], a: match[4] };
+  }
+
+  match = matchers.cmyk.exec(color);
+  if (match) {
+    return {
+      c: match[1],
+      m: match[2],
+      y: match[3],
+      k: match[4],
+    };
   }
 
   match = matchers.hex8.exec(color);

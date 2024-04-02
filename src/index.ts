@@ -1,7 +1,14 @@
-import { numberInputToObject, rgbaToHex, rgbToHex, rgbToHsl, rgbToHsv } from './conversion.js';
+import {
+  numberInputToObject,
+  rgbaToHex,
+  rgbToCmyk,
+  rgbToHex,
+  rgbToHsl,
+  rgbToHsv,
+} from './conversion.js';
 import { names } from './css-color-names.js';
 import { inputToRGB } from './format-input.js';
-import { HSL, HSLA, HSV, HSVA, Numberify, RGB, RGBA } from './interfaces.js';
+import { CMYK, HSL, HSLA, HSV, HSVA, Numberify, RGB, RGBA } from './interfaces.js';
 import { bound01, boundAlpha, clamp01 } from './util.js';
 
 export interface TinyColorOptions {
@@ -9,7 +16,7 @@ export interface TinyColorOptions {
   gradientType: string;
 }
 
-export type ColorInput = string | number | RGB | RGBA | HSL | HSLA | HSV | HSVA | TinyColor;
+export type ColorInput = string | number | RGB | RGBA | HSL | HSLA | HSV | HSVA | CMYK | TinyColor;
 
 export type ColorFormats =
   | 'rgb'
@@ -21,7 +28,8 @@ export type ColorFormats =
   | 'hex8'
   | 'name'
   | 'hsl'
-  | 'hsv';
+  | 'hsv'
+  | 'cmyk';
 
 export class TinyColor {
   /** red */
@@ -297,6 +305,17 @@ export class TinyColor {
       : `rgba(${rnd(this.r)}%, ${rnd(this.g)}%, ${rnd(this.b)}%, ${this.roundA})`;
   }
 
+  toCmyk(): Numberify<CMYK> {
+    return {
+      ...rgbToCmyk(this.r, this.g, this.b),
+    };
+  }
+
+  toCmykString(): string {
+    const { c, m, y, k } = rgbToCmyk(this.r, this.g, this.b);
+    return `cmyk(${c}, ${m}, ${y}, ${k})`;
+  }
+
   /**
    * The 'real' name of the color -if there is one.
    */
@@ -379,6 +398,10 @@ export class TinyColor {
 
     if (format === 'hsv') {
       formattedString = this.toHsvString();
+    }
+
+    if (format === 'cmyk') {
+      formattedString = this.toCmykString();
     }
 
     return formattedString || this.toHexString();
@@ -605,6 +628,16 @@ export class TinyColor {
    * compare color vs current color
    */
   equals(color?: ColorInput): boolean {
-    return this.toRgbString() === new TinyColor(color).toRgbString();
+    const comparedColor = new TinyColor(color);
+
+    /**
+     * RGB and CMYK do not have the same color gamut, so a CMYK conversion will never be 100%.
+     * This means we need to compare CMYK to CMYK to ensure accuracy of the equals function.
+     */
+    if (this.format === 'cmyk' || comparedColor.format === 'cmyk') {
+      return this.toCmykString() === comparedColor.toCmykString();
+    }
+
+    return this.toRgbString() === comparedColor.toRgbString();
   }
 }

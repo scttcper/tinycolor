@@ -217,5 +217,9 @@ export function stringInputToObject(color: string): any {
  * (see `matchers` above for definition).
  */
 export function isValidCSSUnit(color: string | number): boolean {
-  return Boolean(matchers.CSS_UNIT.exec(String(color)));
+  if (typeof color === 'number') {
+    return !Number.isNaN(color);
+  }
+
+  return matchers.CSS_UNIT.test(color);
 }

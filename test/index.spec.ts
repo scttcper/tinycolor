@@ -192,6 +192,11 @@ describe('TinyColor', () => {
       'hsva(251, 89%, 92%, 0.5)',
     );
   });
+  it('should parse CMYK string', () => {
+    expect(new TinyColor('cmyk(25, 0, 93, 46)').format).toBe('cmyk');
+    expect(new TinyColor('cmyk(25, 0, 93, 46)').toRgbString()).toBe('rgb(103, 138, 10)');
+    expect(new TinyColor('cmyk(25, 0, 93, 46)').toHsvString()).toBe('hsv(76, 93%, 54%)');
+  });
   it('should parse invalid input', () => {
     let invalidColor = new TinyColor('not a color');
     expect(invalidColor.toHexString()).toBe('#000000');

@@ -23,6 +23,7 @@ function colorChange(color) {
     'rgb:\t' + tiny.toRgbString(),
     'hsl:\t' + tiny.toHslString(),
     'hsv:\t' + tiny.toHsvString(),
+    'cmyk:\t' + tiny.toCmykString(),
     'name:\t' + (tiny.toName() || 'none'),
     'format:\t' + tiny.format,
     'string:\t' + tiny.toString(),

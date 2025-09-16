@@ -4,7 +4,8 @@
   "description": "Fast, small color manipulation and conversion for JavaScript",
   "author": "Scott Cooper <scttcper@gmail.com>",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "license": "MIT",
   "homepage": "https://tinycolor.vercel.app",

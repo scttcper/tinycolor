@@ -7,13 +7,16 @@ on:
 
 # https://docs.npmjs.com/trusted-publishers#github-actions-configuration
 permissions:
-  contents: write # to be able to publish a GitHub release
-  issues: write # to be able to comment on released issues
-  pull-requests: write # to be able to comment on released pull requests
-  id-token: write # to enable use of OIDC for npm provenance
+  id-token: write  # Required for OIDC
+  contents: read
 
 jobs:
   publish:
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

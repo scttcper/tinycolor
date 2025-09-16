@@ -23,6 +23,8 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
+      - name: Update npm
+        run: npm install -g npm@latest
       - run: npm ci
       - name: lint
         run: npm run lint

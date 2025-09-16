@@ -686,6 +686,7 @@ mostReadable('#ff0088', ['#2e0c3a'], {
 }).toHexString(); // "#000000",
 ```
 
+
 See [index.html](https://github.com/bgrins/TinyColor/blob/master/index.html) in the project for a demo.
 
 ## Common operations

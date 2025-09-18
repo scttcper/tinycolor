@@ -2,7 +2,7 @@ import { HSL, HSV, Numberify, RGB } from './interfaces.js';
 import { bound01, pad2 } from './util.js';
 
 // `rgbToHsl`, `rgbToHsv`, `hslToRgb`, `hsvToRgb` modified from:
-// <http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript>
+// <https://gist.github.com/mjackson/5311256>
 
 /**
  * Handle bounds / percentage checking to conform to CSS color spec

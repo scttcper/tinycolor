@@ -1,0 +1,76 @@
+name: Finalize release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Approved npm version, without the v prefix
+        required: true
+        type: string
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  finalize:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      RELEASE_VERSION: ${{ inputs.version }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Verify approved package and release target
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { execFileSync } from 'node:child_process';
+          import { createHash } from 'node:crypto';
+          import { mkdtemp, readFile, rm } from 'node:fs/promises';
+          import { tmpdir } from 'node:os';
+          import { join } from 'node:path';
+
+          const gh = (...args) => execFileSync('gh', args, { encoding: 'utf8' }).trim();
+          const version = process.env.RELEASE_VERSION;
+          assert.match(version, /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/, 'Expected a stable version such as 4.2.1');
+          const tag = `v${version}`;
+          const release = JSON.parse(gh('release', 'view', tag, '--json', 'isDraft,targetCommitish'));
+          assert.ok(release.isDraft, 'Release must still be a draft');
+          assert.match(release.targetCommitish, /^[a-f0-9]{40}$/, 'Draft must target an exact commit');
+          gh('api', `repos/${process.env.GH_REPO}/commits/${release.targetCommitish}`, '--jq', '.sha');
+          const refs = execFileSync('git', ['ls-remote', `https://github.com/${process.env.GH_REPO}.git`, `refs/tags/${tag}`, `refs/tags/${tag}^{}`], { encoding: 'utf8' }).trim();
+          if (refs) {
+            const entries = refs.split('\n').map(line => line.split(/\s+/));
+            const target = entries.find(([, ref]) => ref.endsWith('^{}')) ?? entries[0];
+            assert.equal(target[0], release.targetCommitish, 'Existing tag points to a different commit');
+          }
+
+          const response = await fetch(`https://registry.npmjs.org/@ctrl%2ftinycolor/${version}`);
+          assert.ok(response.ok, `npm version is not available: ${response.status}`);
+          const metadata = await response.json();
+          assert.equal(metadata.name, '@ctrl/tinycolor');
+          assert.equal(metadata.version, version);
+          const directory = await mkdtemp(join(tmpdir(), 'tinycolor-release-'));
+          try {
+            const archive = `ctrl-tinycolor-${version}.tgz`;
+            gh('release', 'download', tag, '--pattern', archive, '--dir', directory);
+            const bytes = await readFile(join(directory, archive));
+            const integrity = `sha512-${createHash('sha512').update(bytes).digest('base64')}`;
+            assert.equal(metadata.dist.integrity, integrity, 'Draft archive differs from the approved npm package');
+            console.log(`Verified ${tag} at ${release.targetCommitish}`);
+          } finally {
+            await rm(directory, { recursive: true, force: true });
+          }
+          NODE
+      - name: Publish GitHub release
+        run: gh release edit "v$RELEASE_VERSION" --draft=false --latest

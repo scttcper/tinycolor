@@ -1,10 +1,10 @@
-name: Publish
+name: Stage release
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: Version to publish, without the v prefix
+        description: Version to stage, without the v prefix
         required: true
         type: string
       dry_run:
@@ -69,9 +69,6 @@ jobs:
       - name: Preview package
         if: inputs.dry_run
         run: npm stage publish "ctrl-tinycolor-$RELEASE_VERSION.tgz" --dry-run --ignore-scripts
-      - name: Stage npm package
-        if: ${{ !inputs.dry_run }}
-        run: npm stage publish "ctrl-tinycolor-$RELEASE_VERSION.tgz" --access public --provenance --ignore-scripts
       - name: Update draft release
         if: ${{ !inputs.dry_run }}
         env:
@@ -79,3 +76,6 @@ jobs:
         run: |
           gh release upload "v$RELEASE_VERSION" "ctrl-tinycolor-$RELEASE_VERSION.tgz" --clobber
           gh release edit "v$RELEASE_VERSION" --target "$GITHUB_SHA"
+      - name: Stage npm package
+        if: ${{ !inputs.dry_run }}
+        run: npm stage publish "ctrl-tinycolor-$RELEASE_VERSION.tgz" --access public --provenance --ignore-scripts

@@ -149,7 +149,53 @@ export function stringInputToObject(color: string): any {
   // Keep most of the number bounding out of this function - don't worry about [0,1] or [0,100] or [0,360]
   // Just return an object and let the conversion functions handle that.
   // This way the result will be the same whether the tinycolor is initialized with string or object.
-  let match = matchers.rgb.exec(color);
+  let match: RegExpExecArray | null;
+  // Hex colors cannot contain a functional color, so try them before the permissive matchers.
+  if (color.length <= 9 && (color.startsWith('#') || /^[0-9a-f]+$/.test(color))) {
+    match = matchers.hex8.exec(color);
+    if (match) {
+      return {
+        r: parseIntFromHex(match[1]),
+        g: parseIntFromHex(match[2]),
+        b: parseIntFromHex(match[3]),
+        a: convertHexToDecimal(match[4]),
+        format: named ? 'name' : 'hex8',
+      };
+    }
+
+    match = matchers.hex6.exec(color);
+    if (match) {
+      return {
+        r: parseIntFromHex(match[1]),
+        g: parseIntFromHex(match[2]),
+        b: parseIntFromHex(match[3]),
+        format: named ? 'name' : 'hex',
+      };
+    }
+
+    match = matchers.hex4.exec(color);
+    if (match) {
+      return {
+        r: parseIntFromHex(match[1] + match[1]),
+        g: parseIntFromHex(match[2] + match[2]),
+        b: parseIntFromHex(match[3] + match[3]),
+        a: convertHexToDecimal(match[4] + match[4]),
+        format: named ? 'name' : 'hex8',
+      };
+    }
+
+    match = matchers.hex3.exec(color);
+    if (match) {
+      return {
+        r: parseIntFromHex(match[1] + match[1]),
+        g: parseIntFromHex(match[2] + match[2]),
+        b: parseIntFromHex(match[3] + match[3]),
+        format: named ? 'name' : 'hex',
+      };
+    }
+  }
+
+  match = matchers.rgb.exec(color);
   if (match) {
     return { r: match[1], g: match[2], b: match[3] };
   }
@@ -186,48 +232,6 @@ export function stringInputToObject(color: string): any {
       m: match[2],
       y: match[3],
       k: match[4],
-    };
-  }
-
-  match = matchers.hex8.exec(color);
-  if (match) {
-    return {
-      r: parseIntFromHex(match[1]),
-      g: parseIntFromHex(match[2]),
-      b: parseIntFromHex(match[3]),
-      a: convertHexToDecimal(match[4]),
-      format: named ? 'name' : 'hex8',
-    };
-  }
-
-  match = matchers.hex6.exec(color);
-  if (match) {
-    return {
-      r: parseIntFromHex(match[1]),
-      g: parseIntFromHex(match[2]),
-      b: parseIntFromHex(match[3]),
-      format: named ? 'name' : 'hex',
-    };
-  }
-
-  match = matchers.hex4.exec(color);
-  if (match) {
-    return {
-      r: parseIntFromHex(match[1] + match[1]),
-      g: parseIntFromHex(match[2] + match[2]),
-      b: parseIntFromHex(match[3] + match[3]),
-      a: convertHexToDecimal(match[4] + match[4]),
-      format: named ? 'name' : 'hex8',
-    };
-  }
-
-  match = matchers.hex3.exec(color);
-  if (match) {
-    return {
-      r: parseIntFromHex(match[1] + match[1]),
-      g: parseIntFromHex(match[2] + match[2]),
-      b: parseIntFromHex(match[3] + match[3]),
-      format: named ? 'name' : 'hex',
     };
   }
 

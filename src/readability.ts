@@ -12,10 +12,9 @@ import { ColorInput, TinyColor } from './index.js';
 export function readability(color1: ColorInput, color2: ColorInput): number {
   const c1 = new TinyColor(color1);
   const c2 = new TinyColor(color2);
-  return (
-    (Math.max(c1.getLuminance(), c2.getLuminance()) + 0.05) /
-    (Math.min(c1.getLuminance(), c2.getLuminance()) + 0.05)
-  );
+  const l1 = c1.getLuminance();
+  const l2 = c2.getLuminance();
+  return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
 }
 
 export interface WCAG2Parms {
@@ -85,18 +84,24 @@ export function mostReadable(
   let bestScore = 0;
   const { includeFallbackColors, level, size } = args;
 
+  const base = new TinyColor(baseColor);
+  const baseLuminance = base.getLuminance();
+
   for (const color of colorList) {
-    const score = readability(baseColor, color);
+    const candidate = new TinyColor(color);
+    const luminance = candidate.getLuminance();
+    const score =
+      (Math.max(baseLuminance, luminance) + 0.05) / (Math.min(baseLuminance, luminance) + 0.05);
     if (score > bestScore) {
       bestScore = score;
-      bestColor = new TinyColor(color);
+      bestColor = candidate;
     }
   }
 
-  if (isReadable(baseColor, bestColor!, { level, size }) || !includeFallbackColors) {
+  if (!includeFallbackColors || isReadable(base, bestColor!, { level, size })) {
     return bestColor;
   }
 
   args.includeFallbackColors = false;
-  return mostReadable(baseColor, ['#fff', '#000'], args);
+  return mostReadable(base, ['#fff', '#000'], args);
 }

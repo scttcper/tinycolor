@@ -1,2 +1,4 @@
 packages:
   - demo
+
+minimumReleaseAge: 1440

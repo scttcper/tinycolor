@@ -1,10 +1,13 @@
 import { describe, test } from 'vitest';
 
-import { mostReadable, readability, TinyColor } from '../src/public_api.js';
+import { mostReadable, readability, TinyColor } from '../dist/public_api.js';
 
 describe('parsing', () => {
   test('hex string', async ({ bench }) => {
     await bench('hex string', () => new TinyColor('#3498db')).run();
+  });
+  test('hex string without hash', async ({ bench }) => {
+    await bench('hex string without hash', () => new TinyColor('3498db')).run();
   });
   test('RGB string', async ({ bench }) => {
     await bench('RGB string', () => new TinyColor('rgb(52, 152, 219)')).run();
@@ -25,6 +28,10 @@ describe('formatting a parsed color', () => {
 
   test('hex string', async ({ bench }) => {
     await bench('hex string', () => color.toHexString()).run();
+  });
+  test('hex8 string', async ({ bench }) => {
+    const transparentColor = new TinyColor('#3498db80');
+    await bench('hex8 string', () => transparentColor.toHex8String()).run();
   });
   test('RGB string', async ({ bench }) => {
     await bench('RGB string', () => color.toRgbString()).run();

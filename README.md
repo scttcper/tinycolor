@@ -703,3 +703,13 @@ color2.setAlpha(0.5);
 color1.toString(); // "#ff0000"
 color2.toString(); // "rgba(255, 0, 0, 0.5)"
 ```
+
+## Benchmarks
+
+```sh
+node --run bench
+node --run bench:watch
+node --run bench -- -t 'hex string'
+```
+
+Benchmarks build the package first and load `dist/public_api.js` using Node's native module loader, avoiding Vitest's module transformation overhead. Watch mode rebuilds and reruns after source changes. Regular tests continue to run against `src`.

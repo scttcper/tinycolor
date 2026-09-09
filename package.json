@@ -26,32 +26,31 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "demo:build": "npm run build --workspace=demo",
-    "demo:watch": "npm run dev --workspace=demo",
+    "demo:build": "cd demo && node --run build",
+    "demo:watch": "cd demo && node --run dev",
     "lint": "eslint --ext .js,.ts, .",
     "lint:fix": "eslint --fix --ext .js,.ts, .",
-    "prepare": "npm run build",
+    "prepare": "node --run build",
     "build": "del-cli dist && tsc -p tsconfig.build.json && tsc -p tsconfig.module.json && ts-node build",
     "docs:build": "typedoc --out demo/dist/docs --hideGenerator --tsconfig tsconfig.build.json src/public_api.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:ci": "vitest run --coverage --reporter=default --reporter=junit --outputFile=./junit.xml"
+    "test:ci": "vitest run --reporter=default --reporter=junit --outputFile=./junit.xml",
+    "bench": "vitest bench --run --reporter=verbose",
+    "bench:watch": "vitest bench --reporter=verbose"
   },
   "devDependencies": {
     "@ctrl/eslint-config": "4.0.14",
     "@rollup/plugin-terser": "0.4.4",
-    "@types/node": "20.11.5",
-    "@vitest/coverage-v8": "1.2.1",
+    "@types/node": "24.13.3",
     "del-cli": "5.1.0",
+    "eslint": "8.57.1",
     "rollup": "4.9.5",
     "ts-node": "10.9.2",
     "typedoc": "0.25.7",
     "typescript": "5.3.3",
-    "vitest": "1.2.1"
+    "vitest": "5.0.0"
   },
-  "workspaces": [
-    "demo"
-  ],
   "release": {
     "branches": [
       "master"
@@ -59,5 +58,6 @@
   },
   "engines": {
     "node": ">=14"
-  }
+  },
+  "packageManager": "pnpm@12.3.4"
 }

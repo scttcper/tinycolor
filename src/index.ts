@@ -19,17 +19,7 @@ export interface TinyColorOptions {
 export type ColorInput = string | number | RGB | RGBA | HSL | HSLA | HSV | HSVA | CMYK | TinyColor;
 
 export type ColorFormats =
-  | 'rgb'
-  | 'prgb'
-  | 'hex'
-  | 'hex3'
-  | 'hex4'
-  | 'hex6'
-  | 'hex8'
-  | 'name'
-  | 'hsl'
-  | 'hsv'
-  | 'cmyk';
+  'rgb' | 'prgb' | 'hex' | 'hex3' | 'hex4' | 'hex6' | 'hex8' | 'name' | 'hsl' | 'hsv' | 'cmyk';
 
 export class TinyColor {
   /** red */
@@ -534,7 +524,7 @@ export class TinyColor {
     const part = 360 / slices;
     const ret: TinyColor[] = [this];
 
-    for (hsl.h = (hsl.h - ((part * results) >> 1) + 720) % 360; --results; ) {
+    for (hsl.h = (hsl.h - ((part * results) >> 1) + 720) % 360; --results;) {
       hsl.h = (hsl.h + part) % 360;
       ret.push(new TinyColor(hsl));
     }

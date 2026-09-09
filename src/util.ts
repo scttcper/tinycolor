@@ -25,11 +25,11 @@ export function bound01(n: any, max: number): number {
     // If n is a hue given in degrees,
     // wrap around out-of-range values into [0, 360] range
     // then convert into [0, 1].
-    n = (n < 0 ? (n % max) + max : n % max) / parseFloat(String(max));
+    n = (n < 0 ? (n % max) + max : n % max) / max;
   } else {
     // If n not a hue given in degrees
     // Convert into [0, 1] range if it isn't already.
-    n = (n % max) / parseFloat(String(max));
+    n = (n % max) / max;
   }
 
   return n;

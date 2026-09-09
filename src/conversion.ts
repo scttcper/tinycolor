@@ -199,23 +199,21 @@ export function hsvToRgb(
  * *Returns:* a 3 or 6 character hex
  */
 export function rgbToHex(r: number, g: number, b: number, allow3Char: boolean): string {
-  const hex = [
-    pad2(Math.round(r).toString(16)),
-    pad2(Math.round(g).toString(16)),
-    pad2(Math.round(b).toString(16)),
-  ];
+  const rHex = pad2(Math.round(r).toString(16));
+  const gHex = pad2(Math.round(g).toString(16));
+  const bHex = pad2(Math.round(b).toString(16));
 
   // Return a 3 character hex if possible
   if (
     allow3Char &&
-    hex[0].startsWith(hex[0].charAt(1)) &&
-    hex[1].startsWith(hex[1].charAt(1)) &&
-    hex[2].startsWith(hex[2].charAt(1))
+    rHex.startsWith(rHex.charAt(1)) &&
+    gHex.startsWith(gHex.charAt(1)) &&
+    bHex.startsWith(bHex.charAt(1))
   ) {
-    return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0);
+    return rHex.charAt(0) + gHex.charAt(0) + bHex.charAt(0);
   }
 
-  return hex.join('');
+  return rHex + gHex + bHex;
 }
 
 /**
@@ -226,25 +224,23 @@ export function rgbToHex(r: number, g: number, b: number, allow3Char: boolean): 
  */
 // eslint-disable-next-line max-params
 export function rgbaToHex(r: number, g: number, b: number, a: number, allow4Char: boolean): string {
-  const hex = [
-    pad2(Math.round(r).toString(16)),
-    pad2(Math.round(g).toString(16)),
-    pad2(Math.round(b).toString(16)),
-    pad2(convertDecimalToHex(a)),
-  ];
+  const rHex = pad2(Math.round(r).toString(16));
+  const gHex = pad2(Math.round(g).toString(16));
+  const bHex = pad2(Math.round(b).toString(16));
+  const aHex = pad2(convertDecimalToHex(a));
 
   // Return a 4 character hex if possible
   if (
     allow4Char &&
-    hex[0].startsWith(hex[0].charAt(1)) &&
-    hex[1].startsWith(hex[1].charAt(1)) &&
-    hex[2].startsWith(hex[2].charAt(1)) &&
-    hex[3].startsWith(hex[3].charAt(1))
+    rHex.startsWith(rHex.charAt(1)) &&
+    gHex.startsWith(gHex.charAt(1)) &&
+    bHex.startsWith(bHex.charAt(1)) &&
+    aHex.startsWith(aHex.charAt(1))
   ) {
-    return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0) + hex[3].charAt(0);
+    return rHex.charAt(0) + gHex.charAt(0) + bHex.charAt(0) + aHex.charAt(0);
   }
 
-  return hex.join('');
+  return rHex + gHex + bHex + aHex;
 }
 
 /**
@@ -255,14 +251,12 @@ export function rgbaToHex(r: number, g: number, b: number, a: number, allow4Char
  * *Returns:* a 8 character argb hex
  */
 export function rgbaToArgbHex(r: number, g: number, b: number, a: number): string {
-  const hex = [
-    pad2(convertDecimalToHex(a)),
-    pad2(Math.round(r).toString(16)),
-    pad2(Math.round(g).toString(16)),
-    pad2(Math.round(b).toString(16)),
-  ];
+  const aHex = pad2(convertDecimalToHex(a));
+  const rHex = pad2(Math.round(r).toString(16));
+  const gHex = pad2(Math.round(g).toString(16));
+  const bHex = pad2(Math.round(b).toString(16));
 
-  return hex.join('');
+  return aHex + rHex + gHex + bHex;
 }
 
 /**

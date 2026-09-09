@@ -1,6 +1,6 @@
 import { describe, test } from 'vitest';
 
-import { mostReadable, readability, TinyColor } from '../src/public_api.js';
+import { mostReadable, readability, TinyColor } from '../dist/public_api.js';
 
 describe('parsing', () => {
   test('hex string', async ({ bench }) => {

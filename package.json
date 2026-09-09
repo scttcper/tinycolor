@@ -28,16 +28,16 @@
   "scripts": {
     "demo:build": "cd demo && node --run build",
     "demo:watch": "cd demo && node --run dev",
-    "lint": "eslint --ext .js,.ts, .",
-    "lint:fix": "eslint --fix --ext .js,.ts, .",
+    "lint": "eslint --ext .js,.ts,.mts .",
+    "lint:fix": "eslint --fix --ext .js,.ts,.mts .",
     "prepare": "node --run build",
     "build": "del-cli dist && tsc -p tsconfig.build.json && tsc -p tsconfig.module.json && ts-node build",
     "docs:build": "typedoc --out demo/dist/docs --hideGenerator --tsconfig tsconfig.build.json src/public_api.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ci": "vitest run --reporter=default --reporter=junit --outputFile=./junit.xml",
-    "bench": "vitest bench --run --reporter=verbose",
-    "bench:watch": "vitest bench --reporter=verbose"
+    "bench": "vitest bench --config vitest.bench.config.mts --run --reporter=verbose",
+    "bench:watch": "vitest bench --config vitest.bench.config.mts --watch --reporter=verbose"
   },
   "devDependencies": {
     "@ctrl/eslint-config": "4.0.14",

@@ -713,3 +713,16 @@ node --run bench -- -t 'hex string'
 ```
 
 Benchmarks build the package first and load `dist/public_api.js` using Node's native module loader, avoiding Vitest's module transformation overhead. Watch mode rebuilds and reruns after source changes. Regular tests continue to run against `src`.
+
+## Releases
+
+Create a draft GitHub release with a `v`-prefixed stable version and release notes, then run the manual Publish workflow from `master`:
+
+```sh
+gh workflow run publish.yml --ref master -f version=4.2.1 -f dry_run=true
+gh workflow run publish.yml --ref master -f version=4.2.1 -f dry_run=false
+```
+
+The workflow sets the package version for that build, tests and builds the package, publishes to npm with provenance, then attaches the published archive and publishes the GitHub draft. The release tag points to the workflow's commit. A dry run builds and previews the package without publishing.
+
+Configure npm trusted publishing for `scttcper/tinycolor`, workflow `publish.yml`, with direct publishing allowed and no environment name. No npm token is needed.

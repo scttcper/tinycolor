@@ -62,6 +62,7 @@ export interface WCAG2FallbackParms extends WCAG2Parms {
  * Given a base color and a list of possible foreground or background
  * colors for that base, returns the most readable color.
  * Optionally returns Black or White if the most readable color is unreadable.
+ * An empty list returns null unless fallback colors are enabled.
  *
  * @param baseColor - the base color.
  * @param colorList - array of colors to pick the most readable one from.
@@ -98,7 +99,7 @@ export function mostReadable(
     }
   }
 
-  if (!includeFallbackColors || isReadable(base, bestColor!, { level, size })) {
+  if (!includeFallbackColors || (bestColor && isReadable(base, bestColor, { level, size }))) {
     return bestColor;
   }
 

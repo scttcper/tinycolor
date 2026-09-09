@@ -113,7 +113,7 @@ const PERMISSIVE_MATCH4 =
   '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?';
 
 const matchers = {
-  hex: /^[0-9a-f]+$/,
+  hex: /^[0-9a-fA-F]+$/,
   CSS_UNIT: new RegExp(CSS_UNIT),
   rgb: new RegExp('rgb' + PERMISSIVE_MATCH3),
   rgba: new RegExp('rgba' + PERMISSIVE_MATCH4),
@@ -152,7 +152,11 @@ export function stringInputToObject(color: string): any {
   // This way the result will be the same whether the tinycolor is initialized with string or object.
   let match: RegExpExecArray | null;
   // Hex colors cannot contain a functional color, so try them before the permissive matchers.
-  if (color.length <= 9 && (color.startsWith('#') || matchers.hex.test(color))) {
+  if (
+    typeof color === 'string' &&
+    color.length <= 9 &&
+    (color.startsWith('#') || matchers.hex.test(color))
+  ) {
     match = matchers.hex8.exec(color);
     if (match) {
       return {

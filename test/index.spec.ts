@@ -85,6 +85,46 @@ describe('TinyColor', () => {
     // Not sure this is expected behavior
     expect(new TinyColor('#0000').getAlpha()).toBe(0);
   });
+  it.each(['constructor', '__proto__'])('should reject inherited color name %s', input => {
+    const color = new TinyColor(input);
+    expect(color.isValid).toBe(false);
+    expect(color.toHexString()).toBe('#000000');
+  });
+  it.each(['ABC', 'ABCD', 'ABCDEF', 'ABCDEF80'])(
+    'should parse uppercase custom color name values: %s',
+    value => {
+      const original = names.rebeccapurple;
+      try {
+        names.rebeccapurple = value;
+        const color = new TinyColor('rebeccapurple');
+        expect(color.isValid).toBe(true);
+        expect(color.format).toBe('name');
+        expect(color.toHex8String()).toBe(new TinyColor(`#${value}`).toHex8String());
+      } finally {
+        names.rebeccapurple = original;
+      }
+    },
+  );
+  it.each(['#rgb 1 2 3', '#hsl 0 100% 50%'])(
+    'should retain permissive functional parsing for %s',
+    input => {
+      const color = new TinyColor(input);
+      expect(color.isValid).toBe(true);
+      expect(color.toRgb()).toEqual(new TinyColor(input.slice(1)).toRgb());
+    },
+  );
+  it.each(['#123344', '#112344', '#112234'])(
+    'should keep six hex digits when a channel cannot shorten: %s',
+    input => {
+      expect(new TinyColor(input).toHexString(true)).toBe(input);
+    },
+  );
+  it.each(['#123344ff', '#112344ff', '#112234ff', '#11223380'])(
+    'should keep eight hex digits when a channel cannot shorten: %s',
+    input => {
+      expect(new TinyColor(input).toHex8String(true)).toBe(input);
+    },
+  );
   it('should parse rgb', () => {
     // spaced input
     expect(new TinyColor('rgb 255 0 0').toHexString()).toBe('#ff0000');
@@ -653,6 +693,24 @@ describe('TinyColor', () => {
         size: 'small',
       })!.toHexString(),
     ).toBe('#ffffff');
+  });
+
+  it('should return the first candidate instance when contrast scores tie', () => {
+    const first = new TinyColor('#123456');
+    const second = new TinyColor('#123456');
+    expect(mostReadable('#ffffff', [first, second])).toBe(first);
+  });
+
+  it('should return null for an empty candidate list without fallback', () => {
+    expect(mostReadable('#ffffff', [])).toBeNull();
+    expect(mostReadable('#ffffff', [], { includeFallbackColors: false })).toBeNull();
+  });
+
+  it.each([
+    ['#ffffff', '#000000'],
+    ['#000000', '#ffffff'],
+  ])('should select fallback text for %s with no candidates', (base, expected) => {
+    expect(mostReadable(base, [], { includeFallbackColors: true })?.toHexString()).toBe(expected);
   });
 
   it('should create microsoft filter', () => {

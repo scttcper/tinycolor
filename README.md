@@ -704,6 +704,18 @@ color1.toString(); // "#ff0000"
 color2.toString(); // "rgba(255, 0, 0, 0.5)"
 ```
 
+## Alternatives
+
+Other color libraries worth a look:
+
+* [colord](https://github.com/omgovich/colord) - Small TypeScript library with an immutable, chainable API and plugins for additional color spaces and features.
+* [color2k](https://github.com/ricokahler/color2k) - Small color parsing and manipulation library focused on keeping bundle size low.
+* [@colordx/core](https://github.com/dkryaklin/colordx) - Supports OKLCH and OKLab, with plugins for additional color spaces such as Display-P3.
+* [chroma-js](https://github.com/gka/chroma.js) - Color conversions, interpolation, and color scales for data visualization.
+* [color](https://github.com/Qix-/color) - Immutable color parsing, conversion, and manipulation with support for CSS color strings.
+* [colorjs.io](https://github.com/color-js/color.js) - Modern color spaces and conversions, maintained by editors of the CSS Color specifications.
+* [culori](https://github.com/Evercoder/culori) - Color conversions, interpolation, blending, and color difference functions across many color spaces.
+
 ## Benchmarks
 
 ```sh

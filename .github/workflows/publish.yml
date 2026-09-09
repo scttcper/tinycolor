@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       dry_run:
-        description: Validate and build without publishing to npm or GitHub
+        description: Validate and build without staging a package
         default: false
         type: boolean
 
@@ -68,14 +68,14 @@ jobs:
           npm pack --ignore-scripts
       - name: Preview package
         if: inputs.dry_run
-        run: npm publish "ctrl-tinycolor-$RELEASE_VERSION.tgz" --dry-run --ignore-scripts
-      - name: Publish to npm
+        run: npm stage publish "ctrl-tinycolor-$RELEASE_VERSION.tgz" --dry-run --ignore-scripts
+      - name: Stage npm package
         if: ${{ !inputs.dry_run }}
-        run: npm publish "ctrl-tinycolor-$RELEASE_VERSION.tgz" --access public --provenance --ignore-scripts
-      - name: Publish GitHub release
+        run: npm stage publish "ctrl-tinycolor-$RELEASE_VERSION.tgz" --access public --provenance --ignore-scripts
+      - name: Update draft release
         if: ${{ !inputs.dry_run }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release upload "v$RELEASE_VERSION" "ctrl-tinycolor-$RELEASE_VERSION.tgz" --clobber
-          gh release edit "v$RELEASE_VERSION" --target "$GITHUB_SHA" --draft=false --latest
+          gh release edit "v$RELEASE_VERSION" --target "$GITHUB_SHA"

@@ -35,7 +35,7 @@
     "docs:build": "typedoc --out demo/dist/docs --hideGenerator --tsconfig tsconfig.build.json src/public_api.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:ci": "vitest run --coverage --reporter=default --reporter=junit --outputFile=./junit.xml",
+    "test:ci": "vitest run --reporter=default --reporter=junit --outputFile=./junit.xml",
     "bench": "vitest bench --run --reporter=verbose",
     "bench:watch": "vitest bench --reporter=verbose"
   },
@@ -43,7 +43,6 @@
     "@ctrl/eslint-config": "4.0.14",
     "@rollup/plugin-terser": "0.4.4",
     "@types/node": "24.13.3",
-    "@vitest/coverage-v8": "5.0.0",
     "del-cli": "5.1.0",
     "eslint": "8.57.1",
     "rollup": "4.9.5",

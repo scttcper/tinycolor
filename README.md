@@ -1,7 +1,6 @@
 # tinycolor 
 
 [![npm](https://badgen.net/npm/v/@ctrl/tinycolor)](https://www.npmjs.com/package/@ctrl/tinycolor)
-[![coverage](https://badgen.net/codecov/c/github/scttcper/tinycolor)](https://codecov.io/gh/scttcper/tinycolor)
 [![bundlesize](https://badgen.net/bundlephobia/min/@ctrl/tinycolor)](https://bundlephobia.com/result?p=@ctrl/tinycolor)
 
 > TinyColor is a small library for color manipulation and conversion

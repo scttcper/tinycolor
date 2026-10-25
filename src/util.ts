@@ -44,12 +44,12 @@ export function clamp01(val: number): number {
 }
 
 /**
- * Need to handle 1.0 as 100%, since once it is a number, there is no difference between it and 1
+ * Need to handle unitless 1.0 as 100%, since once it is a number, there is no difference between it and 1
  * <http://stackoverflow.com/questions/7422072/javascript-how-to-detect-number-as-a-decimal-including-1-0>
  * @hidden
  */
 export function isOnePointZero(n: string | number): boolean {
-  return typeof n === 'string' && n.indexOf('.') !== -1 && parseFloat(n) === 1;
+  return typeof n === 'string' && n.indexOf('.') !== -1 && !isPercentage(n) && parseFloat(n) === 1;
 }
 
 /**

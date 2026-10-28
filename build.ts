@@ -1,10 +1,10 @@
-import { rollup, OutputOptions, RollupOptions } from 'rollup';
 import { default as terser } from '@rollup/plugin-terser';
+import { type OutputOptions, rollup, type RollupOptions } from 'rollup';
 
 // umd min
 const umdMinInputOptions: RollupOptions = {
   input: 'dist/module/umd_api.js',
-  plugins: [terser({sourceMap: true})],
+  plugins: [terser({ sourceMap: true })],
 };
 const umdMinOutputOptions: OutputOptions = {
   file: './dist/bundles/tinycolor.umd.min.js',

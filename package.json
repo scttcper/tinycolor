@@ -28,10 +28,10 @@
   "scripts": {
     "demo:build": "cd demo && node --run build",
     "demo:watch": "cd demo && node --run dev",
-    "lint": "eslint --ext .js,.ts,.mts .",
-    "lint:fix": "eslint --fix --ext .js,.ts,.mts .",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "prepare": "node --run build",
-    "build": "del-cli dist && tsc -p tsconfig.build.json && tsc -p tsconfig.module.json && ts-node build",
+    "build": "del-cli dist && tsc -p tsconfig.build.json && tsc -p tsconfig.module.json && node build.ts",
     "docs:build": "typedoc --out demo/dist/docs --hideGenerator --tsconfig tsconfig.build.json src/public_api.ts",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -40,16 +40,21 @@
     "bench:watch": "vitest bench --config vitest.bench.config.mts --watch --reporter=verbose"
   },
   "devDependencies": {
-    "@ctrl/eslint-config": "4.0.14",
-    "@rollup/plugin-terser": "0.4.4",
-    "@types/node": "24.13.3",
-    "del-cli": "5.1.0",
-    "eslint": "8.57.1",
-    "rollup": "4.9.5",
-    "ts-node": "10.9.2",
-    "typedoc": "0.25.7",
-    "typescript": "5.3.3",
-    "vitest": "5.0.0"
+    "@eslint/js": "10.0.1",
+    "@rollup/plugin-terser": "1.0.2",
+    "@types/node": "24.19.2",
+    "del-cli": "8.0.1",
+    "eslint": "10.13.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-prettier": "5.5.7",
+    "eslint-plugin-simple-import-sort": "14.0.0",
+    "globals": "17.13.0",
+    "prettier": "3.9.10",
+    "rollup": "4.65.1",
+    "typedoc": "0.28.20",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1",
+    "vitest": "5.0.5"
   },
   "release": {
     "branches": [
@@ -59,5 +64,5 @@
   "engines": {
     "node": ">=14"
   },
-  "packageManager": "pnpm@12.3.4"
+  "packageManager": "pnpm@12.15.0"
 }

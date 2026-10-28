@@ -35,7 +35,7 @@ export function rgbToHsl(r: number, g: number, b: number): Numberify<HSL> {
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
   let h = 0;
-  let s = 0;
+  let s: number;
   const l = (max + min) / 2;
 
   if (max === min) {
@@ -242,7 +242,7 @@ export function rgbToHex(r: number, g: number, b: number, allow3Char: boolean): 
  * *Assumes:* r, g, b are contained in the set [0, 255] and a in [0, 1]
  * *Returns:* a 4 or 8 character rgba hex
  */
-// eslint-disable-next-line max-params
+
 export function rgbaToHex(r: number, g: number, b: number, a: number, allow4Char: boolean): string {
   const rHex = channelToHex(r);
   const gHex = channelToHex(g);

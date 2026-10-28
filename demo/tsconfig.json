@@ -2,11 +2,13 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "declaration": false,
-    "lib": ["es2017", "dom"],
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "lib": ["ES2022", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "rootDir": "..",
     "strict": false,
-    "target": "es5",
+    "target": "ES2022"
   },
   "files": ["./src/main.ts"],
   "include": ["./**/*.ts"]

@@ -32,9 +32,6 @@ export function inputToRGB(color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA 
 } {
   let rgb = { r: 0, g: 0, b: 0 };
   let a = 1;
-  let s: string | number | null = null;
-  let v: string | number | null = null;
-  let l: string | number | null = null;
   let ok = false;
   let format: string | false = false;
 
@@ -50,14 +47,14 @@ export function inputToRGB(color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA 
       const { r } = color;
       format = typeof r !== 'number' && String(r).endsWith('%') ? 'prgb' : 'rgb';
     } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
-      s = convertToPercentageNumber(color.s);
-      v = convertToPercentageNumber(color.v);
+      const s = convertToPercentageNumber(color.s);
+      const v = convertToPercentageNumber(color.v);
       rgb = hsvToRgb(color.h, s as number, v as number);
       ok = true;
       format = 'hsv';
     } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.l)) {
-      s = convertToPercentageNumber(color.s);
-      l = convertToPercentageNumber(color.l);
+      const s = convertToPercentageNumber(color.s);
+      const l = convertToPercentageNumber(color.l);
       rgb = hslToRgb(color.h, s as number, l as number);
       ok = true;
       format = 'hsl';

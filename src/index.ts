@@ -51,7 +51,6 @@ export class TinyColor {
   constructor(color: ColorInput = '', opts: Partial<TinyColorOptions> = {}) {
     // If input is already a tinycolor, return itself
     if (color instanceof TinyColor) {
-      // eslint-disable-next-line no-constructor-return
       return color;
     }
 
@@ -122,21 +121,18 @@ export class TinyColor {
     if (RsRGB <= 0.03928) {
       R = RsRGB / 12.92;
     } else {
-      // eslint-disable-next-line prefer-exponentiation-operator
       R = Math.pow((RsRGB + 0.055) / 1.055, 2.4);
     }
 
     if (GsRGB <= 0.03928) {
       G = GsRGB / 12.92;
     } else {
-      // eslint-disable-next-line prefer-exponentiation-operator
       G = Math.pow((GsRGB + 0.055) / 1.055, 2.4);
     }
 
     if (BsRGB <= 0.03928) {
       B = BsRGB / 12.92;
     } else {
-      // eslint-disable-next-line prefer-exponentiation-operator
       B = Math.pow((BsRGB + 0.055) / 1.055, 2.4);
     }
 

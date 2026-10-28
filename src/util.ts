@@ -87,6 +87,22 @@ export function convertToPercentage(n: number | string): number | string {
 }
 
 /**
+ * `convertToPercentage` for values passed to `bound01(n, 100)`. A decimal returns the number
+ * bound01 would parse from the percentage string, without building that string.
+ * @hidden
+ */
+export function convertToPercentageNumber(n: number | string): number | string {
+  if (typeof n !== 'number' || !(n <= 1)) {
+    return convertToPercentage(n);
+  }
+
+  // Mirrors bound01: clamp the percentage, then truncate it to two decimals like
+  // parseInt(String(x), 10), which only differs from Math.trunc where String() uses exponent notation
+  const scaled = Math.min(100, Math.max(0, n * 100)) * 100;
+  return (scaled >= 1e-6 ? Math.trunc(scaled) : parseInt(String(scaled), 10)) / 100;
+}
+
+/**
  * Force a hex value to have 2 characters
  * @hidden
  */

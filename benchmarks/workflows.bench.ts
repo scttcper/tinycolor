@@ -21,6 +21,9 @@ describe('parsing', () => {
   test('RGB object', async ({ bench }) => {
     await bench('RGB object', () => new TinyColor({ r: 52, g: 152, b: 219 })).run();
   });
+  test('HSL object', async ({ bench }) => {
+    await bench('HSL object', () => new TinyColor({ h: 204, s: 0.7, l: 0.53 })).run();
+  });
 });
 
 describe('formatting a parsed color', () => {
@@ -41,6 +44,10 @@ describe('formatting a parsed color', () => {
   });
   test('HSV object', async ({ bench }) => {
     await bench('HSV object', () => color.toHsv()).run();
+  });
+  test('named color string', async ({ bench }) => {
+    const namedColor = new TinyColor('rebeccapurple');
+    await bench('named color string', () => namedColor.toString()).run();
   });
 });
 

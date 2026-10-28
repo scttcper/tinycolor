@@ -1,14 +1,7 @@
-import {
-  cmykToRgb,
-  convertHexToDecimal,
-  hslToRgb,
-  hsvToRgb,
-  parseIntFromHex,
-  rgbToRgb,
-} from './conversion.js';
+import { cmykToRgb, hslToRgb, hsvToRgb, rgbToRgb } from './conversion.js';
 import { names } from './css-color-names.js';
 import { CMYK, HSL, HSLA, HSV, HSVA, RGB, RGBA } from './interfaces.js';
-import { boundAlpha, convertToPercentage } from './util.js';
+import { boundAlpha, convertToPercentageNumber } from './util.js';
 
 /**
  * Given a string or object, convert that input to RGB
@@ -53,16 +46,18 @@ export function inputToRGB(color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA 
     if (isValidCSSUnit(color.r) && isValidCSSUnit(color.g) && isValidCSSUnit(color.b)) {
       rgb = rgbToRgb(color.r, color.g, color.b);
       ok = true;
-      format = String(color.r).substr(-1) === '%' ? 'prgb' : 'rgb';
+      // Numbers never end in %, and formatting fractional ones as strings is slow
+      const { r } = color;
+      format = typeof r !== 'number' && String(r).endsWith('%') ? 'prgb' : 'rgb';
     } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
-      s = convertToPercentage(color.s);
-      v = convertToPercentage(color.v);
+      s = convertToPercentageNumber(color.s);
+      v = convertToPercentageNumber(color.v);
       rgb = hsvToRgb(color.h, s as number, v as number);
       ok = true;
       format = 'hsv';
     } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.l)) {
-      s = convertToPercentage(color.s);
-      l = convertToPercentage(color.l);
+      s = convertToPercentageNumber(color.s);
+      l = convertToPercentageNumber(color.l);
       rgb = hslToRgb(color.h, s as number, l as number);
       ok = true;
       format = 'hsl';
@@ -113,7 +108,6 @@ const PERMISSIVE_MATCH4 =
   '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?';
 
 const matchers = {
-  hex: /^[0-9a-fA-F]+$/,
   CSS_UNIT: new RegExp(CSS_UNIT),
   rgb: new RegExp('rgb' + PERMISSIVE_MATCH3),
   rgba: new RegExp('rgba' + PERMISSIVE_MATCH4),
@@ -122,10 +116,6 @@ const matchers = {
   hsv: new RegExp('hsv' + PERMISSIVE_MATCH3),
   hsva: new RegExp('hsva' + PERMISSIVE_MATCH4),
   cmyk: new RegExp('cmyk' + PERMISSIVE_MATCH4),
-  hex3: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
-  hex6: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
-  hex4: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
-  hex8: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
 };
 
 /**
@@ -150,57 +140,15 @@ export function stringInputToObject(color: string): any {
   // Keep most of the number bounding out of this function - don't worry about [0,1] or [0,100] or [0,360]
   // Just return an object and let the conversion functions handle that.
   // This way the result will be the same whether the tinycolor is initialized with string or object.
-  let match: RegExpExecArray | null;
   // Hex colors cannot contain a functional color, so try them before the permissive matchers.
-  if (
-    typeof color === 'string' &&
-    color.length <= 9 &&
-    (color.startsWith('#') || matchers.hex.test(color))
-  ) {
-    match = matchers.hex8.exec(color);
-    if (match) {
-      return {
-        r: parseIntFromHex(match[1]),
-        g: parseIntFromHex(match[2]),
-        b: parseIntFromHex(match[3]),
-        a: convertHexToDecimal(match[4]),
-        format: named ? 'name' : 'hex8',
-      };
-    }
-
-    match = matchers.hex6.exec(color);
-    if (match) {
-      return {
-        r: parseIntFromHex(match[1]),
-        g: parseIntFromHex(match[2]),
-        b: parseIntFromHex(match[3]),
-        format: named ? 'name' : 'hex',
-      };
-    }
-
-    match = matchers.hex4.exec(color);
-    if (match) {
-      return {
-        r: parseIntFromHex(match[1] + match[1]),
-        g: parseIntFromHex(match[2] + match[2]),
-        b: parseIntFromHex(match[3] + match[3]),
-        a: convertHexToDecimal(match[4] + match[4]),
-        format: named ? 'name' : 'hex8',
-      };
-    }
-
-    match = matchers.hex3.exec(color);
-    if (match) {
-      return {
-        r: parseIntFromHex(match[1] + match[1]),
-        g: parseIntFromHex(match[2] + match[2]),
-        b: parseIntFromHex(match[3] + match[3]),
-        format: named ? 'name' : 'hex',
-      };
+  if (typeof color === 'string' && color.length <= 9) {
+    const hex = hexToObject(color, named);
+    if (hex) {
+      return hex;
     }
   }
 
-  match = matchers.rgb.exec(color);
+  let match = matchers.rgb.exec(color);
   if (match) {
     return { r: match[1], g: match[2], b: match[3] };
   }
@@ -244,12 +192,75 @@ export function stringInputToObject(color: string): any {
 }
 
 /**
+ * Parse `#rgb`, `#rgba`, `#rrggbb` and `#rrggbbaa`, with or without the `#`.
+ * Reads char codes directly instead of matching a regex per length and calling parseInt.
+ */
+function hexToObject(color: string, named: boolean): Record<string, number | string> | undefined {
+  const start = color.startsWith('#') ? 1 : 0;
+  const length = color.length - start;
+
+  if (length === 6 || length === 8) {
+    const r = hexDigit(color, start) * 16 + hexDigit(color, start + 1);
+    const g = hexDigit(color, start + 2) * 16 + hexDigit(color, start + 3);
+    const b = hexDigit(color, start + 4) * 16 + hexDigit(color, start + 5);
+    if (length === 6) {
+      return Number.isNaN(r + g + b) ? undefined : { r, g, b, format: named ? 'name' : 'hex' };
+    }
+
+    const a = hexDigit(color, start + 6) * 16 + hexDigit(color, start + 7);
+    return Number.isNaN(r + g + b + a)
+      ? undefined
+      : { r, g, b, a: a / 255, format: named ? 'name' : 'hex8' };
+  }
+
+  if (length === 3 || length === 4) {
+    // A single digit repeats, so "f" is "ff": 15 * 16 + 15 = 15 * 17
+    const r = hexDigit(color, start) * 17;
+    const g = hexDigit(color, start + 1) * 17;
+    const b = hexDigit(color, start + 2) * 17;
+    if (length === 3) {
+      return Number.isNaN(r + g + b) ? undefined : { r, g, b, format: named ? 'name' : 'hex' };
+    }
+
+    const a = hexDigit(color, start + 3) * 17;
+    return Number.isNaN(r + g + b + a)
+      ? undefined
+      : { r, g, b, a: a / 255, format: named ? 'name' : 'hex8' };
+  }
+
+  return undefined;
+}
+
+/** Value of the hex digit at index, or NaN when it isn't one */
+function hexDigit(color: string, index: number): number {
+  const code = color.charCodeAt(index);
+  if (code >= 48 && code <= 57) {
+    return code - 48; // 0-9
+  }
+
+  if (code >= 97 && code <= 102) {
+    return code - 87; // a-f
+  }
+
+  if (code >= 65 && code <= 70) {
+    return code - 55; // A-F
+  }
+
+  return NaN;
+}
+
+/**
  * Check to see if it looks like a CSS unit
  * (see `matchers` above for definition).
  */
 export function isValidCSSUnit(color: string | number): boolean {
   if (typeof color === 'number') {
     return !Number.isNaN(color);
+  }
+
+  // Object input checks channels that aren't there, skip matching them as "undefined"
+  if (color === undefined) {
+    return false;
   }
 
   return matchers.CSS_UNIT.test(color);

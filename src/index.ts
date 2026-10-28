@@ -319,8 +319,11 @@ export class TinyColor {
     }
 
     const hex = '#' + rgbToHex(this.r, this.g, this.b, false);
-    for (const [key, value] of Object.entries(names)) {
-      if (hex === value) {
+    // for...in avoids allocating every entry of `names` on each call, and a local keeps V8's
+    // fast for...in path when the import compiles to a property lookup
+    const colorNames = names;
+    for (const key in colorNames) {
+      if (Object.prototype.hasOwnProperty.call(colorNames, key) && colorNames[key] === hex) {
         return key;
       }
     }

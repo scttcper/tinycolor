@@ -192,6 +192,26 @@ export function hsvToRgb(
   return { r: r * 255, g: g * 255, b: b * 255 };
 }
 
+/** Char code of a hex digit 0-15, "0"-"9" then "a"-"f" */
+function hexCharCode(digit: number): number {
+  return digit < 10 ? 48 + digit : 87 + digit;
+}
+
+/** Round a channel and convert it to two character hex, values outside 0-255 use toString */
+function channelToHex(c: number): string {
+  const rounded = Math.round(c);
+  if (rounded >= 0 && rounded <= 255) {
+    return String.fromCharCode(hexCharCode(rounded >> 4), hexCharCode(rounded & 15));
+  }
+
+  return pad2(rounded.toString(16));
+}
+
+/** Same as `pad2(convertDecimalToHex(d))` without toString */
+function decimalToHexPair(d: string | number): string {
+  return channelToHex(parseFloat(d as string) * 255);
+}
+
 /**
  * Converts an RGB color to hex
  *
@@ -199,9 +219,9 @@ export function hsvToRgb(
  * *Returns:* a 3 or 6 character hex
  */
 export function rgbToHex(r: number, g: number, b: number, allow3Char: boolean): string {
-  const rHex = pad2(Math.round(r).toString(16));
-  const gHex = pad2(Math.round(g).toString(16));
-  const bHex = pad2(Math.round(b).toString(16));
+  const rHex = channelToHex(r);
+  const gHex = channelToHex(g);
+  const bHex = channelToHex(b);
 
   // Return a 3 character hex if possible
   if (
@@ -224,10 +244,10 @@ export function rgbToHex(r: number, g: number, b: number, allow3Char: boolean): 
  */
 // eslint-disable-next-line max-params
 export function rgbaToHex(r: number, g: number, b: number, a: number, allow4Char: boolean): string {
-  const rHex = pad2(Math.round(r).toString(16));
-  const gHex = pad2(Math.round(g).toString(16));
-  const bHex = pad2(Math.round(b).toString(16));
-  const aHex = pad2(convertDecimalToHex(a));
+  const rHex = channelToHex(r);
+  const gHex = channelToHex(g);
+  const bHex = channelToHex(b);
+  const aHex = decimalToHexPair(a);
 
   // Return a 4 character hex if possible
   if (
@@ -251,10 +271,10 @@ export function rgbaToHex(r: number, g: number, b: number, a: number, allow4Char
  * *Returns:* a 8 character argb hex
  */
 export function rgbaToArgbHex(r: number, g: number, b: number, a: number): string {
-  const aHex = pad2(convertDecimalToHex(a));
-  const rHex = pad2(Math.round(r).toString(16));
-  const gHex = pad2(Math.round(g).toString(16));
-  const bHex = pad2(Math.round(b).toString(16));
+  const aHex = decimalToHexPair(a);
+  const rHex = channelToHex(r);
+  const gHex = channelToHex(g);
+  const bHex = channelToHex(b);
 
   return aHex + rHex + gHex + bHex;
 }

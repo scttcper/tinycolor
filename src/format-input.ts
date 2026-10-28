@@ -47,7 +47,8 @@ export function inputToRGB(color: string | RGB | RGBA | HSL | HSLA | HSV | HSVA 
       rgb = rgbToRgb(color.r, color.g, color.b);
       ok = true;
       // Numbers never end in %, and formatting fractional ones as strings is slow
-      format = typeof color.r !== 'number' && String(color.r).endsWith('%') ? 'prgb' : 'rgb';
+      const { r } = color;
+      format = typeof r !== 'number' && String(r).endsWith('%') ? 'prgb' : 'rgb';
     } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
       s = convertToPercentageNumber(color.s);
       v = convertToPercentageNumber(color.v);

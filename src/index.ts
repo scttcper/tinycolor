@@ -323,7 +323,7 @@ export class TinyColor {
     // fast for...in path when the import compiles to a property lookup
     const colorNames = names;
     for (const key in colorNames) {
-      if (colorNames[key] === hex && Object.prototype.hasOwnProperty.call(colorNames, key)) {
+      if (Object.prototype.hasOwnProperty.call(colorNames, key) && colorNames[key] === hex) {
         return key;
       }
     }

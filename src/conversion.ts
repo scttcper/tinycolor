@@ -207,7 +207,7 @@ function channelToHex(c: number): string {
   return pad2(rounded.toString(16));
 }
 
-/** Same as `pad2(convertDecimalToHex(d))` without toString */
+/** Same as `pad2(convertDecimalToHex(d))`, using channelToHex for the 0-255 fast path */
 function decimalToHexPair(d: string | number): string {
   return channelToHex(parseFloat(d as string) * 255);
 }

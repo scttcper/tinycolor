@@ -99,7 +99,7 @@ const CSS_UNIT = '(?:' + CSS_NUMBER + ')|(?:' + CSS_INTEGER + ')';
 // Parentheses and commas are optional, but not required.
 // Whitespace can take the place of commas or opening paren
 // eslint-disable-next-line prettier/prettier
-const PERMISSIVE_MATCH3 = '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?';
+const PERMISSIVE_MATCH3 = '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')(?:[,|\\s|/]+(' + CSS_UNIT + '))?\\s*\\)?';
 const PERMISSIVE_MATCH4 =
   // eslint-disable-next-line prettier/prettier
   '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?';
@@ -147,7 +147,10 @@ export function stringInputToObject(color: string): any {
 
   let match = matchers.rgb.exec(color);
   if (match) {
-    return { r: match[1], g: match[2], b: match[3] };
+    // optional alpha, e.g. `rgb(... / 50%)` or `rgb(..., 0.5)`
+    return match[4] === undefined
+      ? { r: match[1], g: match[2], b: match[3] }
+      : { r: match[1], g: match[2], b: match[3], a: match[4] };
   }
 
   match = matchers.rgba.exec(color);
@@ -157,7 +160,10 @@ export function stringInputToObject(color: string): any {
 
   match = matchers.hsl.exec(color);
   if (match) {
-    return { h: match[1], s: match[2], l: match[3] };
+    // optional alpha, e.g. `hsl(... / 50%)` or `hsl(..., 0.5)`
+    return match[4] === undefined
+      ? { h: match[1], s: match[2], l: match[3] }
+      : { h: match[1], s: match[2], l: match[3], a: match[4] };
   }
 
   match = matchers.hsla.exec(color);
@@ -167,7 +173,10 @@ export function stringInputToObject(color: string): any {
 
   match = matchers.hsv.exec(color);
   if (match) {
-    return { h: match[1], s: match[2], v: match[3] };
+    // optional alpha, e.g. `hsv(... / 50%)` or `hsv(..., 0.5)`
+    return match[4] === undefined
+      ? { h: match[1], s: match[2], v: match[3] }
+      : { h: match[1], s: match[2], v: match[3], a: match[4] };
   }
 
   match = matchers.hsva.exec(color);

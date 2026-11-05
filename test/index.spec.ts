@@ -164,6 +164,29 @@ describe('TinyColor', () => {
     expect(new TinyColor('rgba(255, 0, 0, 50%)').getAlpha()).toBe(0.5);
     expect(new TinyColor('hsla(0, 100%, 50%, 30%)').getAlpha()).toBe(0.3);
   });
+  it.each(
+    [
+      ['rgb', '255 0 0'],
+      ['rgba', '255 0 0'],
+      ['hsl', '0 100% 50%'],
+      ['hsla', '0 100% 50%'],
+      ['hsv', '0 100% 100%'],
+      ['hsva', '0 100% 100%'],
+    ].flatMap(([name, channels]) =>
+      [
+        ['', 1],
+        [' / 0', 0],
+        [' / 0.25', 0.25],
+        [' / 25%', 0.25],
+        ['/25%', 0.25],
+        [' / 100%', 1],
+      ].map(([suffix, alpha]) => [`${name}(${channels}${suffix})`, alpha]),
+    ),
+  )('should parse modern color function %s', (input, alpha) => {
+    const color = new TinyColor(input);
+    expect(color.isValid).toBe(true);
+    expect(color.toRgb()).toEqual({ r: 255, g: 0, b: 0, a: alpha });
+  });
   it('should parse percentage rgb text', () => {
     // spaced input
     expect(new TinyColor('rgb 100% 0% 0%').toHexString()).toBe('#ff0000');

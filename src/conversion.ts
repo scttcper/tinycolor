@@ -423,11 +423,14 @@ function gamutMapToSrgb(l: number, c: number, cos: number, sin: number): [number
 /** Distance in OKLab between a color and linear sRGB */
 function deltaEOK(l: number, a: number, b: number, rgb: [number, number, number]): number {
   const [l2, a2, b2] = linearSrgbToOklab(rgb[0], rgb[1], rgb[2]);
-  return Math.sqrt((l - l2) ** 2 + (a - a2) ** 2 + (b - b2) ** 2);
+  const dl = l - l2;
+  const da = a - a2;
+  const db = b - b2;
+  return Math.sqrt(dl * dl + da * da + db * db);
 }
 
 function isInSrgbGamut(rgb: [number, number, number]): boolean {
-  return rgb.every(channel => channel >= 0 && channel <= 1);
+  return rgb[0] >= 0 && rgb[0] <= 1 && rgb[1] >= 0 && rgb[1] <= 1 && rgb[2] >= 0 && rgb[2] <= 1;
 }
 
 function clipToSrgb(rgb: [number, number, number]): [number, number, number] {
@@ -472,9 +475,13 @@ function linearSrgbToOklab(r: number, g: number, b: number): [number, number, nu
 
 /** OKLab to linear sRGB, channels outside of 0-1 are outside the sRGB gamut */
 function oklabToLinearSrgb(l: number, a: number, b: number): [number, number, number] {
-  const long = (l + 0.3963377773761749 * a + 0.2158037573099136 * b) ** 3;
-  const medium = (l - 0.1055613458156586 * a - 0.0638541728258133 * b) ** 3;
-  const short = (l - 0.0894841775298119 * a - 1.2914855480194092 * b) ** 3;
+  // Cubed by multiplying, `** 3` goes through the much slower general pow
+  const cbrtLong = l + 0.3963377773761749 * a + 0.2158037573099136 * b;
+  const cbrtMedium = l - 0.1055613458156586 * a - 0.0638541728258133 * b;
+  const cbrtShort = l - 0.0894841775298119 * a - 1.2914855480194092 * b;
+  const long = cbrtLong * cbrtLong * cbrtLong;
+  const medium = cbrtMedium * cbrtMedium * cbrtMedium;
+  const short = cbrtShort * cbrtShort * cbrtShort;
 
   return [
     4.076741636075958 * long - 3.3077115392580616 * medium + 0.2309699031821043 * short,

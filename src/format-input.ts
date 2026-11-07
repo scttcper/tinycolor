@@ -104,64 +104,51 @@ export function inputToRGB(
   };
 }
 
-/** Split a CSS number from its unit, like `62.8%`, `.5`, `1e-3` or `120deg` */
-function cssNumber(value: number | string): [number, string] {
-  if (typeof value === 'number') {
-    return [value, ''];
-  }
-
-  const match = /^([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)([a-z%]*)$/.exec(
-    value.trim().toLowerCase(),
-  );
-  return match ? [Number(match[1]), match[2]] : [NaN, ''];
-}
-
 /** OKLCH lightness from 0-1 or 0%-100%, clamped like CSS */
 function oklchLightness(value: number | string): number {
-  const [n, unit] = cssNumber(value);
-  if (unit === '%') {
-    return clamp01(n / 100);
-  }
-
-  return unit === '' ? clamp01(n) : NaN;
+  return clamp01(typeof value === 'number' ? value : cssNumber(value, 1, false));
 }
 
 /** OKLCH chroma as a number, or a percentage where 100% is 0.4. Negative chroma is 0 like CSS. */
 function oklchChroma(value: number | string): number {
-  const [n, unit] = cssNumber(value);
-  if (unit === '%') {
-    return Math.max(0, (n / 100) * 0.4);
-  }
-
-  return unit === '' ? Math.max(0, n) : NaN;
+  return Math.max(0, typeof value === 'number' ? value : cssNumber(value, 0.4, false));
 }
 
 /** OKLCH hue as degrees from 0-360, from a number or a CSS angle */
 function oklchHue(value: number | string): number {
-  const [n, unit] = cssNumber(value);
-  let degrees: number;
-  switch (unit) {
-    case '':
-    case 'deg':
-      degrees = n;
-      break;
-    case 'grad':
-      degrees = n * 0.9;
-      break;
-    case 'rad':
-      degrees = (n * 180) / Math.PI;
-      break;
-    case 'turn':
-      degrees = n * 360;
-      break;
-    default:
-      return NaN;
-  }
-
+  const degrees = typeof value === 'number' ? value : cssNumber(value, NaN, true);
   // Only add 360 to negative hues, adding it to every hue would add floating point error.
   // Math.abs turns -0 into 0.
   const wrapped = degrees % 360;
   return wrapped < 0 ? wrapped + 360 : Math.abs(wrapped);
+}
+
+/** Parse a CSS number like `.5` or `1e-3`, a percentage of `percent`, or an angle in degrees */
+function cssNumber(value: string, percent: number, angle: boolean): number {
+  const match = /^([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)([a-z%]*)$/.exec(
+    value.trim().toLowerCase(),
+  );
+  return match ? withUnit(Number(match[1]), match[2], percent, angle) : NaN;
+}
+
+/** Apply a CSS unit, `%` is a share of `percent` and angles are converted to degrees */
+function withUnit(n: number, unit: string, percent: number, angle: boolean): number {
+  switch (unit) {
+    case '':
+      return n;
+    case '%':
+      return angle ? NaN : (n / 100) * percent;
+    case 'deg':
+      return angle ? n : NaN;
+    case 'grad':
+      return angle ? n * 0.9 : NaN;
+    case 'rad':
+      return angle ? (n * 180) / Math.PI : NaN;
+    case 'turn':
+      return angle ? n * 360 : NaN;
+    default:
+      return NaN;
+  }
 }
 
 // <http://www.w3.org/TR/css3-values/#integers>
@@ -200,6 +187,11 @@ export function stringInputToObject(color: string): any {
     return false;
   }
 
+  // Before the color names, so the long string isn't hashed for a lookup that can't match
+  if (color.startsWith('oklch')) {
+    return oklchStringToObject(color);
+  }
+
   let named = false;
   if (names[color]) {
     color = names[color];
@@ -218,11 +210,6 @@ export function stringInputToObject(color: string): any {
     if (hex) {
       return hex;
     }
-  }
-
-  // Inherited names like "constructor" aren't strings
-  if (typeof color === 'string' && color.startsWith('oklch')) {
-    return oklchStringToObject(color);
   }
 
   let match = matchers.rgb.exec(color);
@@ -263,21 +250,29 @@ export function stringInputToObject(color: string): any {
 }
 
 /**
- * Split `oklch(L C H / A)` into components, leaving units for `inputToRGB` like the other formats.
+ * Parse `oklch(L C H / A)` with units applied, `inputToRGB` clamps them like the object input.
  * Like the other color functions, commas, a missing slash and missing parentheses are allowed.
+ * `none` is a missing component, which CSS treats as 0.
  */
-function oklchStringToObject(color: string): Record<string, string> | false {
+function oklchStringToObject(color: string): Record<string, number> | false {
+  // Each component captures its number and unit, `none` captures neither
   const match =
-    /^oklch(?:\s*\(\s*|\s+)([^\s,/()]+)[\s,]+([^\s,/()]+)[\s,]+([^\s,/()]+)(?:\s*[\s,/]\s*([^\s,/()]+))?\s*\)?$/.exec(
+    /^oklch(?:\s*\(\s*|\s+)(?:none|([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)(%?))[\s,]+(?:none|([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)(%?))[\s,]+(?:none|([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)(deg|grad|rad|turn)?)(?:\s*[\s,/]\s*(none|([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)(%?)))?\s*\)?$/.exec(
       color,
     );
   if (!match) {
     return false;
   }
 
-  // `none` is a missing component, which CSS treats as 0
-  const [, l, c, h, a] = match.map(value => (value === 'none' ? '0' : value));
-  return a === undefined ? { l, c, h } : { l, c, h, a };
+  const l = match[1] === undefined ? 0 : withUnit(Number(match[1]), match[2], 1, false);
+  const c = match[3] === undefined ? 0 : withUnit(Number(match[3]), match[4], 0.4, false);
+  const h = match[5] === undefined ? 0 : withUnit(Number(match[5]), match[6] ?? '', NaN, true);
+  if (match[7] === undefined) {
+    return { l, c, h };
+  }
+
+  const a = match[8] === undefined ? 0 : withUnit(Number(match[8]), match[9], 1, false);
+  return { l, c, h, a };
 }
 
 /**

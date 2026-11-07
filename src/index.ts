@@ -242,11 +242,13 @@ export class TinyColor {
         Math.round(input.g) === Math.round(this.g) &&
         Math.round(input.b) === Math.round(this.b)
       ) {
-        return { ...input.oklch, a: this.a };
+        const { l, c, h } = input.oklch;
+        return { l, c, h, a: this.a };
       }
     }
 
-    return { ...rgbToOklch(this.r, this.g, this.b), a: this.a };
+    const { l, c, h } = rgbToOklch(this.r, this.g, this.b);
+    return { l, c, h, a: this.a };
   }
 
   /**

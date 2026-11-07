@@ -52,6 +52,22 @@ export interface HSVA extends HSV {
 }
 
 /**
+ * OKLCH is a perceptual color space, equal changes in lightness or chroma look equal across hues.
+ * `l` is lightness from 0-1, `c` is chroma from 0 (about 0.4 for the most vivid colors)
+ * and `h` is the hue angle in degrees. It can describe colors outside of sRGB.
+ * @link https://www.w3.org/TR/css-color-4/#specifying-oklab-oklch
+ */
+export interface OKLCH {
+  l: number | string;
+  c: number | string;
+  h: number | string;
+}
+
+export interface OKLCHA extends OKLCH {
+  a: number;
+}
+
+/**
  * The CMYK color model is a subtractive color model used in the printing process.
  * It described four ink palettes: Cyan, Magenta, Yellow, and Black.
  * @link https://en.wikipedia.org/wiki/CMYK_color_model

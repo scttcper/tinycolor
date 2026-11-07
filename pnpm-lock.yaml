@@ -175,6 +175,9 @@ importers:
       '@types/node':
         specifier: 24.19.2
         version: 24.19.2
+      colorjs.io:
+        specifier: 0.7.1
+        version: 0.7.1
       del-cli:
         specifier: 8.0.1
         version: 8.0.1
@@ -748,6 +751,9 @@ packages:
   chai@6.3.0:
     resolution: {integrity: sha512-XWAtwJ6OHO+tj0EKCs0Y2UamnyOxseZWltU4x2U2wh8g4AigdjwvtUjvLP2tqkA/avxHEtzxNaqGq/YGNwckKg==}
     engines: {node: '>=18'}
+
+  colorjs.io@0.7.1:
+    resolution: {integrity: sha512-LY7OHnJZxHwT5UlzNa9bbhHHDbzB6yE5+3MIPwJEQKRvSCt/T4G7epsj+9j2BExUIIfXFIJGsIXUKdfrK9Q5tA==}
 
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -1859,6 +1865,8 @@ snapshots:
       qified: 0.10.1
 
   chai@6.3.0: {}
+
+  colorjs.io@0.7.1: {}
 
   commander@2.20.3: {}
 

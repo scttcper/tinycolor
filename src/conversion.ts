@@ -1,4 +1,4 @@
-import { HSL, HSV, Numberify, RGB } from './interfaces.js';
+import { HSL, HSV, Numberify, OKLCH, RGB } from './interfaces.js';
 import { bound01, pad2 } from './util.js';
 
 // `rgbToHsl`, `rgbToHsv`, `hslToRgb`, `hsvToRgb` modified from:
@@ -320,6 +320,174 @@ export function rgbToCmyk(r: number, g: number, b: number) {
     y: Math.round(y),
     k: Math.round(k),
   };
+}
+
+/**
+ * Converts an RGB color to OKLCH
+ *
+ * *Assumes:* r, g, and b are contained in the set [0, 255]
+ * *Returns:* { l, c, h } with l in [0, 1], c from 0 and h in [0, 360)
+ */
+export function rgbToOklch(r: number, g: number, b: number): Numberify<OKLCH> {
+  const [l, labA, labB] = linearSrgbToOklab(
+    srgbToLinear(r / 255),
+    srgbToLinear(g / 255),
+    srgbToLinear(b / 255),
+  );
+  const c = Math.sqrt(labA * labA + labB * labB);
+
+  // Grays only have floating point noise for chroma, so their hue would be random
+  if (c <= 0.000004) {
+    return { l: Math.min(1, l), c: 0, h: 0 };
+  }
+
+  const h = (Math.atan2(labB, labA) * 180) / Math.PI;
+  return { l: Math.min(1, l), c, h: h < 0 ? h + 360 : h };
+}
+
+/**
+ * Converts an OKLCH color to RGB. OKLCH can describe colors that sRGB can't show, those are
+ * gamut mapped like CSS Color 4: chroma is lowered, keeping lightness and hue, until clipping
+ * the rest is no longer noticeable. <https://www.w3.org/TR/css-color-4/#gamut-mapping>
+ *
+ * *Assumes:* l is contained in [0, 1], c is 0 or more and h is in degrees
+ * *Returns:* { r, g, b } in the set [0, 255]
+ */
+export function oklchToRgb(l: number, c: number, h: number): Numberify<RGB> {
+  // Lightness at either end is white or black whatever the chroma
+  if (l >= 1) {
+    return { r: 255, g: 255, b: 255 };
+  }
+
+  if (l <= 0) {
+    return { r: 0, g: 0, b: 0 };
+  }
+
+  const hue = (h * Math.PI) / 180;
+  const cos = Math.cos(hue);
+  const sin = Math.sin(hue);
+  const chroma = Math.max(0, c);
+  let rgb = oklabToLinearSrgb(l, chroma * cos, chroma * sin);
+  if (!isInSrgbGamut(rgb)) {
+    rgb = gamutMapToSrgb(l, chroma, cos, sin);
+  }
+
+  return {
+    r: linearToSrgb(rgb[0]) * 255,
+    g: linearToSrgb(rgb[1]) * 255,
+    b: linearToSrgb(rgb[2]) * 255,
+  };
+}
+
+/**
+ * Binary search for the chroma where clipping into sRGB is less than a just noticeable difference,
+ * the CSS Color 4 gamut mapping algorithm. Returns clipped linear sRGB.
+ */
+function gamutMapToSrgb(l: number, c: number, cos: number, sin: number): [number, number, number] {
+  const jnd = 0.02;
+  const epsilon = 0.0001;
+
+  let clipped = clipToSrgb(oklabToLinearSrgb(l, c * cos, c * sin));
+  if (deltaEOK(l, c * cos, c * sin, clipped) < jnd) {
+    return clipped;
+  }
+
+  let min = 0;
+  let max = c;
+  let minInGamut = true;
+  while (max - min > epsilon) {
+    const chroma = (min + max) / 2;
+    const current = oklabToLinearSrgb(l, chroma * cos, chroma * sin);
+    if (minInGamut && isInSrgbGamut(current)) {
+      min = chroma;
+      continue;
+    }
+
+    clipped = clipToSrgb(current);
+    const delta = deltaEOK(l, chroma * cos, chroma * sin, clipped);
+    if (delta < jnd) {
+      if (jnd - delta < epsilon) {
+        break;
+      }
+
+      minInGamut = false;
+      min = chroma;
+    } else {
+      max = chroma;
+    }
+  }
+
+  return clipped;
+}
+
+/** Distance in OKLab between a color and linear sRGB */
+function deltaEOK(l: number, a: number, b: number, rgb: [number, number, number]): number {
+  const [l2, a2, b2] = linearSrgbToOklab(rgb[0], rgb[1], rgb[2]);
+  const dl = l - l2;
+  const da = a - a2;
+  const db = b - b2;
+  return Math.sqrt(dl * dl + da * da + db * db);
+}
+
+function isInSrgbGamut(rgb: [number, number, number]): boolean {
+  return rgb[0] >= 0 && rgb[0] <= 1 && rgb[1] >= 0 && rgb[1] <= 1 && rgb[2] >= 0 && rgb[2] <= 1;
+}
+
+function clipToSrgb(rgb: [number, number, number]): [number, number, number] {
+  return [
+    Math.min(1, Math.max(0, rgb[0])),
+    Math.min(1, Math.max(0, rgb[1])),
+    Math.min(1, Math.max(0, rgb[2])),
+  ];
+}
+
+/** sRGB channel from 0-1 to linear light */
+function srgbToLinear(channel: number): number {
+  return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+}
+
+/** Linear light channel from 0-1 to sRGB */
+function linearToSrgb(channel: number): number {
+  return channel <= 0.0031308 ? channel * 12.92 : 1.055 * channel ** (1 / 2.4) - 0.055;
+}
+
+/**
+ * Linear sRGB to OKLab, with the CSS Color 4 matrices.
+ * sRGB to XYZ D65 to LMS is combined into the first matrix.
+ */
+function linearSrgbToOklab(r: number, g: number, b: number): [number, number, number] {
+  const long = Math.cbrt(
+    0.41222146947076305 * r + 0.5363325372617348 * g + 0.05144599326750221 * b,
+  );
+  const medium = Math.cbrt(
+    0.21190349581782522 * r + 0.6806995506452344 * g + 0.10739695353694056 * b,
+  );
+  const short = Math.cbrt(
+    0.08830245919005643 * r + 0.2817188391361215 * g + 0.6299787016738222 * b,
+  );
+
+  return [
+    0.210454268309314 * long + 0.7936177747023054 * medium - 0.0040720430116193 * short,
+    1.9779985324311684 * long - 2.42859224204858 * medium + 0.450593709617411 * short,
+    0.0259040424655478 * long + 0.7827717124575296 * medium - 0.8086757549230774 * short,
+  ];
+}
+
+/** OKLab to linear sRGB, channels outside of 0-1 are outside the sRGB gamut */
+function oklabToLinearSrgb(l: number, a: number, b: number): [number, number, number] {
+  // Cubed by multiplying, `** 3` goes through the much slower general pow
+  const cbrtLong = l + 0.3963377773761749 * a + 0.2158037573099136 * b;
+  const cbrtMedium = l - 0.1055613458156586 * a - 0.0638541728258133 * b;
+  const cbrtShort = l - 0.0894841775298119 * a - 1.2914855480194092 * b;
+  const long = cbrtLong * cbrtLong * cbrtLong;
+  const medium = cbrtMedium * cbrtMedium * cbrtMedium;
+  const short = cbrtShort * cbrtShort * cbrtShort;
+
+  return [
+    4.076741636075958 * long - 3.3077115392580616 * medium + 0.2309699031821043 * short,
+    -1.2684379732850317 * long + 2.6097573492876887 * medium - 0.34131937600265727 * short,
+    -0.004196076138675564 * long - 0.7034186179359363 * medium + 1.7076146940746117 * short,
+  ];
 }
 
 /** Converts a decimal to a hex value */

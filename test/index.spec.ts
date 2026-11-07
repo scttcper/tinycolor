@@ -601,6 +601,18 @@ describe('TinyColor', () => {
     expect(new TinyColor('#eee').isDark()).toBe(false);
     expect(new TinyColor('#fff').isDark()).toBe(false);
   });
+  it('isDark and isLight accept a brightness threshold', () => {
+    // #999 has a brightness of 153
+    const color = new TinyColor('#999');
+    expect(color.isDark()).toBe(false);
+    expect(color.isLight()).toBe(true);
+    expect(color.isDark(170)).toBe(true);
+    expect(color.isLight(170)).toBe(false);
+    expect(color.isDark(153)).toBe(false);
+    expect(color.isLight(153)).toBe(true);
+    expect(new TinyColor('#000').isDark(0)).toBe(false);
+    expect(new TinyColor('#fff').isLight(256)).toBe(false);
+  });
   it('isLight returns true/false for light/dark colors', () => {
     expect(new TinyColor('#000').isLight()).toBe(false);
     expect(new TinyColor('#111').isLight()).toBe(false);

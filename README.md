@@ -193,6 +193,11 @@ color1.isLight(); // true
 
 const color2 = new TinyColor('#000');
 color2.isLight(); // false
+
+// optional brightness threshold from 0-255, defaults to 128
+const color3 = new TinyColor('#999');
+color3.isLight(); // true
+color3.isLight(170); // false
 ```
 
 ### isDark
@@ -205,6 +210,11 @@ color1.isDark(); // false
 
 const color2 = new TinyColor('#000');
 color2.isDark(); // true
+
+// optional brightness threshold from 0-255, defaults to 128
+const color3 = new TinyColor('#999');
+color3.isDark(); // false
+color3.isDark(170); // true
 ```
 
 ### getLuminance

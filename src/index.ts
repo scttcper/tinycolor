@@ -88,12 +88,20 @@ export class TinyColor {
     this.isValid = rgb.ok;
   }
 
-  isDark(): boolean {
-    return this.getBrightness() < 128;
+  /**
+   * Returns true if the perceived brightness is below the threshold.
+   * @param threshold brightness cutoff from 0-255, defaults to 128
+   */
+  isDark(threshold = 128): boolean {
+    return this.getBrightness() < threshold;
   }
 
-  isLight(): boolean {
-    return !this.isDark();
+  /**
+   * Returns true if the perceived brightness is at or above the threshold.
+   * @param threshold brightness cutoff from 0-255, defaults to 128
+   */
+  isLight(threshold = 128): boolean {
+    return !this.isDark(threshold);
   }
 
   /**

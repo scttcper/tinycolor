@@ -65,7 +65,9 @@ export function isPercentage(n: string | number): boolean {
  * @hidden
  */
 export function boundAlpha(a?: number | string): number {
-  a = parseFloat(a as string);
+  // percentage alpha, e.g. `50%`
+  a =
+    typeof a === 'string' && a.trim().endsWith('%') ? parseFloat(a) / 100 : parseFloat(a as string);
 
   if (isNaN(a) || a < 0 || a > 1) {
     a = 1;

@@ -99,19 +99,16 @@ const CSS_UNIT = '(?:' + CSS_NUMBER + ')|(?:' + CSS_INTEGER + ')';
 // Parentheses and commas are optional, but not required.
 // Whitespace can take the place of commas or opening paren
 // eslint-disable-next-line prettier/prettier
-const PERMISSIVE_MATCH3 = '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?';
+const PERMISSIVE_MATCH3 = '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')(?:[,|\\s|/]+(' + CSS_UNIT + '))?\\s*\\)?';
 const PERMISSIVE_MATCH4 =
   // eslint-disable-next-line prettier/prettier
   '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?';
 
 const matchers = {
   CSS_UNIT: new RegExp(CSS_UNIT),
-  rgb: new RegExp('rgb' + PERMISSIVE_MATCH3),
-  rgba: new RegExp('rgba' + PERMISSIVE_MATCH4),
-  hsl: new RegExp('hsl' + PERMISSIVE_MATCH3),
-  hsla: new RegExp('hsla' + PERMISSIVE_MATCH4),
-  hsv: new RegExp('hsv' + PERMISSIVE_MATCH3),
-  hsva: new RegExp('hsva' + PERMISSIVE_MATCH4),
+  rgb: new RegExp('rgba?' + PERMISSIVE_MATCH3),
+  hsl: new RegExp('hsla?' + PERMISSIVE_MATCH3),
+  hsv: new RegExp('hsva?' + PERMISSIVE_MATCH3),
   cmyk: new RegExp('cmyk' + PERMISSIVE_MATCH4),
 };
 
@@ -147,32 +144,26 @@ export function stringInputToObject(color: string): any {
 
   let match = matchers.rgb.exec(color);
   if (match) {
-    return { r: match[1], g: match[2], b: match[3] };
-  }
-
-  match = matchers.rgba.exec(color);
-  if (match) {
-    return { r: match[1], g: match[2], b: match[3], a: match[4] };
+    // optional alpha, e.g. `rgb(... / 50%)` or `rgb(..., 0.5)`
+    return match[4] === undefined
+      ? { r: match[1], g: match[2], b: match[3] }
+      : { r: match[1], g: match[2], b: match[3], a: match[4] };
   }
 
   match = matchers.hsl.exec(color);
   if (match) {
-    return { h: match[1], s: match[2], l: match[3] };
-  }
-
-  match = matchers.hsla.exec(color);
-  if (match) {
-    return { h: match[1], s: match[2], l: match[3], a: match[4] };
+    // optional alpha, e.g. `hsl(... / 50%)` or `hsl(..., 0.5)`
+    return match[4] === undefined
+      ? { h: match[1], s: match[2], l: match[3] }
+      : { h: match[1], s: match[2], l: match[3], a: match[4] };
   }
 
   match = matchers.hsv.exec(color);
   if (match) {
-    return { h: match[1], s: match[2], v: match[3] };
-  }
-
-  match = matchers.hsva.exec(color);
-  if (match) {
-    return { h: match[1], s: match[2], v: match[3], a: match[4] };
+    // optional alpha, e.g. `hsv(... / 50%)` or `hsv(..., 0.5)`
+    return match[4] === undefined
+      ? { h: match[1], s: match[2], v: match[3] }
+      : { h: match[1], s: match[2], v: match[3], a: match[4] };
   }
 
   match = matchers.cmyk.exec(color);

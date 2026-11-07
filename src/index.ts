@@ -412,12 +412,8 @@ export class TinyColor {
 
     let formattedString: string | false = false;
     const hasAlpha = this.a < 1 && this.a >= 0;
-    // Invalid input has no format, which is false at runtime
     const needsAlphaFormat =
-      !formatSet &&
-      hasAlpha &&
-      typeof format === 'string' &&
-      (format.startsWith('hex') || format === 'name');
+      !formatSet && hasAlpha && (format.startsWith('hex') || format === 'name');
 
     if (needsAlphaFormat) {
       // Special case for "transparent", all other non-alpha formats

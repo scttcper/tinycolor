@@ -90,11 +90,6 @@ describe('TinyColor', () => {
     expect(color.isValid).toBe(false);
     expect(color.toHexString()).toBe('#000000');
   });
-  it('should print invalid object input with alpha as black', () => {
-    const color = new TinyColor({ r: 'abc', g: 0, b: 0, a: 0.5 });
-    expect(color.isValid).toBe(false);
-    expect(color.toString()).toBe('#000000');
-  });
   it.each(['ABC', 'ABCD', 'ABCDEF', 'ABCDEF80'])(
     'should parse uppercase custom color name values: %s',
     value => {

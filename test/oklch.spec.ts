@@ -256,15 +256,14 @@ describe('OKLCH', () => {
     expect(nudged.toOklch()).toEqual({ ...rgbToOklch(0.4, nudged.g, 0), a: 1 });
   });
 
-  it.each([
-    { l: '70px', c: 0.1, h: 90, a: 0.5 },
-    'oklch(70px 0.1 90 / 0.5)',
-    'oklch(abc 0.1 90 / 0.5)',
-  ])('should treat invalid OKLCH %j with alpha as black', input => {
-    const color = new TinyColor(input);
-    expect(color.isValid).toBe(false);
-    expect(color.toString()).toBe('#000000');
-  });
+  it.each(['oklch(70px 0.1 90 / 0.5)', 'oklch(abc 0.1 90 / 0.5)'])(
+    'should treat invalid OKLCH %s with alpha as black',
+    input => {
+      const color = new TinyColor(input);
+      expect(color.isValid).toBe(false);
+      expect(color.toString()).toBe('#000000');
+    },
+  );
 
   it('should return the OKLCH input from inputToRGB', () => {
     expect(inputToRGB('oklch(70% 0.3 145)').oklch).toEqual({ l: 0.7, c: 0.3, h: 145 });

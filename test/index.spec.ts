@@ -601,6 +601,19 @@ describe('TinyColor', () => {
     expect(new TinyColor('#eee').isDark()).toBe(false);
     expect(new TinyColor('#fff').isDark()).toBe(false);
   });
+  it('toRgbRatio returns unrounded 0-1 values', () => {
+    expect(new TinyColor('red').toRgbRatio()).toEqual({ r: 1, g: 0, b: 0, a: 1 });
+    expect(new TinyColor('rgba(51, 102, 153, 0.5)').toRgbRatio()).toEqual({
+      r: 0.2,
+      g: 0.4,
+      b: 0.6,
+      a: 0.5,
+    });
+    // keeps precision that toRgb rounds away
+    const color = new TinyColor('hsl(210, 50%, 40%)');
+    expect(color.toRgbRatio().r).toBeCloseTo(color.r / 255, 10);
+    expect(color.toRgbRatio().r * 255).not.toBe(color.toRgb().r);
+  });
   it('isDark and isLight accept a brightness threshold', () => {
     // #999 has a brightness of 153
     const color = new TinyColor('#999');

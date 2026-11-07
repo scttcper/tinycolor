@@ -290,6 +290,18 @@ export class TinyColor {
   }
 
   /**
+   * Returns the RGBA values as unrounded ratios from 0-1.
+   */
+  toRgbRatio(): Numberify<RGBA> {
+    return {
+      r: this.r / 255,
+      g: this.g / 255,
+      b: this.b / 255,
+      a: this.a,
+    };
+  }
+
+  /**
    * Returns the RGBA relative values interpolated into a string
    */
   toPercentageRgbString(): string {

@@ -378,6 +378,15 @@ const color = new TinyColor('red');
 color.toPercentageRgb(); // { r: "100%", g: "0%", b: "0%", a: 1 }
 ```
 
+### toRgbRatio
+
+Returns the RGBA values as unrounded ratios from 0-1, e.g. for iOS `UIColor`.
+
+```ts
+const color = new TinyColor('red');
+color.toRgbRatio(); // { r: 1, g: 0, b: 0, a: 1 }
+```
+
 ### toPercentageRgbString
 
 ```ts

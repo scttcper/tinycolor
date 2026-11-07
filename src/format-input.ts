@@ -125,7 +125,7 @@ function oklchHue(value: number | string): number {
 
 /** Parse a CSS number like `.5` or `1e-3`, a percentage of `percent`, or an angle in degrees */
 function cssNumber(value: string, percent: number, angle: boolean): number {
-  const match = /^([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)([a-z%]*)$/.exec(
+  const match = /^([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)([a-z%]*)$/.exec(
     value.trim().toLowerCase(),
   );
   return match ? withUnit(Number(match[1]), match[2], percent, angle) : NaN;
@@ -257,7 +257,7 @@ export function stringInputToObject(color: string): any {
 function oklchStringToObject(color: string): Record<string, number> | false {
   // Each component captures its number and unit, `none` captures neither
   const match =
-    /^oklch(?:\s*\(\s*|\s+)(?:none|([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)(%?))[\s,]+(?:none|([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)(%?))[\s,]+(?:none|([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)(deg|grad|rad|turn)?)(?:\s*[\s,/]\s*(none|([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)(%?)))?\s*\)?$/.exec(
+    /^oklch(?:\s*\(\s*|\s+)(?:none|([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)(%?))[\s,]+(?:none|([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)(%?))[\s,]+(?:none|([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)(deg|grad|rad|turn)?)(?:(?:\s*[,/]\s*|\s+)(none|([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)(%?)))?\s*\)?$/.exec(
       color,
     );
   if (!match) {

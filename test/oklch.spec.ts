@@ -158,6 +158,20 @@ describe('OKLCH', () => {
     },
   );
 
+  // Ambiguous number patterns used to backtrack here, 60 digit numbers took over a second
+  // and 100 digits took 20. Small enough that a regression fails instead of hanging.
+  it('should reject long invalid input quickly', () => {
+    const digits = '1'.repeat(60);
+    const spaces = ' '.repeat(5000);
+    const started = performance.now();
+    expect(new TinyColor(`oklch(${digits} ${digits} ${digits} / ${digits} x)`).isValid).toBe(false);
+    expect(new TinyColor(`oklch(1${spaces}0.1${spaces}90${spaces}0.5${spaces}x)`).isValid).toBe(
+      false,
+    );
+    expect(new TinyColor({ l: `${'1'.repeat(5000)}!`, c: 0.1, h: 90 }).isValid).toBe(false);
+    expect(performance.now() - started).toBeLessThan(250);
+  });
+
   // Color.js keeps these as strings like "70px" instead of rejecting them
   it.each([
     'oklch(70px 0.1 90)',

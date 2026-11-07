@@ -90,6 +90,15 @@ describe('TinyColor', () => {
     expect(color.isValid).toBe(false);
     expect(color.toHexString()).toBe('#000000');
   });
+  it.each([
+    { r: '', g: 0, b: 0, a: 0.5 },
+    { r: NaN, g: 0, b: 0, a: 0.5 },
+    { h: 'abc', s: 1, l: 0.5, a: 0.5 },
+  ])('should print invalid object input with alpha %j as black', input => {
+    const color = new TinyColor(input);
+    expect(color.isValid).toBe(false);
+    expect(color.toString()).toBe('#000000');
+  });
   it.each(['ABC', 'ABCD', 'ABCDEF', 'ABCDEF80'])(
     'should parse uppercase custom color name values: %s',
     value => {

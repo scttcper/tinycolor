@@ -24,6 +24,12 @@ describe('parsing', () => {
   test('HSL object', async ({ bench }) => {
     await bench('HSL object', () => new TinyColor({ h: 204, s: 0.7, l: 0.53 })).run();
   });
+  test('OKLCH string', async ({ bench }) => {
+    await bench('OKLCH string', () => new TinyColor('oklch(65.309% 0.1347 242.687)')).run();
+  });
+  test('OKLCH string outside sRGB', async ({ bench }) => {
+    await bench('OKLCH string outside sRGB', () => new TinyColor('oklch(70% 0.3 145)')).run();
+  });
 });
 
 describe('formatting a parsed color', () => {
@@ -44,6 +50,9 @@ describe('formatting a parsed color', () => {
   });
   test('HSV object', async ({ bench }) => {
     await bench('HSV object', () => color.toHsv()).run();
+  });
+  test('OKLCH string', async ({ bench }) => {
+    await bench('OKLCH string', () => color.toOklchString()).run();
   });
   test('named color string', async ({ bench }) => {
     const namedColor = new TinyColor('rebeccapurple');

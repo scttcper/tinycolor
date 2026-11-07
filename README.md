@@ -25,6 +25,7 @@ __DEMO__: https://tinycolor.vercel.app
 * color wheel values (360) are allowed to over or under-spin and still return valid colors tinycolor PR [108](https://github.com/bgrins/TinyColor/pull/108)
 * added `tint()` and `shade()` tinycolor PR [159](https://github.com/bgrins/TinyColor/pull/159)
 * `isValid`, `format` are now propertys instead of a function
+* added OKLCH input and output, colors outside of sRGB are gamut mapped like CSS
 
 ## Install
 
@@ -97,6 +98,25 @@ new TinyColor('hsv 0 1 1');
 new TinyColor({ h: 0, s: 100, v: 100 });
 ```
 
+### OKLCH
+
+[OKLCH](https://www.w3.org/TR/css-color-4/#specifying-oklab-oklch) follows the CSS syntax. Lightness is 0-1 or 0%-100%, chroma is a number or a percentage where 100% is 0.4, and hue is in degrees or any CSS angle. `none` counts as 0.
+
+```ts
+new TinyColor('oklch(62.8% 0.258 29.23)');
+new TinyColor('oklch(0.628 0.258 29.23 / 50%)');
+new TinyColor('oklch(70% 0.1 0.25turn)');
+new TinyColor({ l: 0.628, c: 0.258, h: 29.23 });
+```
+
+OKLCH can describe colors that sRGB can't show. Those keep their exact values for `toOklch()`, `toOklchString()` and `toString()`. Every sRGB format (hex, rgb, hsl...) and color modification uses the color gamut mapped into sRGB with the [CSS Color 4 algorithm](https://www.w3.org/TR/css-color-4/#gamut-mapping), which lowers chroma while keeping lightness and hue.
+
+```ts
+const color = new TinyColor('oklch(70% 0.3 145)');
+color.toOklchString(); // "oklch(70% 0.3 145)"
+color.toHexString(); // "#00c300"
+```
+
 ### CMYK
 
 ```ts
@@ -129,6 +149,7 @@ If you are calling this from code, you may want to use object input. Here are so
 { r: 255, g: 0, b: 0, a: .5 }
 { h: 0, s: 100, l: 50 }
 { h: 0, s: 100, v: 100 }
+{ l: 0.628, c: 0.258, h: 29.23 }
 ```
 
 ## Properties
@@ -268,7 +289,7 @@ computedColor.toRgbString(); // "rgb(128, 0, 128)"
 
 ### String Representations
 
-The following methods will return a property for the `alpha` value, which can be ignored: `toHsv`, `toHsl`, `toRgb`
+The following methods will return a property for the `alpha` value, which can be ignored: `toHsv`, `toHsl`, `toOklch`, `toRgb`
 
 ### toHsv
 
@@ -300,6 +321,24 @@ const color = new TinyColor('red');
 color.toHslString(); // "hsl(0, 100%, 50%)"
 color.setAlpha(0.5);
 color.toHslString(); // "hsla(0, 100%, 50%, 0.5)"
+```
+
+### toOklch
+
+Lightness `l` from 0-1, chroma `c` from 0 and hue `h` from 0-360. Grays have a chroma and hue of 0.
+
+```ts
+const color = new TinyColor('red');
+color.toOklch(); // { l: 0.6279553639214313, c: 0.25768330380536064, h: 29.23388027962788, a: 1 }
+```
+
+### toOklchString
+
+```ts
+const color = new TinyColor('red');
+color.toOklchString(); // "oklch(62.796% 0.25768 29.234)"
+color.setAlpha(0.5);
+color.toOklchString(); // "oklch(62.796% 0.25768 29.234 / 0.5)"
 ```
 
 ### toCmykString
@@ -412,7 +451,7 @@ toMsFilter('red', 'blue'); // 'progid:DXImageTransform.Microsoft.gradient(startC
 
 ### toString
 
-Print to a string, depending on the input format. You can also override this by passing one of `"rgb", "prgb", "hex6", "hex3", "hex8", "name", "hsl", "hsv"` into the function.
+Print to a string, depending on the input format. You can also override this by passing one of `"rgb", "prgb", "hex6", "hex3", "hex8", "name", "hsl", "hsv", "oklch"` into the function.
 
 ```ts
 const color1 = new TinyColor('red');

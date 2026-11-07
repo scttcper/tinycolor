@@ -5,10 +5,11 @@ import {
   rgbToHex,
   rgbToHsl,
   rgbToHsv,
+  rgbToOklch,
 } from './conversion.js';
 import { names } from './css-color-names.js';
 import { inputToRGB } from './format-input.js';
-import { CMYK, HSL, HSLA, HSV, HSVA, Numberify, RGB, RGBA } from './interfaces.js';
+import { CMYK, HSL, HSLA, HSV, HSVA, Numberify, OKLCH, OKLCHA, RGB, RGBA } from './interfaces.js';
 import { bound01, boundAlpha, clamp01 } from './util.js';
 
 export interface TinyColorOptions {
@@ -16,10 +17,22 @@ export interface TinyColorOptions {
   gradientType: string;
 }
 
-export type ColorInput = string | number | RGB | RGBA | HSL | HSLA | HSV | HSVA | CMYK | TinyColor;
+export type ColorInput =
+  string | number | RGB | RGBA | HSL | HSLA | HSV | HSVA | OKLCH | OKLCHA | CMYK | TinyColor;
 
 export type ColorFormats =
-  'rgb' | 'prgb' | 'hex' | 'hex3' | 'hex4' | 'hex6' | 'hex8' | 'name' | 'hsl' | 'hsv' | 'cmyk';
+  | 'rgb'
+  | 'prgb'
+  | 'hex'
+  | 'hex3'
+  | 'hex4'
+  | 'hex6'
+  | 'hex8'
+  | 'name'
+  | 'hsl'
+  | 'hsv'
+  | 'oklch'
+  | 'cmyk';
 
 export class TinyColor {
   /** red */
@@ -211,6 +224,42 @@ export class TinyColor {
     const s = Math.round(hsl.s * 100);
     const l = Math.round(hsl.l * 100);
     return this.a === 1 ? `hsl(${h}, ${s}%, ${l}%)` : `hsla(${h}, ${s}%, ${l}%, ${this.roundA})`;
+  }
+
+  /**
+   * Returns the object as an OKLCH object, l from 0-1, c from 0 and h from 0-360.
+   * Colors created from OKLCH keep their original values, even outside of sRGB.
+   */
+  toOklch(): Numberify<OKLCHA> {
+    // OKLCH input can be outside of sRGB, where r, g and b only hold the gamut mapped color.
+    // Read the input again instead of converting them back, while they still match it.
+    if (this.format === 'oklch') {
+      const input = inputToRGB(this.originalInput);
+      if (
+        input.oklch &&
+        Math.round(input.r) === Math.round(this.r) &&
+        Math.round(input.g) === Math.round(this.g) &&
+        Math.round(input.b) === Math.round(this.b)
+      ) {
+        return { ...input.oklch, a: this.a };
+      }
+    }
+
+    return { ...rgbToOklch(this.r, this.g, this.b), a: this.a };
+  }
+
+  /**
+   * Returns the OKLCH values as a CSS string, "oklch(62.796% 0.25768 29.234)"
+   * or with alpha "oklch(62.796% 0.25768 29.234 / 0.5)".
+   */
+  toOklchString(): string {
+    const { l, c, h } = this.toOklch();
+    // Enough precision for every 8 bit color to round trip
+    const lightness = Math.round(l * 100_000) / 1000;
+    const chroma = Math.round(c * 100_000) / 100_000;
+    const hue = (Math.round(h * 1000) / 1000) % 360;
+    const alpha = this.a === 1 ? '' : ` / ${this.roundA}`;
+    return `oklch(${lightness}% ${chroma} ${hue}${alpha})`;
   }
 
   /**
@@ -407,6 +456,10 @@ export class TinyColor {
 
     if (format === 'hsv') {
       formattedString = this.toHsvString();
+    }
+
+    if (format === 'oklch') {
+      formattedString = this.toOklchString();
     }
 
     if (format === 'cmyk') {

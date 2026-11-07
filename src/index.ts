@@ -233,7 +233,8 @@ export class TinyColor {
   toOklch(): Numberify<OKLCHA> {
     // OKLCH input can be outside of sRGB, where r, g and b only hold the gamut mapped color.
     // Read the input again instead of converting them back, while they still match it.
-    if (this.format === 'oklch') {
+    // Checks the input rather than `format`, which can be overridden for toString().
+    if (mightBeOklch(this.originalInput)) {
       const input = inputToRGB(this.originalInput);
       if (
         input.oklch &&
@@ -702,4 +703,14 @@ export class TinyColor {
 
     return this.toRgbString() === comparedColor.toRgbString();
   }
+}
+
+/** Cheap check before parsing input again, an `oklch()` string or an object with l, c and h */
+function mightBeOklch(input: ColorInput): boolean {
+  if (typeof input === 'string') {
+    // The shortest OKLCH input is "oklch 0 0 0", so hex skips the regex
+    return input.length >= 11 && /^\s*oklch/i.test(input);
+  }
+
+  return typeof input === 'object' && 'l' in input && 'c' in input && 'h' in input;
 }

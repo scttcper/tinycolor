@@ -233,6 +233,17 @@ describe('OKLCH', () => {
     expect(color.toOklchString()).toBe('oklch(70% 0.3 145 / 0.5)');
   });
 
+  it('should keep OKLCH input when the format is overridden', () => {
+    const color = new TinyColor('oklch(70% 0.3 145)', { format: 'hex' });
+    expect(color.toString()).toBe(color.toHexString());
+    expect(color.toOklch()).toEqual({ l: 0.7, c: 0.3, h: 145, a: 1 });
+    expect(new TinyColor({ l: 0.7, c: 0.3, h: 145 }, { format: 'rgb' }).toOklchString()).toBe(
+      'oklch(70% 0.3 145)',
+    );
+    // Overriding the format of other input doesn't make it OKLCH
+    expect(new TinyColor('#00c300', { format: 'oklch' }).toOklch().c).not.toBe(0.3);
+  });
+
   it('should use r, g and b once they are changed', () => {
     const color = new TinyColor('oklch(70% 0.3 145)');
     color.r = 255;

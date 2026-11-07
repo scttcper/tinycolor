@@ -1,7 +1,7 @@
 import Color from 'colorjs.io';
 import { describe, expect, it } from 'vitest';
 
-import { inputToRGB, oklchToRgb, TinyColor } from '../src/public_api.js';
+import { inputToRGB, oklchToRgb, rgbToOklch, TinyColor } from '../src/public_api.js';
 
 // OKLCH is compared against Color.js, from the editors of the CSS Color 4 spec
 
@@ -249,6 +249,21 @@ describe('OKLCH', () => {
     color.r = 255;
     expect(color.toOklchString()).toBe(new TinyColor({ r: 255, g: color.g, b: 0 }).toOklchString());
     expect(color.toOklch().c).not.toBe(0.3);
+
+    // Changes too small to change the rounded channel count too
+    const nudged = new TinyColor('oklch(70% 0.3 145)');
+    nudged.r = 0.4;
+    expect(nudged.toOklch()).toEqual({ ...rgbToOklch(0.4, nudged.g, 0), a: 1 });
+  });
+
+  it.each([
+    { l: '70px', c: 0.1, h: 90, a: 0.5 },
+    'oklch(70px 0.1 90 / 0.5)',
+    'oklch(abc 0.1 90 / 0.5)',
+  ])('should treat invalid OKLCH %j with alpha as black', input => {
+    const color = new TinyColor(input);
+    expect(color.isValid).toBe(false);
+    expect(color.toString()).toBe('#000000');
   });
 
   it('should return the OKLCH input from inputToRGB', () => {

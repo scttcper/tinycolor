@@ -238,9 +238,9 @@ export class TinyColor {
       const input = inputToRGB(this.originalInput);
       if (
         input.oklch &&
-        Math.round(input.r) === Math.round(this.r) &&
-        Math.round(input.g) === Math.round(this.g) &&
-        Math.round(input.b) === Math.round(this.b)
+        constructorChannel(input.r) === this.r &&
+        constructorChannel(input.g) === this.g &&
+        constructorChannel(input.b) === this.b
       ) {
         const { l, c, h } = input.oklch;
         return { l, c, h, a: this.a };
@@ -412,8 +412,12 @@ export class TinyColor {
 
     let formattedString: string | false = false;
     const hasAlpha = this.a < 1 && this.a >= 0;
+    // Invalid input has no format, which is false at runtime
     const needsAlphaFormat =
-      !formatSet && hasAlpha && (format.startsWith('hex') || format === 'name');
+      !formatSet &&
+      hasAlpha &&
+      typeof format === 'string' &&
+      (format.startsWith('hex') || format === 'name');
 
     if (needsAlphaFormat) {
       // Special case for "transparent", all other non-alpha formats
@@ -705,6 +709,11 @@ export class TinyColor {
 
     return this.toRgbString() === comparedColor.toRgbString();
   }
+}
+
+/** A channel from inputToRGB as the constructor stores it, which rounds values below 1 */
+function constructorChannel(channel: number): number {
+  return channel < 1 ? Math.round(channel) : channel;
 }
 
 /** Cheap check before parsing input again, an `oklch()` string or an object with l, c and h */

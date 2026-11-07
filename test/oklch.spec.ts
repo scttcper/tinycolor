@@ -1,49 +1,96 @@
+import Color from 'colorjs.io';
 import { describe, expect, it } from 'vitest';
 
-import { inputToRGB, oklchToRgb, rgbToOklch, TinyColor } from '../src/public_api.js';
+import { inputToRGB, oklchToRgb, TinyColor } from '../src/public_api.js';
 
-// Reference values from Color.js 0.5.2, by the editors of CSS Color 4
-const references = [
-  ['#ff0000', 0.6279553639214311, 0.2576833038053606, 29.233880279627897],
-  ['#00ff00', 0.8664396175234368, 0.2948272245426958, 142.4953450414439],
-  ['#0000ff', 0.45201371817442365, 0.3132143886344849, 264.0520226163699],
-  ['#ffff00', 0.9679827267927991, 0.2110058737497979, 109.76923612816614],
-  ['#3498db', 0.6530915215303427, 0.1347021448282337, 242.68666737573582],
-  ['#663399', 0.4402717960022945, 0.16029599938108785, 303.37298848855636],
-] as const;
+// OKLCH is compared against Color.js, from the editors of the CSS Color 4 spec
+
+/** Every 15th value of each sRGB channel */
+function srgbColors(): Array<[number, number, number]> {
+  const colors: Array<[number, number, number]> = [];
+  for (let r = 0; r < 256; r += 15) {
+    for (let g = 0; g < 256; g += 15) {
+      for (let b = 0; b < 256; b += 15) {
+        colors.push([r, g, b]);
+      }
+    }
+  }
+
+  return colors;
+}
+
+/** OKLCH across lightness, chroma and hue. Most of the high chroma colors are outside of sRGB. */
+function oklchColors(): Array<[number, number, number]> {
+  const colors: Array<[number, number, number]> = [];
+  for (let l = 0; l <= 20; l++) {
+    for (let c = 0; c <= 10; c++) {
+      for (let h = 0; h < 360; h += 15) {
+        colors.push([l / 20, c * 0.04, h]);
+      }
+    }
+  }
+
+  return colors;
+}
+
+/** Color.js gamut mapped into sRGB with the CSS Color 4 algorithm. toGamut() changes the color, so clone it. */
+function colorjsSrgb(color: Color): Color {
+  return color.clone().toGamut({ space: 'srgb', method: 'css' }).to('srgb');
+}
+
+function colorjsHex(color: Color): string {
+  return colorjsSrgb(color).toString({ format: 'hex', collapse: false });
+}
+
+function hueDifference(a: number, b: number): number {
+  const difference = Math.abs(a - b) % 360;
+  return Math.min(difference, 360 - difference);
+}
 
 describe('OKLCH', () => {
-  it.each(references)('should convert %s to OKLCH', (hex, l, c, h) => {
-    const oklch = new TinyColor(hex).toOklch();
-    expect(oklch.l).toBeCloseTo(l, 12);
-    expect(oklch.c).toBeCloseTo(c, 12);
-    expect(oklch.h).toBeCloseTo(h, 9);
-    expect(oklch.a).toBe(1);
+  it('should convert sRGB to OKLCH like Color.js', () => {
+    const failures: string[] = [];
+    for (const [r, g, b] of srgbColors()) {
+      const ours = new TinyColor({ r, g, b }).toOklch();
+      const [l, c, h] = new Color('srgb', [r / 255, g / 255, b / 255]).to('oklch').coords;
+      // Color.js keeps floating point noise as the chroma of grays, tinycolor rounds it to 0
+      const matches =
+        Math.abs(ours.l - (l ?? 0)) < 1e-12 &&
+        ((c ?? 0) <= 0.000004
+          ? ours.c === 0 && ours.h === 0
+          : Math.abs(ours.c - c!) < 1e-12 && hueDifference(ours.h, h!) < 1e-9);
+      if (!matches) {
+        failures.push(`rgb(${r}, ${g}, ${b}) ${JSON.stringify(ours)} ${JSON.stringify([l, c, h])}`);
+      }
+    }
+
+    expect(failures).toEqual([]);
   });
 
-  it.each(references)('should convert OKLCH back to %s', (hex, l, c, h) => {
-    const color = new TinyColor({ l, c, h });
-    expect(color.isValid).toBe(true);
-    expect(color.format).toBe('oklch');
-    expect(color.toHexString()).toBe(hex);
-  });
+  it('should gamut map OKLCH into sRGB like Color.js', () => {
+    const failures: string[] = [];
+    let outsideSrgb = 0;
+    for (const [l, c, h] of oklchColors()) {
+      const color = new Color('oklch', [l, c, h]);
+      if (!color.inGamut('srgb')) {
+        outsideSrgb++;
+      }
 
-  it('should format OKLCH strings', () => {
-    expect(new TinyColor('red').toOklchString()).toBe('oklch(62.796% 0.25768 29.234)');
-    expect(new TinyColor('#3498db').toOklchString()).toBe('oklch(65.309% 0.1347 242.687)');
-    expect(new TinyColor('#ff000080').toOklchString()).toBe('oklch(62.796% 0.25768 29.234 / 0.5)');
-    expect(new TinyColor('red').toString('oklch')).toBe('oklch(62.796% 0.25768 29.234)');
-  });
+      // Color.js can leave tiny out of range values, tinycolor clips them
+      const expected = colorjsSrgb(color).coords.map(v => Math.min(1, Math.max(0, v!)) * 255);
+      const ours = oklchToRgb(l, c, h);
+      const channels = [ours.r, ours.g, ours.b];
+      if (channels.some((channel, i) => Math.abs(channel - expected[i]) > 1e-9)) {
+        failures.push(`oklch(${l} ${c} ${h}) ${channels} ${expected}`);
+      }
 
-  it('should have no chroma or hue for grays', () => {
-    expect(new TinyColor('#fff').toOklch()).toEqual({ l: 1, c: 0, h: 0, a: 1 });
-    expect(new TinyColor('#000').toOklch()).toEqual({ l: 0, c: 0, h: 0, a: 1 });
-    const gray = new TinyColor('#808080').toOklch();
-    expect(gray.l).toBeCloseTo(0.5998708056221469, 12);
-    expect(gray.c).toBe(0);
-    expect(gray.h).toBe(0);
-    expect(new TinyColor('#fff').toOklchString()).toBe('oklch(100% 0 0)');
-    expect(new TinyColor('#808080').toOklchString()).toBe('oklch(59.987% 0 0)');
+      if (new TinyColor({ l, c, h }).toHexString() !== colorjsHex(color)) {
+        failures.push(`oklch(${l} ${c} ${h}) ${new TinyColor({ l, c, h }).toHexString()}`);
+      }
+    }
+
+    expect(outsideSrgb).toBeGreaterThan(3000);
+    expect(failures).toEqual([]);
   });
 
   it.each([
@@ -59,49 +106,62 @@ describe('OKLCH', () => {
     'oklch(70% 0.1 450)',
     'oklch(70% 0.1 -270)',
     'OKLCH(70% 0.1 90)',
-    '  oklch(  70%   0.1   90  )  ',
+    'oklch(  70%   0.1   90  )',
     'oklch(70%, 0.1, 90)',
-    'oklch 70% 0.1 90',
-  ])('should parse %s', input => {
+    'oklch(70% none none)',
+    'oklch(none 0.1 90)',
+    'oklch(120% 0.1 90)',
+    'oklch(-10% 0.1 90)',
+    'oklch(50% -0.1 90)',
+    'oklch(70% 0.1 90 / 0.5)',
+    'oklch(70% 0.1 90 / 50%)',
+    'oklch(70% 0.1 90/.25)',
+    'oklch(70% 0.1 90 / none)',
+    'oklch(62.796% 0.25768 29.234)',
+    'oklch(70% 0.3 145)',
+    'oklch(84.1% 0.238 128.85)',
+  ])('should parse %s like Color.js', input => {
     const color = new TinyColor(input);
+    const expected = new Color(input);
     expect(color.isValid).toBe(true);
     expect(color.format).toBe('oklch');
-    expect(color.toHexString()).toBe('#b79c51');
-    const { l, c, h } = color.toOklch();
-    expect(l).toBeCloseTo(0.7, 12);
-    expect(c).toBeCloseTo(0.1, 12);
-    expect(h).toBeCloseTo(90, 12);
+    expect(color.toHexShortString()).toBe(colorjsHex(expected));
+
+    // Color.js keeps values as written. CSS clamps lightness and chroma, and `none` is 0.
+    const [l, c, h] = expected.coords;
+    const oklch = color.toOklch();
+    expect(oklch.l).toBeCloseTo(Math.min(1, Math.max(0, l ?? 0)), 12);
+    expect(oklch.c).toBeCloseTo(Math.max(0, c ?? 0), 12);
+    expect(hueDifference(oklch.h, h ?? 0)).toBeCloseTo(0, 9);
+    expect(oklch.a).toBe(expected.alpha ?? 0);
   });
 
+  it('should write OKLCH strings that Color.js reads as the same color', () => {
+    const failures: string[] = [];
+    for (const [r, g, b] of srgbColors()) {
+      const color = new TinyColor({ r, g, b });
+      if (colorjsHex(new Color(color.toOklchString())) !== color.toHexString()) {
+        failures.push(`${color.toHexString()} ${color.toOklchString()}`);
+      }
+    }
+
+    expect(failures).toEqual([]);
+    const transparent = new TinyColor('#3498db80');
+    expect(colorjsHex(new Color(transparent.toOklchString()))).toBe('#3498db80');
+  });
+
+  it.each(['oklch()', 'oklch(70% 0.1)', 'oklch(70% 0.1 90 0.5 1)', 'oklch(70% 0.1 90%)'])(
+    'should reject %s like Color.js',
+    input => {
+      expect(new TinyColor(input).isValid).toBe(false);
+      expect(() => new Color(input)).toThrow();
+    },
+  );
+
+  // Color.js keeps these as strings like "70px" instead of rejecting them
   it.each([
-    ['oklch(70% 0.1 90 / 0.5)', 0.5],
-    ['oklch(70% 0.1 90 / 50%)', 0.5],
-    ['oklch(70% 0.1 90/.25)', 0.25],
-    ['oklch(70% 0.1 90, 0.25)', 0.25],
-    ['oklch(70% 0.1 90 / none)', 0],
-    ['oklch(70% 0.1 90)', 1],
-  ])('should parse the alpha in %s', (input, alpha) => {
-    expect(new TinyColor(input).getAlpha()).toBe(alpha);
-  });
-
-  it('should treat none as 0', () => {
-    expect(new TinyColor('oklch(70% none none)').toOklch()).toEqual({ l: 0.7, c: 0, h: 0, a: 1 });
-    expect(new TinyColor('oklch(none 0.1 90)').toHexString()).toBe('#000000');
-  });
-
-  it('should clamp lightness and chroma like CSS', () => {
-    expect(new TinyColor('oklch(120% 0.1 90)').toHexString()).toBe('#ffffff');
-    expect(new TinyColor('oklch(-10% 0.1 90)').toHexString()).toBe('#000000');
-    expect(new TinyColor('oklch(50% -0.1 90)').toOklch()).toEqual({ l: 0.5, c: 0, h: 90, a: 1 });
-  });
-
-  it.each([
-    'oklch()',
-    'oklch(70% 0.1)',
-    'oklch(70% 0.1 90 0.5 1)',
     'oklch(70px 0.1 90)',
     'oklch(70% 0.1px 90)',
-    'oklch(70% 0.1 90%)',
     'oklch(70% 0.1 ninety)',
     'oklch(70% 0.1 90 / )',
     'oklch(calc(70%) 0.1 90)',
@@ -109,6 +169,33 @@ describe('OKLCH', () => {
     const color = new TinyColor(input);
     expect(color.isValid).toBe(false);
     expect(color.toHexString()).toBe('#000000');
+  });
+
+  // Color.js only reads the CSS syntax
+  it.each([
+    'oklch 70% 0.1 90',
+    '  oklch(70% 0.1 90)  ',
+    'oklch(70% 0.1 90',
+    'oklch(70% 0.1 90 0.5)',
+  ])('should allow %s like the other color functions', input => {
+    const color = new TinyColor(input);
+    expect(color.isValid).toBe(true);
+    expect(color.toHexString()).toBe(new TinyColor('oklch(70% 0.1 90)').toHexString());
+  });
+
+  it('should format OKLCH strings', () => {
+    expect(new TinyColor('red').toOklchString()).toBe('oklch(62.796% 0.25768 29.234)');
+    expect(new TinyColor('#3498db').toOklchString()).toBe('oklch(65.309% 0.1347 242.687)');
+    expect(new TinyColor('#ff000080').toOklchString()).toBe('oklch(62.796% 0.25768 29.234 / 0.5)');
+    expect(new TinyColor('red').toString('oklch')).toBe('oklch(62.796% 0.25768 29.234)');
+  });
+
+  it('should have no chroma or hue for grays', () => {
+    expect(new TinyColor('#fff').toOklch()).toEqual({ l: 1, c: 0, h: 0, a: 1 });
+    expect(new TinyColor('#000').toOklch()).toEqual({ l: 0, c: 0, h: 0, a: 1 });
+    expect(new TinyColor('#808080').toOklch()).toMatchObject({ c: 0, h: 0 });
+    expect(new TinyColor('#fff').toOklchString()).toBe('oklch(100% 0 0)');
+    expect(new TinyColor('#808080').toOklchString()).toBe('oklch(59.987% 0 0)');
   });
 
   it('should accept OKLCH objects', () => {
@@ -130,21 +217,6 @@ describe('OKLCH', () => {
     expect(color.toString('hex8')).toBe('#b79c5180');
   });
 
-  // Expected sRGB from Color.js 0.5.2 toGamut({ method: 'css' }). Clipping each channel instead
-  // would shift the hue, oklch(40% 0.3 260) would clip to #0000e4.
-  it.each([
-    ['oklch(70% 0.3 145)', '#00c300'],
-    ['oklch(60% 0.35 300)', '#a032ff'],
-    ['oklch(90% 0.25 100)', '#ffdf00'],
-    ['oklch(40% 0.3 260)', '#0027c9'],
-    ['oklch(80% 0.2 200)', '#00dae5'],
-    ['oklch(84.1% 0.238 128.85)', '#9ae600'],
-  ])('should gamut map %s into sRGB as %s', (input, hex) => {
-    const color = new TinyColor(input);
-    expect(color.isValid).toBe(true);
-    expect(color.toHexString()).toBe(hex);
-  });
-
   it('should keep OKLCH colors that sRGB cannot show', () => {
     const color = new TinyColor('oklch(70% 0.3 145)');
     expect(color.toOklch()).toEqual({ l: 0.7, c: 0.3, h: 145, a: 1 });
@@ -154,8 +226,8 @@ describe('OKLCH', () => {
     expect(new TinyColor(color.toOklch()).toOklchString()).toBe('oklch(70% 0.3 145)');
 
     // sRGB output and modifications use the gamut mapped color
-    expect(color.toRgbString()).toBe('rgb(0, 195, 0)');
-    expect(color.spin(0).toHexString()).toBe('#00c300');
+    expect(color.toHexString()).toBe(colorjsHex(new Color('oklch(70% 0.3 145)')));
+    expect(color.spin(0).toHexString()).toBe(color.toHexString());
 
     color.setAlpha(0.5);
     expect(color.toOklchString()).toBe('oklch(70% 0.3 145 / 0.5)');
@@ -173,34 +245,17 @@ describe('OKLCH', () => {
     expect(inputToRGB('red').oklch).toBeUndefined();
   });
 
-  it('should export the conversion functions', () => {
-    const { l, c, h } = rgbToOklch(255, 0, 0);
-    expect(l).toBeCloseTo(0.6279553639214311, 12);
-    expect(c).toBeCloseTo(0.2576833038053606, 12);
-    expect(h).toBeCloseTo(29.233880279627897, 9);
-    const rgb = oklchToRgb(l, c, h);
-    expect(rgb.r).toBeCloseTo(255, 9);
-    expect(rgb.g).toBeCloseTo(0, 9);
-    expect(rgb.b).toBeCloseTo(0, 9);
-    expect(oklchToRgb(1.2, 0.1, 90)).toEqual({ r: 255, g: 255, b: 255 });
-    expect(oklchToRgb(0, 0.1, 90)).toEqual({ r: 0, g: 0, b: 0 });
-  });
-
   it('should round trip 8 bit colors through OKLCH', () => {
     const failures: string[] = [];
-    for (let r = 0; r < 256; r += 15) {
-      for (let g = 0; g < 256; g += 15) {
-        for (let b = 0; b < 256; b += 15) {
-          const color = new TinyColor({ r, g, b });
-          const hex = color.toHexString();
-          if (new TinyColor(color.toOklchString()).toHexString() !== hex) {
-            failures.push(`${hex} ${color.toOklchString()}`);
-          }
+    for (const [r, g, b] of srgbColors()) {
+      const color = new TinyColor({ r, g, b });
+      const hex = color.toHexString();
+      if (new TinyColor(color.toOklchString()).toHexString() !== hex) {
+        failures.push(`${hex} ${color.toOklchString()}`);
+      }
 
-          if (new TinyColor(color.toOklch()).toHexString() !== hex) {
-            failures.push(`${hex} ${JSON.stringify(color.toOklch())}`);
-          }
-        }
+      if (new TinyColor(color.toOklch()).toHexString() !== hex) {
+        failures.push(`${hex} ${JSON.stringify(color.toOklch())}`);
       }
     }
 

@@ -43,6 +43,7 @@
     "@eslint/js": "10.0.1",
     "@rollup/plugin-terser": "1.0.2",
     "@types/node": "24.19.2",
+    "colorjs.io": "0.7.1",
     "del-cli": "8.0.1",
     "eslint": "10.13.0",
     "eslint-config-prettier": "10.1.8",

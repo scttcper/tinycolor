@@ -550,7 +550,7 @@ new TinyColor('#f00').greyscale().toString(); // "#808080"
 
 ```ts
 new TinyColor('#f00').spin(180).toString(); // "#00ffff"
-new TinyColor('#f00').spin(-90).toString(); // "#7f00ff"
+new TinyColor('#f00').spin(-90).toString(); // "#8000ff"
 new TinyColor('#f00').spin(90).toString(); // "#80ff00"
 
 // spin(0) and spin(360) do nothing
@@ -615,7 +615,7 @@ colors.map(t => t.toHexString()); // [ "#ff0000", "#00ff00", "#0000ff" ]
 
 ```ts
 const colors = new TinyColor('#f00').tetrad();
-colors.map(t => t.toHexString()); // [ "#ff0000", "#80ff00", "#00ffff", "#7f00ff" ]
+colors.map(t => t.toHexString()); // [ "#ff0000", "#80ff00", "#00ffff", "#8000ff" ]
 ```
 
 ### polyad
@@ -624,7 +624,7 @@ colors.map(t => t.toHexString()); // [ "#ff0000", "#80ff00", "#00ffff", "#7f00ff
 
 ```ts
 const colors = new TinyColor('#f00').polyad(4);
-colors.map(t => t.toHexString()); // [ "#ff0000", "#80ff00", "#00ffff", "#7f00ff" ]
+colors.map(t => t.toHexString()); // [ "#ff0000", "#80ff00", "#00ffff", "#8000ff" ]
 ```
 
 ### complement

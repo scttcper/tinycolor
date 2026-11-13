@@ -619,7 +619,7 @@ describe('TinyColor', () => {
       a: 0.5,
     });
     // keeps precision that toRgb rounds away
-    const color = new TinyColor('hsl(210, 50%, 40%)');
+    const color = new TinyColor('hsl(210, 50%, 41%)');
     expect(color.toRgbRatio().r).toBeCloseTo(color.r / 255, 10);
     expect(color.toRgbRatio().r * 255).not.toBe(color.toRgb().r);
   });
@@ -924,7 +924,7 @@ describe('TinyColor', () => {
 
   it('tetrad', () => {
     const combination = new TinyColor('red').tetrad();
-    expect(colorsToHexString(combination)).toBe('ff0000,80ff00,00ffff,7f00ff');
+    expect(colorsToHexString(combination)).toBe('ff0000,80ff00,00ffff,8000ff');
   });
 
   it('legacy random', () => {

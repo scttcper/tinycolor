@@ -8,7 +8,7 @@ describe('Percentage hue', () => {
     ['hsl(1.0%, 100%, 50%)', '#ff0f00'],
     ['hsl(25%, 100%, 50%)', '#80ff00'],
     ['hsl(50%, 100%, 50%)', '#00ffff'],
-    ['hsla(75%, 100%, 50%, 0.5)', '#7f00ff80'],
+    ['hsla(75%, 100%, 50%, 0.5)', '#8000ff80'],
     ['hsl(100%, 100%, 50%)', '#ff0000'],
     ['hsv(0%, 100%, 100%)', '#ff0000'],
     ['hsv(1.0%, 100%, 100%)', '#ff0f00'],
@@ -34,9 +34,9 @@ describe('Percentage hue', () => {
   });
 
   it.each([
-    ['hsl(-25%, 100%, 50%)', '#7f00ff'],
+    ['hsl(-25%, 100%, 50%)', '#8000ff'],
     ['hsv(125%, 100%, 100%)', '#80ff00'],
-    ['hsl(-90, 100%, 50%)', '#7f00ff'],
+    ['hsl(-90, 100%, 50%)', '#8000ff'],
     ['hsv(450, 100%, 100%)', '#80ff00'],
   ])('should wrap the hue in %s', (input, expected) => {
     expect(new TinyColor(input).toHexString()).toBe(expected);

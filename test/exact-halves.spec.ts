@@ -33,7 +33,12 @@ function hsvToRgbExact(h: number, s: number, v: number): number[] {
   ].map(channel => Math.floor((255 * channel + 300000) / 600000));
 }
 
-describe('Exact halves in hsl() and hsv()', () => {
+/** The same for cmyk(), with the channels in 1 / 10000 */
+function cmykToRgbExact(c: number, m: number, y: number, k: number): number[] {
+  return [c, m, y].map(n => Math.floor((255 * (100 - n) * (100 - k) + 5000) / 10000));
+}
+
+describe('Exact halves in hsl(), hsv() and cmyk()', () => {
   // A channel that is exactly 127.5 or 25.5 rounds up. It used to come out as 127.49999999999999
   // and 25.499999999999996, and was rounded down
   it.each([
@@ -56,6 +61,9 @@ describe('Exact halves in hsl() and hsv()', () => {
     ['hsv(0, 90%, 100%)', '#ff1a1a'],
     ['hsv(60, 80%, 50%)', '#80801a'],
     ['hsv(120, 50%, 50%)', '#408040'],
+    ['cmyk(0, 0, 0, 90)', '#1a1a1a'],
+    ['cmyk(90, 0, 0, 0)', '#1affff'],
+    ['cmyk(0, 0, 0, 70)', '#4d4d4d'],
   ])('%s is %s', (input, hex) => {
     expect(new TinyColor(input).toHexString()).toBe(hex);
   });
@@ -64,6 +72,12 @@ describe('Exact halves in hsl() and hsv()', () => {
     expect(new TinyColor({ h: 60, s: 1, l: 0.25 }).toHexString()).toBe('#808000');
     expect(new TinyColor({ h: 0, s: 0.5, l: 0.2 }).toRgb()).toEqual({ r: 77, g: 26, b: 26, a: 1 });
     expect(new TinyColor({ h: 0, s: 0.8, v: 0.5 }).toRgb()).toEqual({ r: 128, g: 26, b: 26, a: 1 });
+    expect(new TinyColor({ c: 0, m: 0, y: 0, k: 90 }).toRgb()).toEqual({
+      r: 26,
+      g: 26,
+      b: 26,
+      a: 1,
+    });
   });
 
   it('should give the exact rgb for the hsl() of every whole percent', () => {
@@ -93,6 +107,24 @@ describe('Exact halves in hsl() and hsv()', () => {
           if (r !== exact[0] || g !== exact[1] || b !== exact[2]) {
             wrong.push(`hsv(${h}, ${s}%, ${v}%) gave ${[r, g, b]}, not ${exact}`);
           }
+        }
+      }
+    }
+
+    expect(wrong.slice(0, 10)).toEqual([]);
+  });
+
+  it('should give the exact rgb for the cmyk() of every whole percent', () => {
+    const wrong: string[] = [];
+    for (let c = 0; c <= 100; c++) {
+      for (let k = 0; k <= 100; k++) {
+        // m and y move against c so every channel sees the whole range
+        const m = 100 - c;
+        const y = (c * 37) % 101;
+        const { r, g, b } = new TinyColor(`cmyk(${c}, ${m}, ${y}, ${k})`).toRgb();
+        const exact = cmykToRgbExact(c, m, y, k);
+        if (r !== exact[0] || g !== exact[1] || b !== exact[2]) {
+          wrong.push(`cmyk(${c}, ${m}, ${y}, ${k}) gave ${[r, g, b]}, not ${exact}`);
         }
       }
     }

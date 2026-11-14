@@ -293,7 +293,7 @@ export function cmykToRgb(c: number, m: number, y: number, k: number) {
   const g = 255 * (1 - mConv) * (1 - kConv);
   const b = 255 * (1 - yConv) * (1 - kConv);
 
-  return { r, g, b };
+  return { r: removeNoise(r), g: removeNoise(g), b: removeNoise(b) };
 }
 
 export function rgbToCmyk(r: number, g: number, b: number) {

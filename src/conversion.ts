@@ -1,5 +1,5 @@
 import { HSL, HSV, Numberify, OKLCH, RGB } from './interfaces.js';
-import { bound01, pad2 } from './util.js';
+import { bound01, pad2, removeNoise } from './util.js';
 
 // `rgbToHsl`, `rgbToHsv`, `hslToRgb`, `hsvToRgb` modified from:
 // <https://gist.github.com/mjackson/5311256>
@@ -120,7 +120,7 @@ export function hslToRgb(
     b = hue2rgb(p, q, h - 1 / 3);
   }
 
-  return { r: r * 255, g: g * 255, b: b * 255 };
+  return { r: removeNoise(r * 255), g: removeNoise(g * 255), b: removeNoise(b * 255) };
 }
 
 /**
@@ -189,7 +189,7 @@ export function hsvToRgb(
   const g = [t, v, v, q, p, p][mod];
   const b = [p, p, t, v, v, q][mod];
 
-  return { r: r * 255, g: g * 255, b: b * 255 };
+  return { r: removeNoise(r * 255), g: removeNoise(g * 255), b: removeNoise(b * 255) };
 }
 
 /** Char code of a hex digit 0-15, "0"-"9" then "a"-"f" */
@@ -293,7 +293,7 @@ export function cmykToRgb(c: number, m: number, y: number, k: number) {
   const g = 255 * (1 - mConv) * (1 - kConv);
   const b = 255 * (1 - yConv) * (1 - kConv);
 
-  return { r, g, b };
+  return { r: removeNoise(r), g: removeNoise(g), b: removeNoise(b) };
 }
 
 export function rgbToCmyk(r: number, g: number, b: number) {

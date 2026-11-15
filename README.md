@@ -85,6 +85,7 @@ new TinyColor('hsl(0, 100%, 50%)');
 new TinyColor('hsla(0, 100%, 50%, .5)');
 new TinyColor('hsl(0, 100%, 50%)');
 new TinyColor('hsl 0 1.0 0.5');
+new TinyColor('hsl(120deg 50% 50%)');
 new TinyColor({ h: 0, s: 1, l: 0.5 });
 ```
 
@@ -95,6 +96,7 @@ new TinyColor('hsv(0, 100%, 100%)');
 new TinyColor('hsva(0, 100%, 100%, .5)');
 new TinyColor('hsv (0 100% 100%)');
 new TinyColor('hsv 0 1 1');
+new TinyColor('hsv(0.25turn 100% 100%)');
 new TinyColor({ h: 0, s: 100, v: 100 });
 ```
 

@@ -56,13 +56,13 @@ export function inputToRGB(
     } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
       const s = convertToPercentageNumber(color.s);
       const v = convertToPercentageNumber(color.v);
-      rgb = hsvToRgb(color.h, s as number, v as number);
+      rgb = hsvToRgb(hueAngle(color.h), s as number, v as number);
       ok = true;
       format = 'hsv';
     } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.l)) {
       const s = convertToPercentageNumber(color.s);
       const l = convertToPercentageNumber(color.l);
-      rgb = hslToRgb(color.h, s as number, l as number);
+      rgb = hslToRgb(hueAngle(color.h), s as number, l as number);
       ok = true;
       format = 'hsl';
     } else if (isValidCSSUnit(color.l) && isValidCSSUnit(color.c) && isValidCSSUnit(color.h)) {
@@ -102,6 +102,14 @@ export function inputToRGB(
     a,
     oklch,
   };
+}
+
+/** Degrees for a hue with a CSS angle unit like `0.5turn`, other hues are left for `bound01` */
+function hueAngle(h: string | number): string | number {
+  return typeof h === 'string' &&
+    /^\s*[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?(?:deg|grad|rad|turn)\s*$/i.test(h)
+    ? cssNumber(h, NaN, true)
+    : h;
 }
 
 /** OKLCH lightness from 0-1 or 0%-100%, clamped like CSS */
@@ -165,6 +173,10 @@ const CSS_UNIT = '(?:' + CSS_NUMBER + ')|(?:' + CSS_INTEGER + ')';
 // Whitespace can take the place of commas or opening paren
 // eslint-disable-next-line prettier/prettier
 const PERMISSIVE_MATCH3 = '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')(?:[,|\\s|/]+(' + CSS_UNIT + '))?\\s*\\)?';
+// The hue of hsl() and hsv() can also be a CSS angle like `120deg` or `0.5turn`
+const CSS_HUE = '(?:[-\\+]?(?:\\d*\\.)?\\d+(?:deg|grad|rad|turn))|' + CSS_UNIT;
+// eslint-disable-next-line prettier/prettier
+const PERMISSIVE_HUE_MATCH3 = '[\\s|\\(]+(' + CSS_HUE + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')(?:[,|\\s|/]+(' + CSS_UNIT + '))?\\s*\\)?';
 const PERMISSIVE_MATCH4 =
   // eslint-disable-next-line prettier/prettier
   '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?';
@@ -172,8 +184,8 @@ const PERMISSIVE_MATCH4 =
 const matchers = {
   CSS_UNIT: new RegExp(CSS_UNIT),
   rgb: new RegExp('rgba?' + PERMISSIVE_MATCH3),
-  hsl: new RegExp('hsla?' + PERMISSIVE_MATCH3),
-  hsv: new RegExp('hsva?' + PERMISSIVE_MATCH3),
+  hsl: new RegExp('hsla?' + PERMISSIVE_HUE_MATCH3),
+  hsv: new RegExp('hsva?' + PERMISSIVE_HUE_MATCH3),
   cmyk: new RegExp('cmyk' + PERMISSIVE_MATCH4),
 };
 

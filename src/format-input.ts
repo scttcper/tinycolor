@@ -152,10 +152,10 @@ function withUnit(n: number, unit: string, percent: number, angle: boolean): num
 }
 
 // <http://www.w3.org/TR/css3-values/#integers>
-const CSS_INTEGER = '[-\\+]?\\d+%?';
+const CSS_INTEGER = '[-\\+]?\\d+(?:e[-\\+]?\\d+)?%?';
 
 // <http://www.w3.org/TR/css3-values/#number-value>
-const CSS_NUMBER = '[-\\+]?\\d*\\.\\d+%?';
+const CSS_NUMBER = '[-\\+]?\\d*\\.\\d+(?:e[-\\+]?\\d+)?%?';
 
 // Allow positive/negative integer/number.  Don't capture the either/or, just the entire outcome.
 const CSS_UNIT = '(?:' + CSS_NUMBER + ')|(?:' + CSS_INTEGER + ')';

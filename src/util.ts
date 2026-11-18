@@ -105,8 +105,9 @@ export function convertToPercentageNumber(n: number | string): number | string {
 }
 
 /**
- * Remove the floating point noise from a channel in [0, 255]. A channel that is exactly half,
- * like 127.5, often comes out of a conversion as 127.49999999999999 and is rounded down
+ * Remove the floating point noise from a channel in [0, 255], a hue in [0, 360] or a percent. A
+ * value that is exactly half, like 127.5, often comes out of a conversion as 127.49999999999999
+ * and is rounded down
  * @hidden
  */
 export function removeNoise(n: number): number {

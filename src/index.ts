@@ -10,7 +10,7 @@ import {
 import { names } from './css-color-names.js';
 import { inputToRGB } from './format-input.js';
 import { CMYK, HSL, HSLA, HSV, HSVA, Numberify, OKLCH, OKLCHA, RGB, RGBA } from './interfaces.js';
-import { bound01, boundAlpha, clamp01 } from './util.js';
+import { bound01, boundAlpha, clamp01, removeNoise } from './util.js';
 
 export interface TinyColorOptions {
   format: string;
@@ -200,8 +200,9 @@ export class TinyColor {
    */
   toHsvString(): string {
     const hsv = rgbToHsv(this.r, this.g, this.b);
-    const h = Math.round(hsv.h * 360);
-    const s = Math.round(hsv.s * 100);
+    // An exact half, like a hue of 122.5, often comes out as 122.49999999999999 and rounds down
+    const h = Math.round(removeNoise(hsv.h * 360));
+    const s = Math.round(removeNoise(hsv.s * 100));
     const v = Math.round(hsv.v * 100);
     return this.a === 1 ? `hsv(${h}, ${s}%, ${v}%)` : `hsva(${h}, ${s}%, ${v}%, ${this.roundA})`;
   }
@@ -220,8 +221,8 @@ export class TinyColor {
    */
   toHslString(): string {
     const hsl = rgbToHsl(this.r, this.g, this.b);
-    const h = Math.round(hsl.h * 360);
-    const s = Math.round(hsl.s * 100);
+    const h = Math.round(removeNoise(hsl.h * 360));
+    const s = Math.round(removeNoise(hsl.s * 100));
     const l = Math.round(hsl.l * 100);
     return this.a === 1 ? `hsl(${h}, ${s}%, ${l}%)` : `hsla(${h}, ${s}%, ${l}%, ${this.roundA})`;
   }

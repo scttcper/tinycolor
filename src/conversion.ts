@@ -315,9 +315,9 @@ export function rgbToCmyk(r: number, g: number, b: number) {
   k *= 100;
 
   return {
-    c: Math.round(c),
-    m: Math.round(m),
-    y: Math.round(y),
+    c: Math.round(removeNoise(c)),
+    m: Math.round(removeNoise(m)),
+    y: Math.round(removeNoise(y)),
     k: Math.round(k),
   };
 }

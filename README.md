@@ -588,7 +588,7 @@ colors.map(t => t.toHexString()); // [ "#ff0000", "#ff0066", "#ff0033", "#ff0000
 
 ```ts
 const colors = new TinyColor('#f00').monochromatic();
-colors.map(t => t.toHexString()); // [ "#ff0000", "#2a0000", "#550000", "#800000", "#aa0000", "#d40000" ]
+colors.map(t => t.toHexString()); // [ "#ff0000", "#2b0000", "#550000", "#800000", "#aa0000", "#d50000" ]
 ```
 
 ### splitcomplement

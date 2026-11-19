@@ -89,8 +89,10 @@ export function convertToPercentage(n: number | string): number | string {
 }
 
 /**
- * `convertToPercentage` for values passed to `bound01(n, 100)`. A decimal returns the number
- * bound01 would parse from the percentage string, without building that string.
+ * `convertToPercentage` for values passed to `bound01(n, 100)`. A decimal returns its percentage as
+ * a number, clamped to [0, 100], without building a string. bound01 cuts a percentage string to two
+ * decimals, but it keeps a number as it is: an object that comes from `toHsl()` (lighten, darken,
+ * saturate and the others) would lose its low digits and be a step off the color it describes.
  * @hidden
  */
 export function convertToPercentageNumber(n: number | string): number | string {
@@ -98,10 +100,7 @@ export function convertToPercentageNumber(n: number | string): number | string {
     return convertToPercentage(n);
   }
 
-  // Mirrors bound01: clamp the percentage, then truncate it to two decimals like
-  // parseInt(String(x), 10), which only differs from Math.trunc where String() uses exponent notation
-  const scaled = Math.min(100, Math.max(0, n * 100)) * 100;
-  return (scaled >= 1e-6 ? Math.trunc(scaled) : parseInt(String(scaled), 10)) / 100;
+  return Math.min(100, Math.max(0, n * 100));
 }
 
 /**

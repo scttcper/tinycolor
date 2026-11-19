@@ -909,7 +909,7 @@ describe('TinyColor', () => {
 
   it('monochromatic', () => {
     const combination = new TinyColor('red').monochromatic();
-    expect(colorsToHexString(combination)).toBe('ff0000,2a0000,550000,800000,aa0000,d40000');
+    expect(colorsToHexString(combination)).toBe('ff0000,2b0000,550000,800000,aa0000,d50000');
   });
 
   it('splitcomplement', () => {

@@ -8,7 +8,8 @@ export function bound01(n: any, max: number): number {
   }
 
   const isPercent = isPercentage(n);
-  n = max === 360 ? parseFloat(n) : Math.min(max, Math.max(0, parseFloat(n)));
+  const value = typeof n === 'number' ? n : parseFloat(n);
+  n = max === 360 ? value : Math.min(max, Math.max(0, value));
 
   // Automatically convert percentage into number
   if (isPercent) {

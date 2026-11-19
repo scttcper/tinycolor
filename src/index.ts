@@ -10,7 +10,7 @@ import {
 import { names } from './css-color-names.js';
 import { inputToRGB } from './format-input.js';
 import { CMYK, HSL, HSLA, HSV, HSVA, Numberify, OKLCH, OKLCHA, RGB, RGBA } from './interfaces.js';
-import { bound01, boundAlpha, clamp01, roundWithTolerance, snapToHalf } from './util.js';
+import { bound01, boundAlpha, clamp01 } from './util.js';
 
 export interface TinyColorOptions {
   format: string;
@@ -74,13 +74,29 @@ export class TinyColor {
     this.originalInput = color;
     const rgb = inputToRGB(color);
     this.originalInput = color;
-    this.r = constructorChannel(rgb.r);
-    this.g = constructorChannel(rgb.g);
-    this.b = constructorChannel(rgb.b);
+    this.r = rgb.r;
+    this.g = rgb.g;
+    this.b = rgb.b;
     this.a = rgb.a;
-    this.roundA = roundWithTolerance(100 * this.a) / 100;
+    this.roundA = Math.round(100 * this.a) / 100;
     this.format = opts.format ?? rgb.format;
     this.gradientType = opts.gradientType;
+
+    // Don't let the range of [0,255] come back in [0,1].
+    // Potentially lose a little bit of precision here, but will fix issues where
+    // .5 gets interpreted as half of the total, instead of half of 1
+    // If it was supposed to be 128, this was already taken care of by `inputToRgb`
+    if (this.r < 1) {
+      this.r = Math.round(this.r);
+    }
+
+    if (this.g < 1) {
+      this.g = Math.round(this.g);
+    }
+
+    if (this.b < 1) {
+      this.b = Math.round(this.b);
+    }
 
     this.isValid = rgb.ok;
   }
@@ -158,7 +174,7 @@ export class TinyColor {
    */
   setAlpha(alpha?: string | number): this {
     this.a = boundAlpha(alpha);
-    this.roundA = roundWithTolerance(100 * this.a) / 100;
+    this.roundA = Math.round(100 * this.a) / 100;
     return this;
   }
 
@@ -184,9 +200,9 @@ export class TinyColor {
    */
   toHsvString(): string {
     const hsv = rgbToHsv(this.r, this.g, this.b);
-    const h = roundWithTolerance(hsv.h * 360);
-    const s = roundWithTolerance(hsv.s * 100);
-    const v = roundWithTolerance(hsv.v * 100);
+    const h = Math.round(hsv.h * 360);
+    const s = Math.round(hsv.s * 100);
+    const v = Math.round(hsv.v * 100);
     return this.a === 1 ? `hsv(${h}, ${s}%, ${v}%)` : `hsva(${h}, ${s}%, ${v}%, ${this.roundA})`;
   }
 
@@ -204,9 +220,9 @@ export class TinyColor {
    */
   toHslString(): string {
     const hsl = rgbToHsl(this.r, this.g, this.b);
-    const h = roundWithTolerance(hsl.h * 360);
-    const s = roundWithTolerance(hsl.s * 100);
-    const l = roundWithTolerance(hsl.l * 100);
+    const h = Math.round(hsl.h * 360);
+    const s = Math.round(hsl.s * 100);
+    const l = Math.round(hsl.l * 100);
     return this.a === 1 ? `hsl(${h}, ${s}%, ${l}%)` : `hsla(${h}, ${s}%, ${l}%, ${this.roundA})`;
   }
 
@@ -582,9 +598,9 @@ export class TinyColor {
 
     const p = amount / 100;
     const rgba = {
-      r: snapToHalf((rgb2.r - rgb1.r) * p + rgb1.r),
-      g: snapToHalf((rgb2.g - rgb1.g) * p + rgb1.g),
-      b: snapToHalf((rgb2.b - rgb1.b) * p + rgb1.b),
+      r: (rgb2.r - rgb1.r) * p + rgb1.r,
+      g: (rgb2.g - rgb1.g) * p + rgb1.g,
+      b: (rgb2.b - rgb1.b) * p + rgb1.b,
       a: (rgb2.a - rgb1.a) * p + rgb1.a,
     };
 
@@ -658,9 +674,9 @@ export class TinyColor {
     const alpha = fg.a + bg.a * (1 - fg.a);
 
     return new TinyColor({
-      r: snapToHalf((fg.r * fg.a + bg.r * bg.a * (1 - fg.a)) / alpha),
-      g: snapToHalf((fg.g * fg.a + bg.g * bg.a * (1 - fg.a)) / alpha),
-      b: snapToHalf((fg.b * fg.a + bg.b * bg.a * (1 - fg.a)) / alpha),
+      r: (fg.r * fg.a + bg.r * bg.a * (1 - fg.a)) / alpha,
+      g: (fg.g * fg.a + bg.g * bg.a * (1 - fg.a)) / alpha,
+      b: (fg.b * fg.a + bg.b * bg.a * (1 - fg.a)) / alpha,
       a: alpha,
     });
   }
@@ -714,7 +730,7 @@ export class TinyColor {
   }
 }
 
-/** Round sub-byte channels so consumers don't read them as ratios. */
+/** A channel from inputToRGB as the constructor stores it, which rounds values below 1 */
 function constructorChannel(channel: number): number {
   return channel < 1 ? Math.round(channel) : channel;
 }

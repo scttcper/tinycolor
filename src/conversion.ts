@@ -1,5 +1,5 @@
 import { HSL, HSV, Numberify, OKLCH, RGB } from './interfaces.js';
-import { bound01, pad2, removeNoise, roundWithTolerance, snapToHalf } from './util.js';
+import { bound01, pad2, removeNoise } from './util.js';
 
 // `rgbToHsl`, `rgbToHsv`, `hslToRgb`, `hsvToRgb` modified from:
 // <https://gist.github.com/mjackson/5311256>
@@ -207,9 +207,9 @@ function channelToHex(c: number): string {
   return pad2(rounded.toString(16));
 }
 
-/** Convert alpha to a hex byte, correcting floating point noise before rounding */
+/** Same as `pad2(convertDecimalToHex(d))`, using channelToHex for the 0-255 fast path */
 function decimalToHexPair(d: string | number): string {
-  return channelToHex(snapToHalf(parseFloat(d as string) * 255));
+  return channelToHex(parseFloat(d as string) * 255);
 }
 
 /**
@@ -315,10 +315,10 @@ export function rgbToCmyk(r: number, g: number, b: number) {
   k *= 100;
 
   return {
-    c: roundWithTolerance(c),
-    m: roundWithTolerance(m),
-    y: roundWithTolerance(y),
-    k: roundWithTolerance(k),
+    c: Math.round(c),
+    m: Math.round(m),
+    y: Math.round(y),
+    k: Math.round(k),
   };
 }
 

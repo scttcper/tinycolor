@@ -481,7 +481,8 @@ export class TinyColor {
   }
 
   clone(): TinyColor {
-    return new TinyColor(this.toString());
+    // Copy the fields, parsing toString() again would round HSL, HSV, CMYK and alpha values
+    return Object.assign(Object.create(TinyColor.prototype) as TinyColor, this);
   }
 
   /**

@@ -35,6 +35,23 @@ describe('TinyColor', () => {
     expect(color2.toString()).toBe('rgba(255, 0, 0, 0.5)');
     expect(color1.toString()).toBe('red');
   });
+  it('should clone without rounding the color', () => {
+    const hsl = new TinyColor({ h: 10, s: 0.333, l: 0.505 });
+    expect(hsl.clone().toRgb()).toEqual(hsl.toRgb());
+    expect(hsl.clone().equals(hsl)).toBe(true);
+
+    const hslString = new TinyColor('hsl(123.4, 56.7%, 45.6%)');
+    expect(hslString.clone().toRgb()).toEqual(hslString.toRgb());
+
+    const alpha = new TinyColor('rgba(10, 20, 30, 0.123)');
+    expect(alpha.clone().getAlpha()).toBe(0.123);
+
+    const invalid = new TinyColor('not a color');
+    expect(invalid.clone().isValid).toBe(false);
+
+    const gradient = new TinyColor('red', { gradientType: 'progid' });
+    expect(gradient.clone().gradientType).toBe('progid');
+  });
   it('should parse options', () => {
     expect(new TinyColor('red', { format: 'hex' }).toString()).toEqual('#ff0000');
     expect(fromRatio({ r: 1, g: 0, b: 0 }, { format: 'hex' }).toString()).toEqual('#ff0000');

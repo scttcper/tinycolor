@@ -10,7 +10,7 @@ import {
 import { names } from './css-color-names.js';
 import { inputToRGB } from './format-input.js';
 import { CMYK, HSL, HSLA, HSV, HSVA, Numberify, OKLCH, OKLCHA, RGB, RGBA } from './interfaces.js';
-import { bound01, boundAlpha, clamp01 } from './util.js';
+import { bound01, boundAlpha, clamp01, roundWithTolerance } from './util.js';
 
 export interface TinyColorOptions {
   format: string;
@@ -74,29 +74,13 @@ export class TinyColor {
     this.originalInput = color;
     const rgb = inputToRGB(color);
     this.originalInput = color;
-    this.r = rgb.r;
-    this.g = rgb.g;
-    this.b = rgb.b;
+    this.r = constructorChannel(rgb.r);
+    this.g = constructorChannel(rgb.g);
+    this.b = constructorChannel(rgb.b);
     this.a = rgb.a;
-    this.roundA = Math.round(100 * this.a) / 100;
+    this.roundA = roundWithTolerance(100 * this.a) / 100;
     this.format = opts.format ?? rgb.format;
     this.gradientType = opts.gradientType;
-
-    // Don't let the range of [0,255] come back in [0,1].
-    // Potentially lose a little bit of precision here, but will fix issues where
-    // .5 gets interpreted as half of the total, instead of half of 1
-    // If it was supposed to be 128, this was already taken care of by `inputToRgb`
-    if (this.r < 1) {
-      this.r = Math.round(this.r);
-    }
-
-    if (this.g < 1) {
-      this.g = Math.round(this.g);
-    }
-
-    if (this.b < 1) {
-      this.b = Math.round(this.b);
-    }
 
     this.isValid = rgb.ok;
   }
@@ -174,7 +158,7 @@ export class TinyColor {
    */
   setAlpha(alpha?: string | number): this {
     this.a = boundAlpha(alpha);
-    this.roundA = Math.round(100 * this.a) / 100;
+    this.roundA = roundWithTolerance(100 * this.a) / 100;
     return this;
   }
 
@@ -200,9 +184,9 @@ export class TinyColor {
    */
   toHsvString(): string {
     const hsv = rgbToHsv(this.r, this.g, this.b);
-    const h = Math.round(hsv.h * 360);
-    const s = Math.round(hsv.s * 100);
-    const v = Math.round(hsv.v * 100);
+    const h = roundWithTolerance(hsv.h * 360);
+    const s = roundWithTolerance(hsv.s * 100);
+    const v = roundWithTolerance(hsv.v * 100);
     return this.a === 1 ? `hsv(${h}, ${s}%, ${v}%)` : `hsva(${h}, ${s}%, ${v}%, ${this.roundA})`;
   }
 
@@ -220,9 +204,9 @@ export class TinyColor {
    */
   toHslString(): string {
     const hsl = rgbToHsl(this.r, this.g, this.b);
-    const h = Math.round(hsl.h * 360);
-    const s = Math.round(hsl.s * 100);
-    const l = Math.round(hsl.l * 100);
+    const h = roundWithTolerance(hsl.h * 360);
+    const s = roundWithTolerance(hsl.s * 100);
+    const l = roundWithTolerance(hsl.l * 100);
     return this.a === 1 ? `hsl(${h}, ${s}%, ${l}%)` : `hsla(${h}, ${s}%, ${l}%, ${this.roundA})`;
   }
 
@@ -310,9 +294,9 @@ export class TinyColor {
    */
   toRgb(): Numberify<RGBA> {
     return {
-      r: Math.round(this.r),
-      g: Math.round(this.g),
-      b: Math.round(this.b),
+      r: roundWithTolerance(this.r),
+      g: roundWithTolerance(this.g),
+      b: roundWithTolerance(this.b),
       a: this.a,
     };
   }
@@ -322,9 +306,9 @@ export class TinyColor {
    * "RGBA(xxx, xxx, xxx, xx)".
    */
   toRgbString(): string {
-    const r = Math.round(this.r);
-    const g = Math.round(this.g);
-    const b = Math.round(this.b);
+    const r = roundWithTolerance(this.r);
+    const g = roundWithTolerance(this.g);
+    const b = roundWithTolerance(this.b);
     return this.a === 1 ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${this.roundA})`;
   }
 
@@ -477,11 +461,15 @@ export class TinyColor {
   }
 
   toNumber(): number {
-    return (Math.round(this.r) << 16) + (Math.round(this.g) << 8) + Math.round(this.b);
+    return (
+      (roundWithTolerance(this.r) << 16) +
+      (roundWithTolerance(this.g) << 8) +
+      roundWithTolerance(this.b)
+    );
   }
 
   clone(): TinyColor {
-    return new TinyColor(this.toString());
+    return Object.assign(new TinyColor(), this);
   }
 
   /**
@@ -599,9 +587,14 @@ export class TinyColor {
   }
 
   analogous(results = 6, slices = 30): TinyColor[] {
+    results = Math.ceil(results);
+    const ret: TinyColor[] = [this];
+    if (!Number.isSafeInteger(results) || results <= 1) {
+      return ret;
+    }
+
     const hsl = this.toHsl();
     const part = 360 / slices;
-    const ret: TinyColor[] = [this];
 
     for (hsl.h = (hsl.h - ((part * results) >> 1) + 720) % 360; --results;) {
       hsl.h = (hsl.h + part) % 360;
@@ -621,6 +614,11 @@ export class TinyColor {
   }
 
   monochromatic(results = 6): TinyColor[] {
+    results = Math.ceil(results);
+    if (!Number.isSafeInteger(results) || results <= 0) {
+      return [];
+    }
+
     const hsv = this.toHsv();
     const { h } = hsv;
     const { s } = hsv;
@@ -711,9 +709,9 @@ export class TinyColor {
   }
 }
 
-/** A channel from inputToRGB as the constructor stores it, which rounds values below 1 */
+/** Round sub-byte channels so consumers don't read them as ratios. */
 function constructorChannel(channel: number): number {
-  return channel < 1 ? Math.round(channel) : channel;
+  return channel < 1 ? roundWithTolerance(channel) : channel;
 }
 
 /** Cheap check before parsing input again, an `oklch()` string or an object with l, c and h */

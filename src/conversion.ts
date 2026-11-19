@@ -1,5 +1,5 @@
 import { HSL, HSV, Numberify, OKLCH, RGB } from './interfaces.js';
-import { bound01, pad2, removeNoise } from './util.js';
+import { bound01, pad2, removeNoise, roundWithTolerance } from './util.js';
 
 // `rgbToHsl`, `rgbToHsv`, `hslToRgb`, `hsvToRgb` modified from:
 // <https://gist.github.com/mjackson/5311256>
@@ -199,7 +199,7 @@ function hexCharCode(digit: number): number {
 
 /** Round a channel and convert it to two character hex, values outside 0-255 use toString */
 function channelToHex(c: number): string {
-  const rounded = Math.round(c);
+  const rounded = roundWithTolerance(c);
   if (rounded >= 0 && rounded <= 255) {
     return String.fromCharCode(hexCharCode(rounded >> 4), hexCharCode(rounded & 15));
   }
@@ -315,10 +315,10 @@ export function rgbToCmyk(r: number, g: number, b: number) {
   k *= 100;
 
   return {
-    c: Math.round(c),
-    m: Math.round(m),
-    y: Math.round(y),
-    k: Math.round(k),
+    c: roundWithTolerance(c),
+    m: roundWithTolerance(m),
+    y: roundWithTolerance(y),
+    k: roundWithTolerance(k),
   };
 }
 

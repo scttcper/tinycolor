@@ -912,6 +912,57 @@ describe('TinyColor', () => {
     expect(colorsToHexString(combination)).toBe('ff0000,2a0000,550000,800000,aa0000,d40000');
   });
 
+  it('analogous and monochromatic end for counts that are not whole numbers above zero', () => {
+    // A loop that never ends keeps pushing colors, so stop it after 10,000 pushes
+    const endsSoon = <T>(fn: () => T): T => {
+      const { push } = Array.prototype;
+      let pushes = 0;
+      Array.prototype.push = function (this: unknown[], ...items: unknown[]): number {
+        if (++pushes > 10000) {
+          throw new Error('runaway loop');
+        }
+
+        return push.apply(this, items);
+      };
+      try {
+        return fn();
+      } finally {
+        Array.prototype.push = push;
+      }
+    };
+    const red = new TinyColor('red');
+
+    // analogous() always has the color itself, a count above 1 adds a color for every step
+    for (const [results, length] of [
+      [1, 1],
+      [0, 1],
+      [-1, 1],
+      [-2.5, 1],
+      [0.5, 1],
+      [1.5, 2],
+      [2.5, 3],
+    ]) {
+      expect(endsSoon(() => red.analogous(results))).toHaveLength(length);
+    }
+
+    for (const [results, length] of [
+      [0, 0],
+      [-1, 0],
+      [-2.5, 0],
+      [0.5, 1],
+      [1.5, 2],
+      [2.5, 3],
+    ]) {
+      expect(endsSoon(() => red.monochromatic(results))).toHaveLength(length);
+    }
+
+    // Whole counts are what they were: as many colors as asked for
+    for (let results = 1; results <= 100; results++) {
+      expect(red.analogous(results)).toHaveLength(results);
+      expect(red.monochromatic(results)).toHaveLength(results);
+    }
+  });
+
   it('splitcomplement', () => {
     const combination = new TinyColor('red').splitcomplement();
     expect(colorsToHexString(combination)).toBe('ff0000,ccff00,0066ff');

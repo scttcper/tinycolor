@@ -603,7 +603,7 @@ export class TinyColor {
     const part = 360 / slices;
     const ret: TinyColor[] = [this];
 
-    for (hsl.h = (hsl.h - ((part * results) >> 1) + 720) % 360; --results;) {
+    for (hsl.h = (hsl.h - ((part * results) >> 1) + 720) % 360; --results > 0;) {
       hsl.h = (hsl.h + part) % 360;
       ret.push(new TinyColor(hsl));
     }
@@ -628,7 +628,7 @@ export class TinyColor {
     const res: TinyColor[] = [];
     const modification = 1 / results;
 
-    while (results--) {
+    while (results-- > 0) {
       res.push(new TinyColor({ h, s, v }));
       v = (v + modification) % 1;
     }

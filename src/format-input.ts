@@ -168,10 +168,11 @@ const FUNCTION_START = '[\\s|(]+';
 const SEPARATOR = '[,|\\s]+';
 const FUNCTION_END = '\\s*(?:\\)|$)';
 const COMPONENT = `(${CSS_UNIT})`;
+const ALPHA = `(${CSS_UNIT}|none)`;
 
 function matchColor(name: string, first = CSS_UNIT): RegExp {
   return new RegExp(
-    `${name}${FUNCTION_START}(${first})${SEPARATOR}${COMPONENT}${SEPARATOR}${COMPONENT}(?:[,|\\s/]+${COMPONENT})?${FUNCTION_END}`,
+    `${name}${FUNCTION_START}(${first})${SEPARATOR}${COMPONENT}${SEPARATOR}${COMPONENT}(?:[,|\\s/]+${ALPHA})?${FUNCTION_END}`,
   );
 }
 

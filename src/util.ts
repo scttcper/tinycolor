@@ -111,7 +111,7 @@ export function removeNoise(n: number): number {
 
 /** Round computed values without letting floating point noise round exact halves down. @hidden */
 export function roundWithTolerance(n: number): number {
-  return Math.round(removeNoise(n));
+  return Number.isInteger(n) ? n : Math.round(n + 1e-12);
 }
 
 /**

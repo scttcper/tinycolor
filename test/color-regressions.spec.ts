@@ -6,12 +6,14 @@ it('parses CSS hue angles and exponents', () => {
   expect(new TinyColor('hsl(5e-1turn 100% 50%)').toHexString()).toBe('#00ffff');
   expect(new TinyColor('rgb(0 0 0 / 1e-7)').getAlpha()).toBe(1e-7);
   expect(new TinyColor('rgb(0 0 0 / 1e+)').isValid).toBe(false);
+  expect(new TinyColor('rgb(255 0 0 / none)').toHex8String()).toBe('#ff0000ff');
 });
 
 it('rounds exact halves in converted output', () => {
   expect(new TinyColor('#007805').toHslString()).toBe('hsl(123, 100%, 24%)');
   expect(new TinyColor('#007805').toHsvString()).toBe('hsv(123, 100%, 47%)');
   expect(new TinyColor('#050808').toCmyk().c).toBe(38);
+  expect(new TinyColor('rgb(127.4999999999, 0, 0)').toHexString()).toBe('#7f0000');
 });
 
 it('clones the original color without losing alpha precision', () => {

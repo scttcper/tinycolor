@@ -1,5 +1,5 @@
 import { HSL, HSV, Numberify, OKLCH, RGB } from './interfaces.js';
-import { bound01, pad2, removeNoise, roundWithTolerance } from './util.js';
+import { bound01, pad2, removeNoise, roundWithTolerance, snapToHalf } from './util.js';
 
 // `rgbToHsl`, `rgbToHsv`, `hslToRgb`, `hsvToRgb` modified from:
 // <https://gist.github.com/mjackson/5311256>
@@ -199,7 +199,7 @@ function hexCharCode(digit: number): number {
 
 /** Round a channel and convert it to two character hex, values outside 0-255 use toString */
 function channelToHex(c: number): string {
-  const rounded = roundWithTolerance(c);
+  const rounded = Math.round(c);
   if (rounded >= 0 && rounded <= 255) {
     return String.fromCharCode(hexCharCode(rounded >> 4), hexCharCode(rounded & 15));
   }
@@ -207,9 +207,9 @@ function channelToHex(c: number): string {
   return pad2(rounded.toString(16));
 }
 
-/** Same as `pad2(convertDecimalToHex(d))`, using channelToHex for the 0-255 fast path */
+/** Convert alpha to a hex byte, correcting floating point noise before rounding */
 function decimalToHexPair(d: string | number): string {
-  return channelToHex(parseFloat(d as string) * 255);
+  return channelToHex(snapToHalf(parseFloat(d as string) * 255));
 }
 
 /**

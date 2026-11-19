@@ -111,7 +111,13 @@ export function removeNoise(n: number): number {
 
 /** Round computed values without letting floating point noise round exact halves down. @hidden */
 export function roundWithTolerance(n: number): number {
-  return Number.isInteger(n) ? n : Math.round(n + 1e-12);
+  return Number.isInteger(n) ? n : Math.round(snapToHalf(n));
+}
+
+/** Correct a computed value just below a half while keeping other fractions. @hidden */
+export function snapToHalf(n: number): number {
+  const half = Math.floor(n) + 0.5;
+  return n < half && half - n <= 1e-12 ? half : n;
 }
 
 /**

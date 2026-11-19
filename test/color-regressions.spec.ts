@@ -13,11 +13,17 @@ it('rounds exact halves in converted output', () => {
   expect(new TinyColor('#007805').toHslString()).toBe('hsl(123, 100%, 24%)');
   expect(new TinyColor('#007805').toHsvString()).toBe('hsv(123, 100%, 47%)');
   expect(new TinyColor('#050808').toCmyk().c).toBe(38);
-  expect(new TinyColor('rgb(127.4999999999, 0, 0)').toHexString()).toBe('#7f0000');
+  const rgb = new TinyColor('rgb(127.4999999999995 0 0)');
+  expect(rgb.toRgb().r).toBe(127);
+  expect(rgb.toHexString()).toBe('#7f0000');
 });
 
-it('clones the original color without losing alpha precision', () => {
+it('clones the exact color and keeps its input independent', () => {
   expect(new TinyColor('#0008').clone().toHex8String()).toBe('#00000088');
+  const input = { l: 0, c: 0, h: 17 };
+  const clone = new TinyColor(input).clone();
+  input.h = 200;
+  expect(clone.toOklch().h).toBe(17);
 });
 
 it.each([

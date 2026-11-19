@@ -10,7 +10,7 @@ import {
 import { names } from './css-color-names.js';
 import { inputToRGB } from './format-input.js';
 import { CMYK, HSL, HSLA, HSV, HSVA, Numberify, OKLCH, OKLCHA, RGB, RGBA } from './interfaces.js';
-import { bound01, boundAlpha, clamp01, roundWithTolerance } from './util.js';
+import { bound01, boundAlpha, clamp01, roundWithTolerance, snapToHalf } from './util.js';
 
 export interface TinyColorOptions {
   format: string;
@@ -294,9 +294,9 @@ export class TinyColor {
    */
   toRgb(): Numberify<RGBA> {
     return {
-      r: roundWithTolerance(this.r),
-      g: roundWithTolerance(this.g),
-      b: roundWithTolerance(this.b),
+      r: Math.round(this.r),
+      g: Math.round(this.g),
+      b: Math.round(this.b),
       a: this.a,
     };
   }
@@ -306,9 +306,9 @@ export class TinyColor {
    * "RGBA(xxx, xxx, xxx, xx)".
    */
   toRgbString(): string {
-    const r = roundWithTolerance(this.r);
-    const g = roundWithTolerance(this.g);
-    const b = roundWithTolerance(this.b);
+    const r = Math.round(this.r);
+    const g = Math.round(this.g);
+    const b = Math.round(this.b);
     return this.a === 1 ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${this.roundA})`;
   }
 
@@ -461,15 +461,20 @@ export class TinyColor {
   }
 
   toNumber(): number {
-    return (
-      (roundWithTolerance(this.r) << 16) +
-      (roundWithTolerance(this.g) << 8) +
-      roundWithTolerance(this.b)
-    );
+    return (Math.round(this.r) << 16) + (Math.round(this.g) << 8) + Math.round(this.b);
   }
 
   clone(): TinyColor {
-    return Object.assign(new TinyColor(), this);
+    const clone = Object.assign(new TinyColor(), this);
+    const { originalInput } = this;
+    if (originalInput && typeof originalInput === 'object') {
+      // OKLCH uses the input again when formatting, including hue or chroma from getters.
+      clone.originalInput =
+        'l' in originalInput && 'c' in originalInput && 'h' in originalInput
+          ? { ...originalInput, l: originalInput.l, c: originalInput.c, h: originalInput.h }
+          : { ...originalInput };
+    }
+    return clone;
   }
 
   /**
@@ -577,9 +582,9 @@ export class TinyColor {
 
     const p = amount / 100;
     const rgba = {
-      r: (rgb2.r - rgb1.r) * p + rgb1.r,
-      g: (rgb2.g - rgb1.g) * p + rgb1.g,
-      b: (rgb2.b - rgb1.b) * p + rgb1.b,
+      r: snapToHalf((rgb2.r - rgb1.r) * p + rgb1.r),
+      g: snapToHalf((rgb2.g - rgb1.g) * p + rgb1.g),
+      b: snapToHalf((rgb2.b - rgb1.b) * p + rgb1.b),
       a: (rgb2.a - rgb1.a) * p + rgb1.a,
     };
 
@@ -653,9 +658,9 @@ export class TinyColor {
     const alpha = fg.a + bg.a * (1 - fg.a);
 
     return new TinyColor({
-      r: (fg.r * fg.a + bg.r * bg.a * (1 - fg.a)) / alpha,
-      g: (fg.g * fg.a + bg.g * bg.a * (1 - fg.a)) / alpha,
-      b: (fg.b * fg.a + bg.b * bg.a * (1 - fg.a)) / alpha,
+      r: snapToHalf((fg.r * fg.a + bg.r * bg.a * (1 - fg.a)) / alpha),
+      g: snapToHalf((fg.g * fg.a + bg.g * bg.a * (1 - fg.a)) / alpha),
+      b: snapToHalf((fg.b * fg.a + bg.b * bg.a * (1 - fg.a)) / alpha),
       a: alpha,
     });
   }
@@ -711,7 +716,7 @@ export class TinyColor {
 
 /** Round sub-byte channels so consumers don't read them as ratios. */
 function constructorChannel(channel: number): number {
-  return channel < 1 ? roundWithTolerance(channel) : channel;
+  return channel < 1 ? Math.round(channel) : channel;
 }
 
 /** Cheap check before parsing input again, an `oklch()` string or an object with l, c and h */

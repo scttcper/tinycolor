@@ -186,6 +186,10 @@ const matchers = {
   ),
 };
 
+function alphaFromToken(alpha: string): string | number {
+  return alpha === 'none' ? 0 : alpha;
+}
+
 /**
  * Permissive string parsing.  Take in a number of formats, and output an object
  * based on detected format.  Returns `{ r, g, b }` or `{ h, s, l }` or `{ h, s, v}` or `{ l, c, h }` or `{c, m, y, k}` or `{c, m, y, k, a}`
@@ -226,7 +230,7 @@ export function stringInputToObject(color: string): any {
     // optional alpha, e.g. `rgb(... / 50%)` or `rgb(..., 0.5)`
     return match[4] === undefined
       ? { r: match[1], g: match[2], b: match[3] }
-      : { r: match[1], g: match[2], b: match[3], a: match[4] };
+      : { r: match[1], g: match[2], b: match[3], a: alphaFromToken(match[4]) };
   }
 
   match = matchers.hsl.exec(color);
@@ -234,7 +238,7 @@ export function stringInputToObject(color: string): any {
     // optional alpha, e.g. `hsl(... / 50%)` or `hsl(..., 0.5)`
     return match[4] === undefined
       ? { h: match[1], s: match[2], l: match[3] }
-      : { h: match[1], s: match[2], l: match[3], a: match[4] };
+      : { h: match[1], s: match[2], l: match[3], a: alphaFromToken(match[4]) };
   }
 
   match = matchers.hsv.exec(color);
@@ -242,7 +246,7 @@ export function stringInputToObject(color: string): any {
     // optional alpha, e.g. `hsv(... / 50%)` or `hsv(..., 0.5)`
     return match[4] === undefined
       ? { h: match[1], s: match[2], v: match[3] }
-      : { h: match[1], s: match[2], v: match[3], a: match[4] };
+      : { h: match[1], s: match[2], v: match[3], a: alphaFromToken(match[4]) };
   }
 
   match = matchers.cmyk.exec(color);

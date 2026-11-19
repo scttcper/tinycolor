@@ -10,7 +10,7 @@ import {
 import { names } from './css-color-names.js';
 import { inputToRGB } from './format-input.js';
 import { CMYK, HSL, HSLA, HSV, HSVA, Numberify, OKLCH, OKLCHA, RGB, RGBA } from './interfaces.js';
-import { bound01, boundAlpha, clamp01 } from './util.js';
+import { bound01, boundAlpha, clamp01, removeNoise } from './util.js';
 
 export interface TinyColorOptions {
   format: string;
@@ -78,7 +78,8 @@ export class TinyColor {
     this.g = rgb.g;
     this.b = rgb.b;
     this.a = rgb.a;
-    this.roundA = Math.round(100 * this.a) / 100;
+    // 0.145 * 100 is 14.499999999999998: clear the noise so that an alpha at half rounds up
+    this.roundA = Math.round(removeNoise(100 * this.a)) / 100;
     this.format = opts.format ?? rgb.format;
     this.gradientType = opts.gradientType;
 
@@ -174,7 +175,7 @@ export class TinyColor {
    */
   setAlpha(alpha?: string | number): this {
     this.a = boundAlpha(alpha);
-    this.roundA = Math.round(100 * this.a) / 100;
+    this.roundA = Math.round(removeNoise(100 * this.a)) / 100;
     return this;
   }
 
@@ -588,11 +589,12 @@ export class TinyColor {
     const rgb2 = new TinyColor(color).toRgb();
 
     const p = amount / 100;
+    // A channel that is exactly half, like 14.5, would come out as 14.499999999999998 and round down
     const rgba = {
-      r: (rgb2.r - rgb1.r) * p + rgb1.r,
-      g: (rgb2.g - rgb1.g) * p + rgb1.g,
-      b: (rgb2.b - rgb1.b) * p + rgb1.b,
-      a: (rgb2.a - rgb1.a) * p + rgb1.a,
+      r: removeNoise((rgb2.r - rgb1.r) * p + rgb1.r),
+      g: removeNoise((rgb2.g - rgb1.g) * p + rgb1.g),
+      b: removeNoise((rgb2.b - rgb1.b) * p + rgb1.b),
+      a: removeNoise((rgb2.a - rgb1.a) * p + rgb1.a),
     };
 
     return new TinyColor(rgba);
@@ -655,9 +657,9 @@ export class TinyColor {
     const alpha = fg.a + bg.a * (1 - fg.a);
 
     return new TinyColor({
-      r: (fg.r * fg.a + bg.r * bg.a * (1 - fg.a)) / alpha,
-      g: (fg.g * fg.a + bg.g * bg.a * (1 - fg.a)) / alpha,
-      b: (fg.b * fg.a + bg.b * bg.a * (1 - fg.a)) / alpha,
+      r: removeNoise((fg.r * fg.a + bg.r * bg.a * (1 - fg.a)) / alpha),
+      g: removeNoise((fg.g * fg.a + bg.g * bg.a * (1 - fg.a)) / alpha),
+      b: removeNoise((fg.b * fg.a + bg.b * bg.a * (1 - fg.a)) / alpha),
       a: alpha,
     });
   }

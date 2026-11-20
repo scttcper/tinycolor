@@ -8,11 +8,12 @@ export function bound01(n: any, max: number): number {
   }
 
   const isPercent = isPercentage(n);
-  n = max === 360 ? parseFloat(n) : Math.min(max, Math.max(0, parseFloat(n)));
+  const value = typeof n === 'number' ? n : parseFloat(n);
+  n = max === 360 ? value : Math.min(max, Math.max(0, value));
 
   // Automatically convert percentage into number
   if (isPercent) {
-    n = parseInt(String(n * max), 10) / 100;
+    n = Math.trunc(n * max) / 100;
   }
 
   // Handle floating point rounding errors
@@ -25,6 +26,9 @@ export function bound01(n: any, max: number): number {
     // If n is a hue given in degrees,
     // wrap around out-of-range values into [0, 360] range
     // then convert into [0, 1].
+    if (!Number.isFinite(n)) {
+      return 0;
+    }
     n = (n < 0 ? (n % max) + max : n % max) / max;
   } else {
     // If n not a hue given in degrees
@@ -49,7 +53,7 @@ export function clamp01(val: number): number {
  * @hidden
  */
 export function isOnePointZero(n: string | number): boolean {
-  return typeof n === 'string' && n.indexOf('.') !== -1 && !isPercentage(n) && parseFloat(n) === 1;
+  return typeof n === 'string' && n.includes('.') && !/[%e]/i.test(n) && parseFloat(n) === 1;
 }
 
 /**
@@ -89,19 +93,12 @@ export function convertToPercentage(n: number | string): number | string {
 }
 
 /**
- * `convertToPercentage` for values passed to `bound01(n, 100)`. A decimal returns the number
- * bound01 would parse from the percentage string, without building that string.
+ * Scale HSL and HSV ratios to 0-100 without truncating through a percentage string.
  * @hidden
  */
 export function convertToPercentageNumber(n: number | string): number | string {
-  if (typeof n !== 'number' || !(n <= 1)) {
-    return convertToPercentage(n);
-  }
-
-  // Mirrors bound01: clamp the percentage, then truncate it to two decimals like
-  // parseInt(String(x), 10), which only differs from Math.trunc where String() uses exponent notation
-  const scaled = Math.min(100, Math.max(0, n * 100)) * 100;
-  return (scaled >= 1e-6 ? Math.trunc(scaled) : parseInt(String(scaled), 10)) / 100;
+  const value = Number(n);
+  return value <= 1 ? value * 100 : n;
 }
 
 /**

@@ -159,10 +159,8 @@ If you are calling this from code, you may want to use object input. Here are so
 The original input passed into the constructer used to create the tinycolor instance
 
 ```ts
-const color = new TinyColor('red');
-color.originalInput; // "red"
-color = new TinyColor({ r: 255, g: 255, b: 255 });
-color.originalInput; // "{r: 255, g: 255, b: 255}"
+new TinyColor('red').originalInput; // "red"
+new TinyColor({ r: 255, g: 255, b: 255 }).originalInput; // { r: 255, g: 255, b: 255 }
 ```
 
 ### format
@@ -170,10 +168,8 @@ color.originalInput; // "{r: 255, g: 255, b: 255}"
 Returns the format used to create the tinycolor instance
 
 ```ts
-const color = new TinyColor('red');
-color.format; // "name"
-color = new TinyColor({ r: 255, g: 255, b: 255 });
-color.format; // "rgb"
+new TinyColor('red').format; // "name"
+new TinyColor({ r: 255, g: 255, b: 255 }).format; // "rgb"
 ```
 
 ### isValid
@@ -274,7 +270,7 @@ const color = new TinyColor('red');
 color.getAlpha(); // 1
 color.setAlpha(0.5);
 color.getAlpha(); // .5
-color.toRgbString(); // "rgba(255, 0, 0, .5)"
+color.toRgbString(); // "rgba(255, 0, 0, 0.5)"
 ```
 
 ### onBackground
@@ -466,7 +462,7 @@ color2.toString(); // "rgba(255, 0, 0, 0.5)"
 
 ### Color Modification
 
-These methods manipulate the current color, and return it for chaining. For instance:
+These methods return a new color and can be chained.
 
 ```ts
 new TinyColor('red')
@@ -480,8 +476,8 @@ new TinyColor('red')
 `lighten: function(amount = 10) -> TinyColor`. Lighten the color a given amount, from 0 to 100. Providing 100 will always return white.
 
 ```ts
-new TinyColor('#f00').lighten().toString(); // '#ff3333'
-new TinyColor('#f00').lighten(100).toString(); // '#ffffff'
+new TinyColor('#f00').lighten().toHexString(); // '#ff3333'
+new TinyColor('#f00').lighten(100).toHexString(); // '#ffffff'
 ```
 
 ### brighten
@@ -489,7 +485,7 @@ new TinyColor('#f00').lighten(100).toString(); // '#ffffff'
 `brighten: function(amount = 10) -> TinyColor`. Brighten the color a given amount, from 0 to 100.
 
 ```ts
-new TinyColor('#f00').brighten().toString(); // '#ff1919'
+new TinyColor('#f00').brighten().toHexString(); // '#ff1919'
 ```
 
 ### darken
@@ -497,8 +493,8 @@ new TinyColor('#f00').brighten().toString(); // '#ff1919'
 `darken: function(amount = 10) -> TinyColor`. Darken the color a given amount, from 0 to 100. Providing 100 will always return black.
 
 ```ts
-new TinyColor('#f00').darken().toString(); // '#cc0000'
-new TinyColor('#f00').darken(100).toString(); // '#000000'
+new TinyColor('#f00').darken().toHexString(); // '#cc0000'
+new TinyColor('#f00').darken(100).toHexString(); // '#000000'
 ```
 
 ### tint
@@ -506,8 +502,8 @@ new TinyColor('#f00').darken(100).toString(); // '#000000'
 Mix the color with pure white, from 0 to 100. Providing 0 will do nothing, providing 100 will always return white.
 
 ```ts
-new TinyColor('#f00').tint().toString(); // "#ff1a1a"
-new TinyColor('#f00').tint(100).toString(); // "#ffffff"
+new TinyColor('#f00').tint().toHexString(); // "#ff1a1a"
+new TinyColor('#f00').tint(100).toHexString(); // "#ffffff"
 ```
 
 ### shade
@@ -515,8 +511,8 @@ new TinyColor('#f00').tint(100).toString(); // "#ffffff"
 Mix the color with pure black, from 0 to 100. Providing 0 will do nothing, providing 100 will always return black.
 
 ```ts
-new TinyColor('#f00').shade().toString(); // "#e60000"
-new TinyColor('#f00').shade(100).toString(); // "#000000"
+new TinyColor('#f00').shade().toHexString(); // "#e60000"
+new TinyColor('#f00').shade(100).toHexString(); // "#000000"
 ```
 
 ### desaturate
@@ -524,8 +520,8 @@ new TinyColor('#f00').shade(100).toString(); // "#000000"
 `desaturate: function(amount = 10) -> TinyColor`. Desaturate the color a given amount, from 0 to 100. Providing 100 will is the same as calling `greyscale`.
 
 ```ts
-new TinyColor('#f00').desaturate().toString(); // "#f20d0d"
-new TinyColor('#f00').desaturate(100).toString(); // "#808080"
+new TinyColor('#f00').desaturate().toHexString(); // "#f20d0d"
+new TinyColor('#f00').desaturate(100).toHexString(); // "#808080"
 ```
 
 ### saturate
@@ -541,7 +537,7 @@ new TinyColor('hsl(0, 10%, 50%)').saturate().toString(); // "hsl(0, 20%, 50%)"
 `greyscale: function() -> TinyColor`. Completely desaturates a color into greyscale. Same as calling `desaturate(100)`.
 
 ```ts
-new TinyColor('#f00').greyscale().toString(); // "#808080"
+new TinyColor('#f00').greyscale().toHexString(); // "#808080"
 ```
 
 ### spin
@@ -549,18 +545,18 @@ new TinyColor('#f00').greyscale().toString(); // "#808080"
 `spin: function(amount = 0) -> TinyColor`. Spin the hue a given amount, from -360 to 360. Calling with 0, 360, or -360 will do nothing (since it sets the hue back to what it was before).
 
 ```ts
-new TinyColor('#f00').spin(180).toString(); // "#00ffff"
-new TinyColor('#f00').spin(-90).toString(); // "#8000ff"
-new TinyColor('#f00').spin(90).toString(); // "#80ff00"
+new TinyColor('#f00').spin(180).toHexString(); // "#00ffff"
+new TinyColor('#f00').spin(-90).toHexString(); // "#8000ff"
+new TinyColor('#f00').spin(90).toHexString(); // "#80ff00"
 
 // spin(0) and spin(360) do nothing
-new TinyColor('#f00').spin(0).toString(); // "#ff0000"
-new TinyColor('#f00').spin(360).toString(); // "#ff0000"
+new TinyColor('#f00').spin(0).toHexString(); // "#ff0000"
+new TinyColor('#f00').spin(360).toHexString(); // "#ff0000"
 ```
 
 ### mix
 
-`mix: function(amount = 50) => TinyColor`. Mix the current color a given amount with another color, from 0 to 100. 0 means no mixing (return current color).
+`mix: function(color, amount = 50) => TinyColor`. Mix the current color a given amount with another color, from 0 to 100. 0 means no mixing (return current color).
 
 ```ts
 let color1 = new TinyColor('#f0f');
@@ -584,11 +580,11 @@ colors.map(t => t.toHexString()); // [ "#ff0000", "#ff0066", "#ff0033", "#ff0000
 
 ### monochromatic
 
-`monochromatic: function(, results = 6) -> array<TinyColor>`.
+`monochromatic: function(results = 6) -> array<TinyColor>`.
 
 ```ts
 const colors = new TinyColor('#f00').monochromatic();
-colors.map(t => t.toHexString()); // [ "#ff0000", "#2a0000", "#550000", "#800000", "#aa0000", "#d40000" ]
+colors.map(t => t.toHexString()); // [ "#ff0000", "#2b0000", "#550000", "#800000", "#aa0000", "#d50000" ]
 ```
 
 ### splitcomplement
@@ -717,7 +713,7 @@ Here are links to read more about the [AA](http://www.w3.org/TR/UNDERSTANDING-WC
 import { isReadable } from '@ctrl/tinycolor';
 isReadable("#000", "#111"); // false
 isReadable("#ff0088", "#5c1a72", { level: "AA", size: "small" }); // false
-isReadable("#ff0088", "#5c1a72", { level: "AA", size: "large" }), // true
+isReadable("#ff0088", "#5c1a72", { level: "AA", size: "large" }); // true
 ```
 
 #### mostReadable

@@ -29,7 +29,7 @@ describe('TinyColor', () => {
   });
   it('should clone', () => {
     const color1 = new TinyColor('red');
-    const color2 = new TinyColor('red').clone();
+    const color2 = color1.clone();
     color2.setAlpha(0.5);
     expect(color2.isValid).toBeTruthy();
     expect(color2.toString()).toBe('rgba(255, 0, 0, 0.5)');
@@ -909,7 +909,7 @@ describe('TinyColor', () => {
 
   it('monochromatic', () => {
     const combination = new TinyColor('red').monochromatic();
-    expect(colorsToHexString(combination)).toBe('ff0000,2a0000,550000,800000,aa0000,d40000');
+    expect(colorsToHexString(combination)).toBe('ff0000,2b0000,550000,800000,aa0000,d50000');
   });
 
   it('splitcomplement', () => {

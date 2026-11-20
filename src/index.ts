@@ -481,7 +481,16 @@ export class TinyColor {
   }
 
   clone(): TinyColor {
-    return new TinyColor(this.toString());
+    const clone = Object.assign(new TinyColor(), this);
+    const { originalInput } = this;
+    if (originalInput && typeof originalInput === 'object') {
+      // OKLCH uses the input again when formatting, including hue or chroma from getters.
+      clone.originalInput =
+        'l' in originalInput && 'c' in originalInput && 'h' in originalInput
+          ? { ...originalInput, l: originalInput.l, c: originalInput.c, h: originalInput.h }
+          : { ...originalInput };
+    }
+    return clone;
   }
 
   /**
@@ -599,9 +608,14 @@ export class TinyColor {
   }
 
   analogous(results = 6, slices = 30): TinyColor[] {
+    results = Math.ceil(results);
+    const ret: TinyColor[] = [this];
+    if (!Number.isSafeInteger(results) || results <= 1) {
+      return ret;
+    }
+
     const hsl = this.toHsl();
     const part = 360 / slices;
-    const ret: TinyColor[] = [this];
 
     for (hsl.h = (hsl.h - ((part * results) >> 1) + 720) % 360; --results;) {
       hsl.h = (hsl.h + part) % 360;
@@ -621,6 +635,11 @@ export class TinyColor {
   }
 
   monochromatic(results = 6): TinyColor[] {
+    results = Math.ceil(results);
+    if (!Number.isSafeInteger(results) || results <= 0) {
+      return [];
+    }
+
     const hsv = this.toHsv();
     const { h } = hsv;
     const { s } = hsv;
